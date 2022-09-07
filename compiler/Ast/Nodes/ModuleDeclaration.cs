@@ -1,5 +1,5 @@
 using Ara.Ast.Nodes.Expressions.Atoms;
-using Ara.TreeSitter;
+using Ara.Parsing;
 
 namespace Ara.Ast.Nodes;
 

@@ -1,4 +1,4 @@
-namespace Ara.TreeSitter;
+namespace Ara.Parsing;
 
 public readonly struct Handle<T>
 {

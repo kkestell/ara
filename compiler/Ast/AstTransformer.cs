@@ -2,7 +2,7 @@ using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Expressions;
 using Ara.Ast.Nodes.Expressions.Atoms;
 using Ara.Ast.Nodes.Statements;
-using Ara.TreeSitter;
+using Ara.Parsing;
 
 namespace Ara.Ast;
 
@@ -23,20 +23,22 @@ public static class AstTransformer
             "argument_list"                  => ArgumentList(node, children),
             "binary_expression"              => BinaryExpression(node, children),
             "block"                          => Block(node, children),
-            "bool"                           => Bool(node, children),
+            "bool"                           => Bool(node),
             "definition_list"                => DefinitionList(node, children),
+            "float"                          => Float(node),
             "function_call_expression"       => FunctionCallExpression(node, children),
             "function_definition"            => FunctionDefinition(node, children),
-            "identifier"                     => Identifier(node, children),
+            "identifier"                     => Identifier(node),
             "if_statement"                   => IfStatement(node, children),
-            "integer"                        => Integer(node, children),
+            "integer"                        => Integer(node),
             "module_declaration"             => ModuleDeclaration(node, children),
             "parameter"                      => Parameter(node, children),
             "parameter_list"                 => ParameterList(node, children),
             "return_statement"               => ReturnStatement(node, children),
             "source_file"                    => SourceFile(node, children),
             "statement_list"                 => StatementList(node, children),
-            "type"                           => Type(node, children),
+            "string"                         => String_(node),
+            "type"                           => Type(node),
             "variable_reference"             => VariableReference(node, children),
             "unary_expression"               => UnaryExpression(node, children),
             "variable_declaration_statement" => VariableDeclarationStatement(node, children),
@@ -71,32 +73,35 @@ public static class AstTransformer
     static Block Block(Node n, IReadOnlyList<AstNode> c) =>
         new (n, ((StatementList)c[0]).Values);
 
-    static Bool Bool(Node n, IReadOnlyList<AstNode> c) =>
+    static Bool Bool(Node n) =>
         new (n, n.Span.ToString());
 
     static DefinitionList DefinitionList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Definition)x));
 
+    static Float Float(Node n) =>
+        new (n, n.Span.ToString());
+
     static FunctionCallExpression FunctionCallExpression(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Identifier)c[0], ((ArgumentList)c[1]).Values.ToList());
 
     static FunctionDefinition FunctionDefinition(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], ((ParameterList)c[1]).Values.ToList(), (TypeNode)c[2], (Block)c[3]);
+        new (n, (Identifier)c[0], ((ParameterList)c[1]).Values.ToList(), (Type_)c[2], (Block)c[3]);
 
-    static Identifier Identifier(Node n, IReadOnlyList<AstNode> c) =>
+    static Identifier Identifier(Node n) =>
         new (n, n.Span.ToString());
 
     static IfStatement IfStatement(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Expression)c[0], (Block)c[1]);
 
-    static Integer Integer(Node n, IReadOnlyList<AstNode> c) =>
+    static Integer Integer(Node n) =>
         new (n, n.Span.ToString());
 
     static ModuleDeclaration ModuleDeclaration(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Identifier)c[0]);
 
     static Parameter Parameter(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (TypeNode)c[1]);
+        new (n, (Identifier)c[0], (Type_)c[1]);
 
     static ParameterList ParameterList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Parameter)x).ToList());
@@ -110,7 +115,10 @@ public static class AstTransformer
     static StatementList StatementList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Statement)x).ToList());
 
-    static TypeNode Type(Node n, IReadOnlyList<AstNode> c) =>
+    static String_ String_(Node n) =>
+        new (n, n.Span.ToString().Trim('"'));
+
+    static Type_ Type(Node n) =>
         new (n, n.Span.ToString());
 
     static VariableReference VariableReference(Node n, IReadOnlyList<AstNode> c) =>
@@ -129,5 +137,5 @@ public static class AstTransformer
     }
 
     static VariableDeclarationStatement VariableDeclarationStatement(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (TypeNode)c[1], (Expression)c[2]);
+        new (n, (Identifier)c[0], (Type_)c[1], (Expression)c[2]);
 }

@@ -65,6 +65,7 @@ module.exports = grammar({
       'bool',
       'int',
       'float',
+      'string',
       $.identifier
     ),
 
@@ -167,6 +168,7 @@ module.exports = grammar({
       $.integer,
       $.float,
       $.bool,
+      $.string,
       $.record,
       $.list
     ),
@@ -209,9 +211,24 @@ module.exports = grammar({
       }))
     },
 
+    string: $ => seq('"', $._string_content, '"'),
+
+    _string_content: $ => repeat1(choice(
+      token.immediate(prec(1, /[^\\"\n]+/)),
+      $.escape_sequence
+    )),
+
+    escape_sequence: $ => token.immediate(seq(
+      '\\',
+      /(\"|\\|\/|b|f|n|r|t|u)/
+    )),
+
     bool: $ => choice('true', 'false'),
+
     identifier: $ => /[a-z]+/,
+    
     integer: $ => /\d+/,
+    
     float: $ => /[0-9]*\.?[0-9]+/
   }
 });

@@ -2,4 +2,4 @@
 
 namespace Ara.Ast.Nodes.Expressions.Atoms;
 
-public record Bool(Node Node, string Value) : Atom(Node);
+public record String_(Node Node, string Value) : Atom(Node);
