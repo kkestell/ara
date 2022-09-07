@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ara.TreeSitter;
+namespace Ara.Parsing;
 
 [StructLayout(LayoutKind.Sequential)]
 public readonly struct TsNode

@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ara.TreeSitter;
+namespace Ara.Parsing;
 
 public sealed class Parser : IDisposable
 {

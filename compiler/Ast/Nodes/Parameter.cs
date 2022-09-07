@@ -1,6 +1,6 @@
 using Ara.Ast.Nodes.Expressions.Atoms;
-using Ara.TreeSitter;
+using Ara.Parsing;
 
 namespace Ara.Ast.Nodes;
 
-public record Parameter(Node Node, Identifier Name, TypeNode Type) : AstNode(Node);
+public record Parameter(Node Node, Identifier Name, Type_ Type) : AstNode(Node);
