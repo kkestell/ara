@@ -1,0 +1,12 @@
+==================
+Return statements
+==================
+
+module test
+fn test() -> int {
+  return 1 + 2 * 3
+}
+
+---
+
+xxx
