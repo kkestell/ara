@@ -23,7 +23,7 @@
       <Folder Include="Ast\Nodes\Expressions\Atoms\" />
     </ItemGroup>
     <ItemGroup>
-      <Content Include="..\parser\bin\parser.so">
+      <Content Include="..\..\parser\bin\parser.so">
         <Link>parser.so</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>

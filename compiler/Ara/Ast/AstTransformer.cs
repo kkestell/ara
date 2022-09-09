@@ -8,9 +8,9 @@ namespace Ara.Ast;
 
 public static class AstTransformer
 {    
-    public static AstNode Transform(Tree parseTree)
+    public static SourceFile Transform(Tree parseTree)
     {
-        return Visit(parseTree.Root);
+        return (SourceFile)Visit(parseTree.Root);
     }
 
     static AstNode Visit(Node node)
