@@ -1,5 +1,3 @@
-using Ara.CodeGen.IR.Types.Abstract;
-
 namespace Ara.CodeGen.IR.Types;
 
 public class PointerType : IrType
@@ -21,6 +19,6 @@ public class PointerType : IrType
         if (obj is not PointerType other)
             return false;
 
-        return other.Type == Type;
+        return other.Type.Equals(Type);
     }
 }

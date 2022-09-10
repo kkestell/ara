@@ -1,5 +1,3 @@
-using Ara.CodeGen.IR.Types.Abstract;
-
 namespace Ara.CodeGen.IR.Types;
 
 /// <summary>
