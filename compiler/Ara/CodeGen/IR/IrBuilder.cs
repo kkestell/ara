@@ -1,10 +1,22 @@
-using Ara.CodeGen.IR.Types.Abstract;
-using Ara.CodeGen.IR.Values.Abstract;
-using Ara.CodeGen.IR.Values.Instructions.Memory;
-using Ara.CodeGen.IR.Values.Instructions.Operations;
-using Ara.CodeGen.IR.Values.Instructions.Terminators;
+using Ara.CodeGen.IR.Types;
+using Ara.CodeGen.IR.Values;
+using Ara.CodeGen.IR.Values.Instructions;
 
 namespace Ara.CodeGen.IR;
+
+public enum IcmpCondition
+{
+    Equal,
+    NotEqual,
+    UnsignedGreaterThan,
+    UnsignedGreaterOrEqual,
+    UnsignedLessThan,
+    UnsignedLessOrEqual,
+    SignedGreaterThan,
+    SignedGreaterOrEqual,
+    SignedLessThan,
+    SignedLessOrEqual
+}
 
 public class IrBuilder
 {
@@ -31,9 +43,9 @@ public class IrBuilder
     /// <param name="right"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public NamedValue Add(Value left, Value right, string? name = null)
+    public Add Add(Value left, Value right, string? name = null)
     {
-        return new AddInstruction(block, left, right, name);
+        return block.AddInstruction(new Add(block, left, right, name));
     }
     
     /// <summary>
@@ -43,9 +55,21 @@ public class IrBuilder
     /// <param name="right"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public NamedValue Sub(Value left, Value right, string? name = null)
+    public FAdd FAdd(Value left, Value right, string? name = null)
     {
-        return new SubInstruction(block, left, right, name);
+        return block.AddInstruction(new FAdd(block, left, right, name));
+    }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public Sub Sub(Value left, Value right, string? name = null)
+    {
+        return block.AddInstruction(new Sub(block, left, right, name));
     }
 
     /// <summary>
@@ -55,9 +79,9 @@ public class IrBuilder
     /// <param name="right"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public NamedValue Mul(Value left, Value right, string? name = null)
+    public Mul Mul(Value left, Value right, string? name = null)
     {
-        return new MulInstruction(block, left, right, name);
+        return block.AddInstruction(new Mul(block, left, right, name));
     }
 
     /// <summary>
@@ -67,9 +91,22 @@ public class IrBuilder
     /// <param name="right"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public NamedValue SDiv(Value left, Value right, string? name = null)
+    public SDiv SDiv(Value left, Value right, string? name = null)
     {
-        return new SDivInstruction(block, left, right, name);
+        return block.AddInstruction(new SDiv(block, left, right, name));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public Icmp Icmp(IcmpCondition condition, Value left, Value right, string? name = null)
+    {
+        return block.AddInstruction(new Icmp(block, condition, left, right, name));
     }
 
     /// <summary>
@@ -79,9 +116,9 @@ public class IrBuilder
     /// <param name="size"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public NamedValue Alloca(IrType type, int size = 1, string? name = null)
+    public Alloca Alloca(IrType type, int size = 1, string? name = null)
     {
-        return block.AddInstruction(new AllocaInstruction(block, type, size, name));
+        return block.AddInstruction(new Alloca(block, type, size, name));
     }
 
     /// <summary>
@@ -92,7 +129,7 @@ public class IrBuilder
     /// <param name="name"></param>
     public void Store(Value value, Value pointer, string? name = null)
     {
-        block.AddInstruction(new StoreInstruction(block, value, pointer, name));
+        block.AddInstruction(new Store(block, value, pointer, name));
     }
     
     /// <summary>
@@ -101,8 +138,8 @@ public class IrBuilder
     /// <param name="pointer"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public NamedValue Load(NamedValue pointer, string? name = null)
+    public Load Load(NamedValue pointer, string? name = null)
     {
-        return block.AddInstruction(new LoadInstruction(block, pointer, name));
+        return block.AddInstruction(new Load(block, pointer, name));
     }
 }

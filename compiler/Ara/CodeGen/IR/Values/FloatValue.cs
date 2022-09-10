@@ -1,7 +1,5 @@
 using System.Text;
 using Ara.CodeGen.IR.Types;
-using Ara.CodeGen.IR.Types.Abstract;
-using Ara.CodeGen.IR.Values.Abstract;
 
 namespace Ara.CodeGen.IR.Values;
 
@@ -18,9 +16,9 @@ public class FloatValue : ConstantValue
 
     public override string Resolve()
     {
-        var bytes = BitConverter.GetBytes(value);
-        var i = BitConverter.ToInt32(bytes, 0);
-        return "0x" + i.ToString("X8");
+        var bytes = BitConverter.GetBytes((double)value);
+        var i = BitConverter.ToInt64(bytes, 0);
+        return $"0x{i:X16}";
     }
 
     public override void Emit(StringBuilder sb)

@@ -4,9 +4,7 @@ using Ara.Ast.Nodes.Expressions.Atoms;
 using Ara.Ast.Nodes.Statements;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
-using Ara.CodeGen.IR.Types.Abstract;
 using Ara.CodeGen.IR.Values;
-using Ara.CodeGen.IR.Values.Abstract;
 
 namespace Ara.CodeGen;
 

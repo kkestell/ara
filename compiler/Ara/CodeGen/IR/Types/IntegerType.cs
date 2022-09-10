@@ -1,5 +1,3 @@
-using Ara.CodeGen.IR.Types.Abstract;
-
 namespace Ara.CodeGen.IR.Types;
 
 /// <summary>
@@ -9,7 +7,7 @@ public class IntegerType : IrType
 {
     public IntegerType(int bits)
     {
-        this.Bits = bits;
+        Bits = bits;
     }
 
     public int Bits { get; }

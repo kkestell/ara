@@ -3,8 +3,8 @@
 .idea/
 .vs/
 compiler/Ara.sln.DotSettings.user
-compiler/bin/
-compiler/obj/
+bin/
+obj/
 parser/build/
 parser/bin/
 parser/node_modules/

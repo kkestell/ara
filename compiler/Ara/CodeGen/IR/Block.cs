@@ -1,6 +1,6 @@
 using System.Text;
-using Ara.CodeGen.IR.Values.Abstract;
-using Ara.CodeGen.IR.Values.Instructions.Abstract;
+using Ara.CodeGen.IR.Values;
+using Ara.CodeGen.IR.Values.Instructions;
 
 namespace Ara.CodeGen.IR;
 
@@ -8,7 +8,7 @@ public class Block
 {
     readonly List<Value> instructions = new();
 
-    public Instruction AddInstruction(Instruction i)
+    public T AddInstruction<T>(T i) where T : Instruction
     {
         instructions.Add(i);
         return i;

@@ -1,4 +1,4 @@
-using Ara.CodeGen.IR.Types.Abstract;
+using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR;
 

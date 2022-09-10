@@ -9,7 +9,6 @@
 
     <ItemGroup>
         <PackageReference Include="DotNetGraph" Version="2.7.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2-beta2" />
     </ItemGroup>
 
     <ItemGroup>
