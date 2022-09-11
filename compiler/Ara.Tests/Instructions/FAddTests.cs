@@ -1,31 +1,14 @@
 namespace Ara.Tests.Instructions;
 
-public class FAddTests
+public class FAddTests : TestBase
 {
-    Module module;
-    IrBuilder builder;
-
-    [SetUp]
-    public void Setup()
-    {
-        module = new Module();
-
-        var func = module.AppendFunction("test", new FunctionType(new FloatType()));
-        func.AppendBasicBlock();
-
-        var block = func.AppendBasicBlock();
-
-        builder = new IrBuilder(block);
-    }
-
     [Test]
     public void AddTwoFloats()
     {
-        var value = builder.FAdd(new FloatValue(3.14f), new FloatValue(2.71f));
-        builder.Return(value);
+        builder.FAdd(new FloatValue(3.14f), new FloatValue(2.71f));
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define float @test () {\n%\"0\" = fadd float 0x40091EB860000000, 0x4005AE1480000000\nret float %\"0\"\n}"));
+        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = fadd float 0x40091EB860000000, 0x4005AE1480000000\n}"));
     }
 
     [Test]
@@ -33,16 +16,16 @@ public class FAddTests
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Add(new IntegerValue(1), new FloatValue(3.14f));
+            builder.FAdd(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
     [Test]
-    public void ThrowWhenArgumentsAreNotIntegers()
+    public void ThrowWhenArgumentsAreNotFloats()
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Add(new FloatValue(1), new FloatValue(3.14f));
+            builder.FAdd(new IntegerValue(1), new IntegerValue(1));
         });
     }
 }
