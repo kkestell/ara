@@ -16,8 +16,9 @@ public static class Program
             module main
 
             fn foo() -> int {
-              var x: int = 1 + 2 - 3 * 4 / 5
-              return 0
+              var x: int = 0
+              var y: float = 1.1 + 2.2 - 3.3 * 4.4 / 5.5
+              return 1 + 2 - 3 * 4 / 5
             }
         ");
 

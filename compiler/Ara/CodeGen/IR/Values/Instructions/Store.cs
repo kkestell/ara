@@ -21,7 +21,6 @@ public class Store : Instruction
     
     public override void Emit(StringBuilder sb)
     {
-        value.Emit(sb);
         sb.Append($"store {value.Type.ToIr()} {value.Resolve()}, ptr {pointer.Resolve()}\n");
     }
 }
