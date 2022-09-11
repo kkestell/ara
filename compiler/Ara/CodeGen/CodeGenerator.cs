@@ -74,15 +74,35 @@ public static class CodeGenerator
     {
         var left  = EmitExpression(builder, expression.Left);
         var right = EmitExpression(builder, expression.Right);
-        
-        return expression switch
+
+        if (!left.Type.Equals(right.Type))
+            throw new ArgumentException();
+
+        if (left.Type.GetType() == typeof(IntegerType))
         {
-            AdditionExpression       => builder.Add(left, right),
-            SubtractionExpression    => builder.Sub(left, right),
-            MultiplicationExpression => builder.Mul(left, right),
-            DivisionExpression       => builder.SDiv(left, right),
-            _ => throw new NotImplementedException()
-        };
+            return expression switch
+            {
+                AdditionExpression       => builder.Add(left, right),
+                SubtractionExpression    => builder.Sub(left, right),
+                MultiplicationExpression => builder.Mul(left, right),
+                DivisionExpression       => builder.SDiv(left, right),
+                _ => throw new NotImplementedException()
+            };
+        }
+        
+        if (left.Type.GetType() == typeof(FloatType))
+        {
+            return expression switch
+            {
+                AdditionExpression       => builder.FAdd(left, right),
+                SubtractionExpression    => builder.FSub(left, right),
+                MultiplicationExpression => builder.FMul(left, right),
+                DivisionExpression       => builder.FDiv(left, right),
+                _ => throw new NotImplementedException()
+            };   
+        }
+
+        throw new NotImplementedException();
     }
     
     static Value EmitExpression(IrBuilder builder, Expression expression)
