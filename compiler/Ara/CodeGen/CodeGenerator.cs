@@ -1,4 +1,3 @@
-using System.Text;
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Expressions;
 using Ara.Ast.Nodes.Expressions.Atoms;
@@ -28,9 +27,7 @@ public static class CodeGenerator
                 funcDef.Name.Value,
                 new FunctionType(
                     MakeType(funcDef.ReturnType),
-                    funcDef.Parameters.Select(x => new IR.Parameter(x.Name.Value, MakeType(x.Type)))
-                )
-            );
+                    funcDef.Parameters.Select(x => new IR.Parameter(x.Name.Value, MakeType(x.Type)))));
 
             var block = function.AppendBasicBlock();
             var builder = new IrBuilder(block);
@@ -68,6 +65,7 @@ public static class CodeGenerator
             "int"   => new IntegerType(32),
             "bool"  => new IntegerType(1),
             "float" => new FloatType(),
+            
             _ => throw new NotImplementedException()
         };
     }
@@ -114,14 +112,20 @@ public static class CodeGenerator
 
         throw new NotImplementedException();
     }
+
+    static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
+    {
+        return builder.NamedValue(reference.Name.Value);
+    }
     
     static Value EmitExpression(IrBuilder builder, Expression expression)
     {
         return expression switch
         {
-            Integer          i => new IntegerValue(int.Parse(i.Value)),
-            Float            f => new FloatValue(float.Parse(f.Value)),
-            BinaryExpression e => EmitBinaryExpression(builder, e),
+            Integer           i => new IntegerValue(int.Parse(i.Value)),
+            Float             f => new FloatValue(float.Parse(f.Value)),
+            BinaryExpression  e => EmitBinaryExpression(builder, e),
+            VariableReference r => EmitVariableReference(builder, r),
             _ => throw new NotImplementedException()
         };
     }

@@ -1,11 +1,9 @@
 using System.Text;
 using Ara.CodeGen.IR.Types;
+using Ara.CodeGen.IR.Values;
 
 namespace Ara.CodeGen.IR;
 
-/// <summary>
-/// https://llvm.org/docs/LangRef.html#functions
-/// </summary>
 public class Function
 {
     readonly string name;
@@ -23,6 +21,10 @@ public class Function
     public Block AppendBasicBlock()
     {
         var block = new Block();
+        foreach (var p in type.Parameters)
+        {
+            block.AddInstruction(new FunctionArgumentValue(block, new IntegerType(32), p.Name));
+        }
         blocks.Add(block);
         return block;
     }

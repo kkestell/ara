@@ -4,14 +4,15 @@ namespace Ara.CodeGen.IR;
 
 public class Parameter
 {
-    readonly string name;
-    readonly IrType type;
-
     public Parameter(string name, IrType type)
     {
-        this.name = name;
-        this.type = type;
+        Name = name;
+        Type = type;
     }
 
-    public string ToIr() => $"{type.ToIr()} %{name}";
+    public string Name { get; }
+    
+    public IrType Type { get; }
+    
+    public string ToIr() => $"{Type.ToIr()} %{Name}";
 }

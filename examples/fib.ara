@@ -1,7 +1,15 @@
 module main
 
-fn main(n: int) -> int {
-  var x: int = 5 + 4 - 3 * 2 / 1
-  var y: float = 3.14 + 3.71
-  return 0
+fn fib(n: int) -> int {
+  if n == 0 {
+    return 0
+  }
+  if n == 1 {
+    return 1
+  }
+  return fib(n: n-2) + fib(n: n-1)
+}
+
+fn main() -> int {
+  return fib(n: 10)
 }

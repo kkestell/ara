@@ -34,7 +34,7 @@ public static class Program
             Console.WriteLine(ex.ToString());
             return;
         }
-        
+
         //new GraphGenerator().Generate(ast, "ara.dot");
 
         var outFile = Path.ChangeExtension(args[0], ".ll");

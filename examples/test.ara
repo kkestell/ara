@@ -1,0 +1,5 @@
+module main
+
+fn main(n: int) -> int {
+  return n + 1
+}
