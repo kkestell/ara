@@ -87,4 +87,9 @@ public class IrBuilder
     {
         return block.AddInstruction(new Load(block, pointer, name));
     }
+
+    public Value NamedValue()
+    {
+        
+    }
 }

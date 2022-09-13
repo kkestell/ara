@@ -114,14 +114,20 @@ public static class CodeGenerator
 
         throw new NotImplementedException();
     }
+
+    static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
+    {
+        return builder.NamedValue(reference.Name.Value);
+    }
     
     static Value EmitExpression(IrBuilder builder, Expression expression)
     {
         return expression switch
         {
-            Integer          i => new IntegerValue(int.Parse(i.Value)),
-            Float            f => new FloatValue(float.Parse(f.Value)),
-            BinaryExpression e => EmitBinaryExpression(builder, e),
+            Integer           i => new IntegerValue(int.Parse(i.Value)),
+            Float             f => new FloatValue(float.Parse(f.Value)),
+            BinaryExpression  e => EmitBinaryExpression(builder, e),
+            VariableReference r => EmitVariableReference(builder, r),
             _ => throw new NotImplementedException()
         };
     }
