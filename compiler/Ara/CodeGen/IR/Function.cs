@@ -31,8 +31,8 @@ public class Function
 
     public void Emit(StringBuilder sb)
     {
-        sb.Append($"define {type.ReturnType.ToIr()} @{name} ({string.Join(", ", type.Parameters.Select(x => x.ToIr()))}) {{\n");
+        sb.AppendLine($"define {type.ReturnType.ToIr()} @{name} ({string.Join(", ", type.Parameters.Select(x => x.ToIr()))}) {{");
         blocks.ForEach(x => x.Emit(sb));
-        sb.Append('}');
+        sb.AppendLine("}");
     }
 }

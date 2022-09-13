@@ -92,4 +92,9 @@ public class IrBuilder
     {
         return block.NamedValue(name);
     }
+
+    public Call Call(string functionName, IEnumerable<Argument> arguments, string? name = null)
+    {
+        return block.AddInstruction(new Call(block, functionName, arguments, name));
+    }
 }

@@ -35,10 +35,13 @@ public static class Program
             return;
         }
 
-        //new GraphGenerator().Generate(ast, "ara.dot");
+        new GraphGenerator().Generate(ast, "ara.dot");
 
         var outFile = Path.ChangeExtension(args[0], ".ll");
         var ir = CodeGenerator.Generate(ast);
         File.WriteAllText(outFile, ir);
+        
+        // llc -filetype=obj -opaque-pointers adder.ll -o adder.o
+        // clang adder.o -o adder
     }
 }
