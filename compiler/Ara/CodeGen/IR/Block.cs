@@ -33,7 +33,7 @@ public class Block
             if (v.Name == name)
                 return v;
         }
-
+        
         throw new Exception($"Named value {name} not found");
     }
 }

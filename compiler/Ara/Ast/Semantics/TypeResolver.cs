@@ -13,57 +13,30 @@ public class TypeResolver : Visitor
     {
         switch (node)
         {
-            case Integer i:
-                ResolveInt(i);
+            case Constant c:
+                ResolveConstant(c);
                 break;
-            
-            case Float f:
-                ResolveFloat(f);
-                break;
-            
-            case String_ s:
-                ResolveString(s);
-                break;
-            
-            case Bool b:
-                ResolveBool(b);
-                break;
-            
-            case BinaryExpression b:
-                ResolveBinaryExpression(b);
-                break;
-
-            case UnaryExpression u:
-                ResolveUnaryExpression(u);
-                break;
-            
             case VariableReference v:
                 ResolveVariableReference(v);
                 break;
-            
-            case FunctionCallExpression:
-                throw new NotImplementedException();
+            case BinaryExpression b:
+                ResolveBinaryExpression(b);
+                break;
+            case CallExpression c:
+                ResolveCallExpression(c);
+                break;
+            case UnaryExpression u:
+                ResolveUnaryExpression(u);
+                break;
+            case VariableDeclarationStatement d:
+                ResolveVariableDeclarationStatement(d);
+                break;
         }
     }
 
-    static void ResolveBool(Expression e)
+    static void ResolveConstant(Constant c)
     {
-        e.InferredType = new InferredType("bool");
-    }
-    
-    static void ResolveFloat(Expression e)
-    {
-        e.InferredType = new InferredType("float");
-    }
-    
-    static void ResolveInt(Expression e)
-    {
-        e.InferredType = new InferredType("int");
-    }
-
-    static void ResolveString(Expression e)
-    {
-        e.InferredType = new InferredType("string");
+        c.InferredType = new InferredType(c.Type.Value);
     }
 
     static void ResolveBinaryExpression(BinaryExpression b)
@@ -74,12 +47,12 @@ public class TypeResolver : Visitor
         if (!b.Left.InferredType.Equals(b.Right.InferredType))
             throw new BinaryExpressionTypeException(b);
 
-        b.InferredType = b switch
+        if (b.Op is BinaryOperator.Equality or BinaryOperator.Inequality)
         {
-            LogicalComparisonExpression => new InferredType("bool"),
-            ArithmeticExpression        => b.Left.InferredType,
-            _ => throw new NotImplementedException()
-        };
+            b.InferredType = new InferredType("bool");
+        }
+        
+        b.InferredType = b.Left.InferredType;
     }
 
     static void ResolveUnaryExpression(UnaryExpression u)
@@ -87,36 +60,28 @@ public class TypeResolver : Visitor
         u.InferredType = u.Right.InferredType;
     }
 
-    static void ResolveVariableReference(VariableReference v)
+    static void ResolveVariableReference(VariableReference e)
     {
-        var blk = v.NearestAncestor<Block>();
+        var type = e.ResolveVariableReference(e.Name.Value);
 
-        while (true)
-        {
-            if (blk is null)
-                break;
+        if (type is null)
+            throw new Exception($"Unable to find declaration of `{e.Name.Value}`.");
 
-            var decl = blk.Statements.SingleOrDefault(s => s is VariableDeclarationStatement d && d.Name.Value == v.Name.Value);
+        e.InferredType = new InferredType(type);
+    }
 
-            if (decl is VariableDeclarationStatement d)
-            {
-                v.InferredType = new InferredType(d.Type.Value);
-                return;
-            }
+    static void ResolveCallExpression(CallExpression e)
+    {
+        var func = e.NearestAncestor<SourceFile>()!.Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name.Value == e.Name.Value);
 
-            blk = blk.NearestAncestor<Block>();
-        }
+        if (func is not FunctionDefinition functionDefinition)
+            throw new Exception($"Unable to find definition for function {e.Name.Value}");
 
-        var func = v.NearestAncestor<FunctionDefinition>();
+        e.InferredType = new InferredType(functionDefinition.ReturnType.Value);
+    }
 
-        var param = func.Parameters.FirstOrDefault(p => p.Name.Value == v.Name.Value);
-
-        if (param is not null)
-        {
-            v.InferredType = new InferredType(param.Type.Value);
-            return;
-        }
-
-        throw new Exception($"Unable to find declaration of `{v.Name.Value}`.");
+    static void ResolveVariableDeclarationStatement(VariableDeclarationStatement d)
+    {
+        d.InferredType = d.Expression.InferredType;
     }
 }

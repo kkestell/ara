@@ -6,6 +6,7 @@ using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
+using Argument = Ara.CodeGen.IR.Argument;
 
 namespace Ara.CodeGen;
 
@@ -26,8 +27,8 @@ public static class CodeGenerator
             var function = module.AppendFunction(
                 funcDef.Name.Value,
                 new FunctionType(
-                    MakeType(funcDef.ReturnType),
-                    funcDef.Parameters.Select(x => new IR.Parameter(x.Name.Value, MakeType(x.Type)))));
+                    MakeType(funcDef.ReturnType.Value),
+                    funcDef.Parameters.Select(x => new IR.Parameter(x.Name.Value, MakeType(x.Type.Value)))));
 
             var block = function.AppendBasicBlock();
             var builder = new IrBuilder(block);
@@ -44,7 +45,7 @@ public static class CodeGenerator
                     }
                     case VariableDeclarationStatement variableDeclarationStatement:
                     {
-                        var ptr = builder.Alloca(MakeType(variableDeclarationStatement.Type));
+                        var ptr = builder.Alloca(MakeType(variableDeclarationStatement.InferredType.Value));
                         var value = EmitExpression(builder, variableDeclarationStatement.Expression);
                         builder.Store(value, ptr);
                         builder.Load(ptr, variableDeclarationStatement.Name.Value);
@@ -57,9 +58,9 @@ public static class CodeGenerator
         return module.Emit();
     }
     
-    static IrType MakeType(Type_ type)
+    static IrType MakeType(string type)
     {
-        return type.Value switch
+        return type switch
         {
             "void"  => new VoidType(),
             "int"   => new IntegerType(32),
@@ -80,15 +81,15 @@ public static class CodeGenerator
 
         if (left.Type.GetType() == typeof(IntegerType))
         {
-            return expression switch
+            return expression.Op switch
             {
-                AdditionExpression       => builder.Add(left, right),
-                SubtractionExpression    => builder.Sub(left, right),
-                MultiplicationExpression => builder.Mul(left, right),
-                DivisionExpression       => builder.SDiv(left, right),
+                BinaryOperator.Add        => builder.Add(left, right),
+                BinaryOperator.Subtract   => builder.Sub(left, right),
+                BinaryOperator.Multiply   => builder.Mul(left, right),
+                BinaryOperator.Divide     => builder.SDiv(left, right),
 
-                EqualityExpression       => builder.Icmp(IcmpCondition.Equal, left, right),
-                InequalityExpression     => builder.Icmp(IcmpCondition.NotEqual, left, right),
+                BinaryOperator.Equality   => builder.Icmp(IcmpCondition.Equal, left, right),
+                BinaryOperator.Inequality => builder.Icmp(IcmpCondition.NotEqual, left, right),
                 
                 _ => throw new NotImplementedException()
             };
@@ -96,16 +97,15 @@ public static class CodeGenerator
         
         if (left.Type.GetType() == typeof(FloatType))
         {
-            return expression switch
+            return expression.Op switch
             {
-                AdditionExpression       => builder.FAdd(left, right),
-                SubtractionExpression    => builder.FSub(left, right),
-                MultiplicationExpression => builder.FMul(left, right),
-                DivisionExpression       => builder.FDiv(left, right),
-                
-                EqualityExpression       => builder.Fcmp(FcmpCondition.OrderedAndEqual, left, right),
-                InequalityExpression     => builder.Fcmp(FcmpCondition.OrderedAndNotEqual, left, right),
+                BinaryOperator.Add        => builder.FAdd(left, right),
+                BinaryOperator.Subtract   => builder.FSub(left, right),
+                BinaryOperator.Multiply   => builder.FMul(left, right),
+                BinaryOperator.Divide     => builder.FDiv(left, right),
 
+                BinaryOperator.Equality   => builder.Fcmp(FcmpCondition.OrderedAndEqual, left, right),
+                BinaryOperator.Inequality => builder.Fcmp(FcmpCondition.OrderedAndNotEqual, left, right),
                 _ => throw new NotImplementedException()
             };   
         }
@@ -117,15 +117,30 @@ public static class CodeGenerator
     {
         return builder.NamedValue(reference.Name.Value);
     }
+
+    static Value EmitFunctionCallExpression(IrBuilder builder, CallExpression call)
+    {
+        return builder.Call(call.Name.Value, call.Arguments.Select(a => new Argument(new IntegerType(32), EmitExpression(builder, a.Expression))).ToList());
+    }
     
     static Value EmitExpression(IrBuilder builder, Expression expression)
     {
+        if (expression is Constant c)
+        {
+            return c.Type.Value switch
+            {
+                "int"   => new IntegerValue(int.Parse(c.Value)),
+                "float" => new FloatValue(float.Parse(c.Value)),
+                
+                _ => throw new NotImplementedException()
+            };
+        }
+        
         return expression switch
         {
-            Integer           i => new IntegerValue(int.Parse(i.Value)),
-            Float             f => new FloatValue(float.Parse(f.Value)),
-            BinaryExpression  e => EmitBinaryExpression(builder, e),
-            VariableReference r => EmitVariableReference(builder, r),
+            BinaryExpression       e => EmitBinaryExpression(builder, e),
+            VariableReference      r => EmitVariableReference(builder, r),
+            CallExpression f => EmitFunctionCallExpression(builder, f),
             _ => throw new NotImplementedException()
         };
     }

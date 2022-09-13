@@ -21,4 +21,4 @@ public class InferredType
     {
         return Value.GetHashCode();
     }
-};
+}

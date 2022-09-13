@@ -26,7 +26,7 @@ module.exports = grammar({
       field('name', $.identifier),
       field('parameters', $.parameter_list),
       '->',
-      field('type', $.type),
+      field('type', $.identifier),
       field('block', $.block)
     ),
 
@@ -39,13 +39,13 @@ module.exports = grammar({
     parameter: $ => seq(
       $.identifier,
       ':',
-      $.type
+      $.identifier
     ),
 
     field_definition: $ => seq(
       $.identifier,
       ':',
-      $.type
+      $.identifier
     ),
 
     record_definition: $ => seq(
@@ -60,17 +60,8 @@ module.exports = grammar({
       repeat1($.field_definition)
     ),
 
-    type: $ => choice(
-      'void',
-      'bool',
-      'int',
-      'float',
-      'string',
-      $.identifier
-    ),
-
     list_type: $ => seq(
-      $.type
+      $.identifier
     ),
 
     block: $ => seq(
@@ -96,8 +87,6 @@ module.exports = grammar({
     variable_declaration_statement: $ => seq(
       'var',
       $.identifier,
-      ':',
-      $.type,
       '=',
       $._expression
     ),
