@@ -10,5 +10,5 @@ store i32 %"4", ptr %"0"
 %"7" = fadd float 0x40091EB860000000, 0x400DAE1480000000
 store float %"7", ptr %"6"
 %"y" = load float, ptr %"6"
-ret i32 0
+ret i32 %"x"
 }

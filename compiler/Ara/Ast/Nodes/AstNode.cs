@@ -16,7 +16,7 @@ public abstract class AstNode
 
     public T? NearestAncestor<T>() where T : AstNode
     {
-        var n = this;
+        var n = _Parent;
 
         while (true)
         {
