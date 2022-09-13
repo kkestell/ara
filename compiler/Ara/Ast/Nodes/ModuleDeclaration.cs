@@ -3,4 +3,12 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes;
 
-public record ModuleDeclaration(Node Node, Identifier Name) : AstNode(Node);
+public class ModuleDeclaration : AstNode
+{
+    public ModuleDeclaration(Node node, Identifier name) : base(node)
+    {
+        Name = name;
+    }
+    
+    public Identifier Name { get; }
+}

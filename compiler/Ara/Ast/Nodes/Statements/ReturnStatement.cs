@@ -3,4 +3,12 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes.Statements;
 
-public record ReturnStatement(Node Node, Expression Expression) : Statement(Node);
+public class ReturnStatement : Statement
+{
+    public ReturnStatement(Node node, Expression expression) : base(node)
+    {
+        Expression = expression;
+    }
+    
+    public Expression Expression { get; }
+}

@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using Ara.Ast;
-using Ara.Ast.Nodes;
+﻿using Ara.Ast;
+using Ara.Ast.Errors;
+using Ara.Ast.Semantics;
 using Ara.CodeGen;
 using Ara.Parsing;
 
@@ -8,38 +8,37 @@ namespace Ara;
 
 public static class Program
 {
-    public static void Main()
+    public static void Main(string[] args)
     {
+        if (args.Length < 1)
+        {
+            Console.WriteLine("Usage: ara file");
+            return;
+        }
+        
         using var parser = new Parser();
 
-        using var tree = parser.Parse(@"
-            module main
-
-            fn foo() -> int {
-              var x: int = 0
-              var y: float = 1.1 + 2.2 - 3.3 * 4.4 / 5.5
-              return 1 + 2 - 3 * 4 / 5
-            }
-        ");
+        using var tree = parser.Parse(File.ReadAllText(args[0]));
 
         //Console.WriteLine(tree.Root.Sexp());
-
-        var sw1 = new Stopwatch();
-        sw1.Start();
-
+        
         var ast = AstTransformer.Transform(tree);
-
-        Console.WriteLine($"AST {sw1.Elapsed.TotalMilliseconds}ms");
         
-        var sw2 = new Stopwatch();
-        sw2.Start();
+        try
+        {
+            new TypeResolver().Visit(ast);
+            new TypeChecker().Visit(ast);
+        }
+        catch (CompilerException ex)
+        {
+            Console.WriteLine(ex.ToString());
+            return;
+        }
+        
+        //new GraphGenerator().Generate(ast, "ara.dot");
 
+        var outFile = Path.ChangeExtension(args[0], ".ll");
         var ir = CodeGenerator.Generate(ast);
-        
-        Console.WriteLine($"IR  {sw2.Elapsed.TotalMilliseconds}ms\n");
-
-        Console.WriteLine(ir);
-
-        new GraphGenerator().Generate(ast, "ara.dot");
+        File.WriteAllText(outFile, ir);
     }
 }

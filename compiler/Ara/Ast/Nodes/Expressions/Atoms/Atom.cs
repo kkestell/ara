@@ -2,4 +2,9 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes.Expressions.Atoms;
 
-public abstract record Atom(Node Node) : Expression(Node);
+public abstract class Atom : Expression
+{
+    protected Atom(Node node) : base(node)
+    {
+    }
+}

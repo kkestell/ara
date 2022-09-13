@@ -2,4 +2,12 @@
 
 namespace Ara.Ast.Nodes.Expressions.Atoms;
 
-public record VariableReference(Node Node, Identifier Name) : Atom(Node);
+public class VariableReference : Atom
+{
+    public VariableReference(Node node, Identifier name) : base(node)
+    {
+        Name = name;
+    }
+    
+    public Identifier Name { get; }
+}

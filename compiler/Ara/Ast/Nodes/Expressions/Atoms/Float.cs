@@ -2,4 +2,12 @@
 
 namespace Ara.Ast.Nodes.Expressions.Atoms;
 
-public record Float(Node Node, string Value) : Atom(Node);
+public class Float : Atom
+{
+    public Float(Node node, string value) : base(node)
+    {
+        Value = value;
+    }
+    
+    public string Value { get; }
+}

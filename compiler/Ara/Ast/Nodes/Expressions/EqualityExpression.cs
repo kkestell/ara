@@ -2,4 +2,9 @@
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record EqualityExpression(Node Node, Expression Left, Expression Right) : BinaryExpression(Node, Left, Right);
+public class EqualityExpression : LogicalComparisonExpression
+{
+    public EqualityExpression(Node node, Expression left, Expression right) : base(node, left, right)
+    {
+    }
+}

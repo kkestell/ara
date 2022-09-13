@@ -67,6 +67,11 @@ public class IrBuilder
     {
         return block.AddInstruction(new Icmp(block, condition, left, right, name));
     }
+    
+    public Fcmp Fcmp(FcmpCondition condition, Value left, Value right, string? name = null)
+    {
+        return block.AddInstruction(new Fcmp(block, condition, left, right, name));
+    }
 
     public Alloca Alloca(IrType type, int size = 1, string? name = null)
     {

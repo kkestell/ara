@@ -3,4 +3,12 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes;
 
-public record StatementList(Node Node, IEnumerable<Statement> Values) : AstNode(Node);
+public class StatementList : AstNode
+{
+    public StatementList(Node node, IEnumerable<Statement> statements) : base(node)
+    {
+        Statements = statements;
+    }
+    
+    public IEnumerable<Statement> Statements { get; }
+}

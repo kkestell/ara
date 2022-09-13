@@ -2,4 +2,12 @@
 
 namespace Ara.Ast.Nodes;
 
-public record ArgumentList(Node Node, IEnumerable<Argument> Values) : AstNode(Node);
+public class ArgumentList : AstNode
+{
+    public ArgumentList(Node node, IEnumerable<Argument> arguments) : base(node)
+    {
+        Arguments = arguments;
+    }
+
+    public IEnumerable<Argument> Arguments { get; }
+}
