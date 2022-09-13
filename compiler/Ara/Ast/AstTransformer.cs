@@ -17,7 +17,7 @@ public static class AstTransformer
     {
         var children = node.NamedChildren.Select(Visit).ToList();
 
-        return node.Type switch
+        AstNode astNode = node.Type switch
         {
             "argument"                       => Argument(node, children),
             "argument_list"                  => ArgumentList(node, children),
@@ -45,6 +45,13 @@ public static class AstTransformer
             
             _ => throw new NotImplementedException($"Unsupported parse tree node: {node.Type}")
         };
+
+        foreach (var child in children)
+        {
+            child._Parent = astNode;
+        }
+
+        return astNode;
     }
 
     static Argument Argument(Node n, IReadOnlyList<AstNode> c) =>
@@ -71,7 +78,7 @@ public static class AstTransformer
     }
 
     static Block Block(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, ((StatementList)c[0]).Values);
+        new (n, ((StatementList)c[0]).Statements);
 
     static Bool Bool(Node n) =>
         new (n, n.Span.ToString());
@@ -83,10 +90,10 @@ public static class AstTransformer
         new (n, n.Span.ToString());
 
     static FunctionCallExpression FunctionCallExpression(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], ((ArgumentList)c[1]).Values.ToList());
+        new (n, (Identifier)c[0], ((ArgumentList)c[1]).Arguments.ToList());
 
     static FunctionDefinition FunctionDefinition(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], ((ParameterList)c[1]).Values.ToList(), (Type_)c[2], (Block)c[3]);
+        new (n, (Identifier)c[0], ((ParameterList)c[1]).Parameters.ToList(), (Type_)c[2], (Block)c[3]);
 
     static Identifier Identifier(Node n) =>
         new (n, n.Span.ToString());
@@ -110,7 +117,7 @@ public static class AstTransformer
         new (n, (Expression)c[0]);
 
     static SourceFile SourceFile(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (ModuleDeclaration)c[0], ((DefinitionList)c[1]).Values);
+        new (n, (ModuleDeclaration)c[0], ((DefinitionList)c[1]).Definitions);
 
     static StatementList StatementList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Statement)x).ToList());

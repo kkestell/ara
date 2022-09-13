@@ -1,3 +1,4 @@
+using System.Text;
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Expressions;
 using Ara.Ast.Nodes.Expressions.Atoms;
@@ -5,6 +6,7 @@ using Ara.Ast.Nodes.Statements;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
+using Ara.CodeGen.IR.Values.Instructions;
 
 namespace Ara.CodeGen;
 
@@ -86,6 +88,10 @@ public static class CodeGenerator
                 SubtractionExpression    => builder.Sub(left, right),
                 MultiplicationExpression => builder.Mul(left, right),
                 DivisionExpression       => builder.SDiv(left, right),
+
+                EqualityExpression       => builder.Icmp(IcmpCondition.Equal, left, right),
+                InequalityExpression     => builder.Icmp(IcmpCondition.NotEqual, left, right),
+                
                 _ => throw new NotImplementedException()
             };
         }
@@ -98,6 +104,10 @@ public static class CodeGenerator
                 SubtractionExpression    => builder.FSub(left, right),
                 MultiplicationExpression => builder.FMul(left, right),
                 DivisionExpression       => builder.FDiv(left, right),
+                
+                EqualityExpression       => builder.Fcmp(FcmpCondition.OrderedAndEqual, left, right),
+                InequalityExpression     => builder.Fcmp(FcmpCondition.OrderedAndNotEqual, left, right),
+
                 _ => throw new NotImplementedException()
             };   
         }

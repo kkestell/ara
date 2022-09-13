@@ -2,4 +2,9 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes.Statements;
 
-public abstract record Statement(Node Node) : AstNode(Node);
+public abstract class Statement : AstNode
+{
+    public Statement(Node node) : base(node)
+    {
+    }
+}

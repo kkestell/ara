@@ -2,4 +2,9 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record LogicalNegationExpression(Node Node, Expression Right) : UnaryExpression(Node, Right);
+public class LogicalNegationExpression : UnaryExpression
+{
+    public LogicalNegationExpression(Node node, Expression right) : base(node, right)
+    {
+    }
+}

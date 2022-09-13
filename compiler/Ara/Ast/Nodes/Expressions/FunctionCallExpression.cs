@@ -3,4 +3,15 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record FunctionCallExpression(Node Node, Identifier Name, List<Argument> Arguments) : Expression(Node);
+public class FunctionCallExpression : Expression
+{
+    public FunctionCallExpression(Node node, Identifier name, List<Argument> arguments) : base(node)
+    {
+        Name = name;
+        Arguments = arguments;
+    }
+    
+    public Identifier Name { get; }
+    
+    public List<Argument> Arguments { get; }
+}

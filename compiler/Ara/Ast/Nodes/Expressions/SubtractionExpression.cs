@@ -2,9 +2,9 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record SubtractionExpression : BinaryExpression
+public class SubtractionExpression : ArithmeticExpression
 {
-    public SubtractionExpression(Node Node, Expression Left, Expression Right) : base(Node, Left, Right)
+    public SubtractionExpression(Node node, Expression left, Expression right) : base(node, left, right)
     {
     }
 }

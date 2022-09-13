@@ -2,4 +2,9 @@
 
 namespace Ara.Ast.Nodes;
 
-public abstract record Definition(Node Node) : AstNode(Node);
+public abstract class Definition : AstNode
+{
+    protected Definition(Node node) : base(node)
+    {
+    }
+}

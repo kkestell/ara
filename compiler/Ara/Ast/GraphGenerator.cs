@@ -1,4 +1,5 @@
 using Ara.Ast.Nodes;
+using Ara.Ast.Nodes.Expressions;
 using DotNetGraph;
 using DotNetGraph.Edge;
 using DotNetGraph.Extensions;
@@ -21,10 +22,13 @@ public class GraphGenerator
     void Visit(AstNode node, DotNode? parent = null)
     {
         var properties = node.GetType().GetProperties();
-        var dotNode = AddNode(node.GetType().ToString().Split('.').Last(), parent);
+        var dotNode = AddNode(node, parent);
 
         foreach (var p in properties)
         {
+            if (p.Name.StartsWith('_'))
+                continue;
+            
             if (typeof(AstNode).IsAssignableFrom(p.PropertyType))
             {
                 Visit((AstNode)p.GetValue(node)!, dotNode);
@@ -37,26 +41,33 @@ public class GraphGenerator
         }
     }
 
-    DotNode AddNode(string name, DotNode? parent = null)
+    DotNode AddNode(AstNode node, DotNode? parent = null)
     {
-        var node = new DotNode(Guid.NewGuid().ToString())
+        var name = node.GetType().ToString().Split('.').Last();
+        
+        var graphNode = new DotNode(Guid.NewGuid().ToString())
         {
             Shape = DotNodeShape.Rectangle,
             Label = name
         };
 
-        graph.Elements.Add(node);
+        if (node is Expression en)
+        {
+            graphNode.Label.Text = $"{graphNode.Label.Text} ({en.InferredType?.Value})";
+        }
+        
+        graph.Elements.Add(graphNode);
 
         if (parent is null) 
-            return node;
+            return graphNode;
         
-        var myEdge = new DotEdge(parent, node)
+        var myEdge = new DotEdge(parent, graphNode)
         {
             ArrowHead = DotEdgeArrowType.Normal
         };
 
         graph.Elements.Add(myEdge);
 
-        return node;
+        return graphNode;
     }
 }

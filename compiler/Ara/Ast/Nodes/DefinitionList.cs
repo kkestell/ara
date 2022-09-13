@@ -2,4 +2,12 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes;
 
-public record DefinitionList(Node Node, IEnumerable<Definition> Values) : AstNode(Node);
+public class DefinitionList : AstNode
+{
+    public DefinitionList(Node node, IEnumerable<Definition> definitions) : base(node)
+    {
+        Definitions = definitions;
+    }
+    
+    public IEnumerable<Definition> Definitions { get; }
+}
