@@ -22,7 +22,7 @@ public class Fcmp : Instruction
         this.right = right;
     }
 
-    public override IrType Type => new IntegerType(1);
+    public override IrType Type => new IntType(1);
 
     public override void Emit(StringBuilder sb)
     {

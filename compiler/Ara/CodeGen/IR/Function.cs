@@ -7,25 +7,31 @@ namespace Ara.CodeGen.IR;
 public class Function
 {
     readonly string name;
-    readonly Module module;
     readonly FunctionType type;
     readonly List<Block> blocks = new();
     
-    public Function(Module module, string name, FunctionType type)
+    public Function(string name, FunctionType type)
     {
-        this.module = module;
         this.name = name;
         this.type = type;
     }
 
-    public Block AppendBasicBlock()
+    public int NumBlocks => blocks.Count;
+
+    public Block AddBlock(string blockName, Block? parent = null)
     {
-        var block = new Block();
-        foreach (var p in type.Parameters)
+        var block = new Block(blockName, this, parent);
+        
+        if (parent is null)
         {
-            block.AddInstruction(new FunctionArgumentValue(block, new IntegerType(32), p.Name));
+            foreach (var p in type.Parameters)
+            {
+                block.AddInstruction(new ArgumentValue(block, new IntType(32), p.Name));
+            }
         }
+
         blocks.Add(block);
+        
         return block;
     }
 

@@ -3,9 +3,9 @@ namespace Ara.CodeGen.IR.Types;
 /// <summary>
 /// https://llvm.org/docs/LangRef.html#integer-type
 /// </summary>
-public class IntegerType : IrType
+public class IntType : IrType
 {
-    public IntegerType(int bits)
+    public IntType(int bits)
     {
         Bits = bits;
     }
@@ -16,7 +16,7 @@ public class IntegerType : IrType
 
     public override bool Equals(object? obj)
     {
-        if (obj is not IntegerType other)
+        if (obj is not IntType other)
             return false;
 
         return other.Bits == Bits;

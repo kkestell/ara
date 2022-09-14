@@ -5,8 +5,8 @@ public class StoreTests : TestBase
     [Test]
     public void StoreAnInteger()
     {
-        var ptr = builder.Alloca(new IntegerType(32));
-        builder.Store(new IntegerValue(1), ptr);
+        var ptr = builder.Alloca(new IntType(32));
+        builder.Store(new IntValue(1), ptr);
 
         var ir = module.Emit();
 

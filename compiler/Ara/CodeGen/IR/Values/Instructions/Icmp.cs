@@ -14,7 +14,7 @@ public class Icmp : Instruction
         if (!left.Type.Equals(right.Type))
             throw new ArgumentException();
 
-        if (left.Type.GetType() != typeof(IntegerType) && left.Type.GetType() != typeof(PointerType))
+        if (left.Type.GetType() != typeof(IntType) && left.Type.GetType() != typeof(PointerType))
             throw new ArgumentException();
 
         this.condition = condition;
@@ -22,7 +22,7 @@ public class Icmp : Instruction
         this.right = right;
     }
 
-    public override IrType Type => new IntegerType(1);
+    public override IrType Type => new IntType(1);
 
     public override void Emit(StringBuilder sb)
     {

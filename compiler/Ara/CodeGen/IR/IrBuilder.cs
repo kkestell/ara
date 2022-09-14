@@ -6,11 +6,27 @@ namespace Ara.CodeGen.IR;
 
 public class IrBuilder
 {
-    readonly Block block;
+    Block block;
     
     public IrBuilder(Block block)
     {
         this.block = block;
+    }
+
+    public void IfThen(Value predicate, Action<Block> then)
+    {
+        var l1 = $"if.{block.Function.NumBlocks}";
+        var l2 = $"if.{block.Function.NumBlocks + 1}";
+        
+        Br(predicate, l1, l2);
+        var thenBlock = block.Function.AddBlock(l1, block);
+        then.Invoke(thenBlock);
+        block = block.Function.AddBlock(l2, block);
+    }
+
+    public void Br(Value predicate, string l1, string l2)
+    {
+        block.AddInstruction(new Br(block, predicate, l1, l2));
     }
     
     public void Return(Value value)

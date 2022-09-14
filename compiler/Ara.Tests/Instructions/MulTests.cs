@@ -5,7 +5,7 @@ public class MulTests : TestBase
     [Test]
     public void MultiplyTwoIntegers()
     {
-        builder.Mul(new IntegerValue(1), new IntegerValue(1));
+        builder.Mul(new IntValue(1), new IntValue(1));
 
         var ir = module.Emit();
         Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = mul i32 1, 1\n}"));
@@ -16,7 +16,7 @@ public class MulTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Mul(new IntegerValue(1), new FloatValue(3.14f));
+            builder.Mul(new IntValue(1), new FloatValue(3.14f));
         });
     }
 

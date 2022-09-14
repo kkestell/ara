@@ -8,12 +8,12 @@ namespace Ara;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static int Main(string[] args)
     {
         if (args.Length < 1)
         {
             Console.WriteLine("Usage: ara file");
-            return;
+            return 1;
         }
         
         using var parser = new Parser();
@@ -32,7 +32,7 @@ public static class Program
         catch (CompilerException ex)
         {
             Console.WriteLine(ex.ToString());
-            return;
+            return 1;
         }
 
         new GraphGenerator().Generate(ast, "ara.dot");
@@ -43,5 +43,7 @@ public static class Program
         
         // llc -filetype=obj -opaque-pointers adder.ll -o adder.o
         // clang adder.o -o adder
+
+        return 0;
     }
 }

@@ -5,7 +5,7 @@ public class SubTests : TestBase
     [Test]
     public void SubtractTwoIntegers()
     {
-        builder.Sub(new IntegerValue(1), new IntegerValue(1));
+        builder.Sub(new IntValue(1), new IntValue(1));
 
         var ir = module.Emit();
         Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = sub i32 1, 1\n}"));
@@ -16,7 +16,7 @@ public class SubTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Sub(new IntegerValue(1), new FloatValue(3.14f));
+            builder.Sub(new IntValue(1), new FloatValue(3.14f));
         });
     }
 

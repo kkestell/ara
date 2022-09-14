@@ -5,7 +5,7 @@ public class NamedValueTests : TestBase
     [Test]
     public void UseTheProvidedValue()
     {
-        var value = builder.Add(new IntegerValue(1), new IntegerValue(1), "foo");
+        var value = builder.Add(new IntValue(1), new IntValue(1), "foo");
         builder.Return(value);
 
         var ir = module.Emit();

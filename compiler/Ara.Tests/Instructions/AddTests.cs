@@ -5,10 +5,10 @@ public class AddTests : TestBase
     [Test]
     public void AddTwoIntegers()
     {
-        builder.Add(new IntegerValue(1), new IntegerValue(1));
+        builder.Add(new IntValue(1), new IntValue(1));
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = add i32 1, 1\n}"));
+        Assert.That(ir, Is.EqualTo("define void @test () {\nentry:\n%\"0\" = add i32 1, 1\n}"));
     }
 
     [Test]
@@ -16,7 +16,7 @@ public class AddTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Add(new IntegerValue(1), new FloatValue(3.14f));
+            builder.Add(new IntValue(1), new FloatValue(3.14f));
         });
     }
 
