@@ -1,6 +1,5 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
-using Ara.Ast.Nodes.Statements;
 using Ara.Ast.Types;
 
 namespace Ara.Ast.Semantics;

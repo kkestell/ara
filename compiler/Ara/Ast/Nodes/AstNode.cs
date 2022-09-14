@@ -1,4 +1,3 @@
-using Ara.Ast.Nodes.Statements;
 using Ara.Parsing;
 
 namespace Ara.Ast.Nodes;
@@ -32,8 +31,8 @@ public abstract record AstNode(Node Node)
         {
             if (blk is null)
                 break;
-            var decl = blk.Statements.SingleOrDefault(s => s is VariableDeclarationStatement d && d.Name.Value == name);
-            if (decl is VariableDeclarationStatement v)
+            var decl = blk.Statements.SingleOrDefault(s => s is VariableDeclaration d && d.Name.Value == name);
+            if (decl is VariableDeclaration v)
                 return v.InferredType.Value;
             blk = blk.NearestAncestor<Block>();
         }

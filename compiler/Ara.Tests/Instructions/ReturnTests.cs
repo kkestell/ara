@@ -8,6 +8,9 @@ public class ReturnTests : TestBase
         builder.Return(new IntValue(1));
         
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\nret i32 1\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+ret i32 1
+}"));
     }
 }

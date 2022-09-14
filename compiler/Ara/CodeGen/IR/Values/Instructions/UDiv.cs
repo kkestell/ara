@@ -3,9 +3,6 @@ using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
-/// <summary>
-/// https://llvm.org/docs/LangRef.html#binary-operations
-/// </summary>
 public class UDiv : Instruction
 {
     readonly Value left;

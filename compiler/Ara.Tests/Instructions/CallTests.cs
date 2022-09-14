@@ -5,7 +5,7 @@ public class CallTests : TestBase
     [Test]
     public void Call()
     {
-        builder.Call("test", new List<Argument> { new (new IntType(32), new IntValue(1))});
+        builder.Call("test", new List<Argument> { new (IrType.Int, new IntValue(1))});
 
         var ir = module.Emit();
         Assert.That(ir, Is.EqualTo(@"define void @test () {

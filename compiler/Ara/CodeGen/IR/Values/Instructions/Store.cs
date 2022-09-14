@@ -3,15 +3,12 @@ using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
-/// <summary>
-/// https://llvm.org/docs/LangRef.html#store-instruction
-/// </summary>
 public class Store : Instruction
 {
     readonly Value value;
     readonly Value pointer;
 
-    public override IrType Type => new VoidType();
+    public override IrType Type => IrType.Void;
 
     public Store(Block block, Value value, Value pointer, string? name = null) : base(block, name)
     {

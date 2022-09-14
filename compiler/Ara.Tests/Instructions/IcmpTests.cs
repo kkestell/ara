@@ -9,18 +9,26 @@ public class IcmpTests : TestBase
         builder.Icmp(IcmpCondition.Equal, new IntValue(1), new IntValue(1));
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = icmp eq i32 1, 1\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+%""0"" = icmp eq i32 1, 1
+}"));
     }
 
     [Test]
     public void CompareTwoPointersForEquality()
     {
-        var ptr1 = builder.Alloca(new IntType(32));
-        var ptr2 = builder.Alloca(new IntType(32));
+        var ptr1 = builder.Alloca(IrType.Int);
+        var ptr2 = builder.Alloca(IrType.Int);
         builder.Icmp(IcmpCondition.Equal, ptr1, ptr2);
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = alloca i32, align 4\n%\"1\" = alloca i32, align 4\n%\"2\" = icmp eq ptr %\"0\", %\"1\"\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+%""0"" = alloca i32, align 4
+%""1"" = alloca i32, align 4
+%""2"" = icmp eq ptr %""0"", %""1""
+}"));
     }
 
     [Test]
@@ -29,17 +37,25 @@ public class IcmpTests : TestBase
         builder.Icmp(IcmpCondition.NotEqual, new IntValue(1), new IntValue(1));
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = icmp ne i32 1, 1\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+%""0"" = icmp ne i32 1, 1
+}"));
     }
     
     [Test]
     public void CompareTwoPointersForInequality()
     {
-        var ptr1 = builder.Alloca(new IntType(32));
-        var ptr2 = builder.Alloca(new IntType(32));
+        var ptr1 = builder.Alloca(IrType.Int);
+        var ptr2 = builder.Alloca(IrType.Int);
         builder.Icmp(IcmpCondition.NotEqual, ptr1, ptr2);
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = alloca i32, align 4\n%\"1\" = alloca i32, align 4\n%\"2\" = icmp ne ptr %\"0\", %\"1\"\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+%""0"" = alloca i32, align 4
+%""1"" = alloca i32, align 4
+%""2"" = icmp ne ptr %""0"", %""1""
+}"));
     }
 }

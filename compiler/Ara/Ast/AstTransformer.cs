@@ -1,7 +1,4 @@
 using Ara.Ast.Nodes;
-using Ara.Ast.Nodes.Expressions;
-using Ara.Ast.Nodes.Expressions.Atoms;
-using Ara.Ast.Nodes.Statements;
 using Ara.Ast.Types;
 using Ara.Parsing;
 
@@ -141,6 +138,6 @@ public static class AstTransformer
         return new UnaryExpression(n, (Expression)c[0], op);
     }
 
-    static VariableDeclarationStatement VariableDeclarationStatement(Node n, IReadOnlyList<AstNode> c) =>
+    static VariableDeclaration VariableDeclarationStatement(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Identifier)c[0], (Expression)c[1]);
 }

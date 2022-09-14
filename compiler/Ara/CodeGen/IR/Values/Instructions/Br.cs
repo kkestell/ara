@@ -16,7 +16,7 @@ public class Br : Instruction
         this.l2 = l2;
     }
 
-    public override IrType Type => new VoidType();
+    public override IrType Type => IrType.Void;
     
     public override void Emit(StringBuilder sb)
     {

@@ -5,11 +5,15 @@ public class StoreTests : TestBase
     [Test]
     public void StoreAnInteger()
     {
-        var ptr = builder.Alloca(new IntType(32));
+        var ptr = builder.Alloca(IrType.Int);
         builder.Store(new IntValue(1), ptr);
 
         var ir = module.Emit();
 
-        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = alloca i32, align 4\nstore i32 1, ptr %\"0\"\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+%""0"" = alloca i32, align 4
+store i32 1, ptr %""0""
+}"));
     }
 }

@@ -18,6 +18,12 @@ public class Function
 
     public int NumBlocks => blocks.Count;
 
+    public Block AddBlock(Block block)
+    {
+        blocks.Add(block);
+        return block;
+    }
+    
     public Block AddBlock(string blockName, Block? parent = null)
     {
         var block = new Block(blockName, this, parent);
@@ -26,7 +32,7 @@ public class Function
         {
             foreach (var p in type.Parameters)
             {
-                block.AddInstruction(new ArgumentValue(block, new IntType(32), p.Name));
+                block.AddInstruction(new ArgumentValue(block, IrType.Int, p.Name));
             }
         }
 
@@ -37,7 +43,8 @@ public class Function
 
     public void Emit(StringBuilder sb)
     {
-        sb.AppendLine($"define {type.ReturnType.ToIr()} @{name} ({string.Join(", ", type.Parameters.Select(x => x.ToIr()))}) {{");
+        var p = string.Join(", ", type.Parameters.Select(x => x.ToIr()));
+        sb.AppendLine($"define {type.ReturnType.ToIr()} @{name} ({p}) {{");
         blocks.ForEach(x => x.Emit(sb));
         sb.AppendLine("}");
     }

@@ -1,8 +1,5 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
-using Ara.Ast.Nodes.Expressions;
-using Ara.Ast.Nodes.Expressions.Atoms;
-using Ara.Ast.Nodes.Statements;
 using Ara.Ast.Types;
 
 namespace Ara.Ast.Semantics;
@@ -28,7 +25,7 @@ public class TypeResolver : Visitor
             case UnaryExpression u:
                 ResolveUnaryExpression(u);
                 break;
-            case VariableDeclarationStatement d:
+            case VariableDeclaration d:
                 ResolveVariableDeclarationStatement(d);
                 break;
         }
@@ -82,7 +79,7 @@ public class TypeResolver : Visitor
         e.InferredType = new InferredType(functionDefinition.ReturnType.Value);
     }
 
-    static void ResolveVariableDeclarationStatement(VariableDeclarationStatement d)
+    static void ResolveVariableDeclarationStatement(VariableDeclaration d)
     {
         d.InferredType = d.Expression.InferredType;
     }

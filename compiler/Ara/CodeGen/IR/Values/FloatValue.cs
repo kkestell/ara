@@ -7,7 +7,7 @@ public class FloatValue : ConstantValue
 {
     readonly float value;
     
-    public override IrType Type => new FloatType();
+    public override IrType Type => IrType.Float;
 
     public FloatValue(float value)
     {
@@ -21,12 +21,12 @@ public class FloatValue : ConstantValue
         return $"0x{i:X16}";
     }
 
-    public override void Emit(StringBuilder sb)
-    {
-    }
-
     public override string ToIr()
     {
         return Resolve();
+    }
+    
+    public override void Emit(StringBuilder sb)
+    {
     }
 }

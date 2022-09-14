@@ -8,7 +8,10 @@ public class AddTests : TestBase
         builder.Add(new IntValue(1), new IntValue(1));
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\nentry:\n%\"0\" = add i32 1, 1\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+%""0"" = add i32 1, 1
+}"));
     }
 
     [Test]

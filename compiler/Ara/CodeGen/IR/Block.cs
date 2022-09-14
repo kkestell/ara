@@ -26,9 +26,16 @@ public class Block
     }
     
     public Function Function { get; }
-    
+
     public NameScope Scope { get; }
 
+    public Block AddChildBlock(string childName)
+    {
+        var newBlock = new Block(childName, Function, this);
+        Function.AddBlock(newBlock);
+        return newBlock;
+    }
+    
     public IrBuilder Builder()
     {
         return new IrBuilder(this);

@@ -1,7 +1,5 @@
+using Ara.Ast;
 using Ara.Ast.Nodes;
-using Ara.Ast.Nodes.Expressions;
-using Ara.Ast.Nodes.Expressions.Atoms;
-using Ara.Ast.Nodes.Statements;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
@@ -13,7 +11,7 @@ namespace Ara.CodeGen;
 
 public static class CodeGenerator
 {
-    static void EmitBlock(Function function, Block block, IrBuilder builder)
+    static void EmitBlock(Block block, IrBuilder builder)
     {
         foreach (var statement in block.Statements)
         {
@@ -25,9 +23,9 @@ public static class CodeGenerator
                     builder.Return(value);
                     break;
                 }
-                case VariableDeclarationStatement variableDeclarationStatement:
+                case VariableDeclaration variableDeclarationStatement:
                 {
-                    var ptr = builder.Alloca(MakeType(variableDeclarationStatement.InferredType.Value));
+                    var ptr = builder.Alloca(IrType.FromString(variableDeclarationStatement.InferredType.Value));
                     var value = EmitExpression(builder, variableDeclarationStatement.Expression);
                     builder.Store(value, ptr);
                     builder.Load(ptr, variableDeclarationStatement.Name.Value);
@@ -36,9 +34,9 @@ public static class CodeGenerator
                 case IfStatement ifStatement:
                 {
                     var predicate = EmitExpression(builder, ifStatement.Predicate);
-                    builder.IfThen(predicate, (block) =>
+                    builder.IfThen(predicate, (then) =>
                     {
-                        EmitBlock(function, ifStatement.Then, new IrBuilder(block));
+                        EmitBlock(ifStatement.Then, then.Builder());
                     });
                     break;
                 }
@@ -59,34 +57,21 @@ public static class CodeGenerator
                 continue;
 
             var funcType = new FunctionType(
-                MakeType(funcDef.ReturnType.Value),
+                IrType.FromString(funcDef.ReturnType.Value),
                 funcDef.Parameters.Select(x => 
-                    new IR.Parameter(x.Name.Value, MakeType(x.Type.Value))).ToList());
+                    new IR.Parameter(x.Name.Value, IrType.FromString(x.Type.Value))).ToList());
             
             var function = module.AppendFunction(
                 funcDef.Name.Value,
                 funcType);
 
             var block = function.AddBlock("entry");
-            var builder = new IrBuilder(block);
+            var builder = block.Builder();
             
-            EmitBlock(function, funcDef.Block, builder);
+            EmitBlock(funcDef.Block, builder);
         }
 
         return module.Emit();
-    }
-    
-    static IrType MakeType(string type)
-    {
-        return type switch
-        {
-            "void"  => new VoidType(),
-            "int"   => new IntType(32),
-            "bool"  => new IntType(1),
-            "float" => new FloatType(),
-            
-            _ => throw new NotImplementedException()
-        };
     }
 
     static Value EmitBinaryExpression(IrBuilder builder, BinaryExpression expression)
@@ -133,12 +118,12 @@ public static class CodeGenerator
 
     static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
     {
-        return builder.NamedValue(reference.Name.Value);
+        return builder.Block.NamedValue(reference.Name.Value);
     }
 
     static Value EmitFunctionCallExpression(IrBuilder builder, CallExpression call)
     {
-        return builder.Call(call.Name.Value, call.Arguments.Select(a => new Argument(new IntType(32), EmitExpression(builder, a.Expression))).ToList());
+        return builder.Call(call.Name.Value, call.Arguments.Select(a => new Argument(IrType.Int, EmitExpression(builder, a.Expression))).ToList());
     }
     
     static Value EmitExpression(IrBuilder builder, Expression expression)
