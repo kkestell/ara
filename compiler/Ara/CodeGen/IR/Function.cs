@@ -24,16 +24,13 @@ public class Function
         return block;
     }
     
-    public Block AddBlock(string blockName, Block? parent = null)
+    public Block NewBlock()
     {
-        var block = new Block(blockName, this, parent);
+        var block = new Block(this);
         
-        if (parent is null)
+        foreach (var p in type.Parameters)
         {
-            foreach (var p in type.Parameters)
-            {
-                block.AddInstruction(new ArgumentValue(block, IrType.Int, p.Name));
-            }
+            block.AddInstruction(new ArgumentValue(block, IrType.Int, p.Name));
         }
 
         blocks.Add(block);

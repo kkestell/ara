@@ -6,20 +6,20 @@ namespace Ara.CodeGen.IR.Values.Instructions;
 public class Br : Instruction
 {
     readonly Value predicate;
-    readonly string l1;
-    readonly string l2;
+    readonly Label ifLabel;
+    readonly Label endIfLabel;
     
-    public Br(Block block, Value predicate, string l1, string l2, string? name = null) : base(block, name)
+    public Br(Block block, Value predicate, Label ifLabel, Label endIfLabel, string? name = null) : base(block, name)
     {
         this.predicate = predicate;
-        this.l1 = l1;
-        this.l2 = l2;
+        this.ifLabel = ifLabel;
+        this.endIfLabel = endIfLabel;
     }
 
     public override IrType Type => IrType.Void;
     
     public override void Emit(StringBuilder sb)
     {
-        sb.AppendLine($"br {predicate.Type.ToIr()} {predicate.Resolve()}, label %\"{l1}\", label %\"{l2}\"");
+        sb.AppendLine($"br {predicate.Type.ToIr()} {predicate.Resolve()}, label {ifLabel.Resolve()}, label {endIfLabel.Resolve()}");
     }
 }

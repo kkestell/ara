@@ -1,4 +1,4 @@
-namespace Ara.Tests.Instructions;
+namespace Ara.Tests.CodeGen.Instructions;
 
 public class FAddTests : TestBase
 {
@@ -7,11 +7,12 @@ public class FAddTests : TestBase
     {
         builder.FAdd(new FloatValue(3.14f), new FloatValue(2.71f));
 
-        var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo(@"define void @test () {
-entry:
-%""0"" = fadd float 0x40091EB860000000, 0x4005AE1480000000
-}"));
+        AssertIr(module.Emit(), @"
+            define void @test () {
+            entry:
+              %""0"" = fadd float 0x40091EB860000000, 0x4005AE1480000000
+            }
+        ");
     }
 
     [Test]

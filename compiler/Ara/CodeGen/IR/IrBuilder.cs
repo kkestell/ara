@@ -14,24 +14,31 @@ public class IrBuilder
     public Block Block { get; private set; }
 
     public Function Function => Block.Function;
+
+    public Label Label(string value)
+    {
+        return new Label(Block, value);
+    }
     
     public void IfThen(Value predicate, Action<Block> then)
     {
-        var l1 = $"if.{Function.NumBlocks}";
-        var l2 = $"if.{Function.NumBlocks + 1}";
+        var l1 = new Label(Block, "if");
+        var l2 = new Label(Block, "endif");
         
         Br(predicate, l1, l2);
+        //Block.AddInstruction(l1);
         var thenBlock = Block.AddChildBlock(l1);
         then.Invoke(thenBlock);
         Block = Block.AddChildBlock(l2);
+        //Block.AddInstruction(l2);
     }
 
-    public void Br(Value predicate, string l1, string l2)
+    public void Br(Value predicate, Label l1, Label l2)
     {
         Block.AddInstruction(new Br(Block, predicate, l1, l2));
     }
     
-    public void Return(Value value)
+    public void Return(Value? value = null)
     {
         Block.AddInstruction(new ReturnInstruction(value, Block));
     }
