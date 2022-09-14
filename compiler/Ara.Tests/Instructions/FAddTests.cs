@@ -16,7 +16,7 @@ public class FAddTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FAdd(new IntegerValue(1), new FloatValue(3.14f));
+            builder.FAdd(new IntValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -25,7 +25,7 @@ public class FAddTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FAdd(new IntegerValue(1), new IntegerValue(1));
+            builder.FAdd(new IntValue(1), new IntValue(1));
         });
     }
 }

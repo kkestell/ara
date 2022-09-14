@@ -18,7 +18,7 @@ public class Mul : Instruction
         if (!left.Type.Equals(right.Type))
             throw new ArgumentException();
 
-        if (left.Type.GetType() != typeof(IntegerType))
+        if (left.Type.GetType() != typeof(IntType))
             throw new ArgumentException();
         
         this.left = left;

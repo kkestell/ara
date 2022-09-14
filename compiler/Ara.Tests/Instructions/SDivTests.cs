@@ -5,7 +5,7 @@ public class SDivTests : TestBase
     [Test]
     public void SignedDivideTwoIntegers()
     {
-        builder.SDiv(new IntegerValue(1), new IntegerValue(1));
+        builder.SDiv(new IntValue(1), new IntValue(1));
 
         var ir = module.Emit();
         Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = sdiv i32 1, 1\n}"));
@@ -16,7 +16,7 @@ public class SDivTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.SDiv(new IntegerValue(1), new FloatValue(3.14f));
+            builder.SDiv(new IntValue(1), new FloatValue(3.14f));
         });
     }
 

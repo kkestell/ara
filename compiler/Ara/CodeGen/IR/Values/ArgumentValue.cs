@@ -3,9 +3,9 @@ using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR.Values;
 
-public class FunctionArgumentValue : NamedValue
+public class ArgumentValue : NamedValue
 {
-    public FunctionArgumentValue(Block block, IrType type, string? name) : base(block, name)
+    public ArgumentValue(Block block, IrType type, string? name) : base(block, name)
     {
         Type = type;
     }

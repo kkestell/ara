@@ -7,11 +7,45 @@ using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
+using Block = Ara.Ast.Nodes.Block;
 
 namespace Ara.CodeGen;
 
 public static class CodeGenerator
 {
+    static void EmitBlock(Function function, Block block, IrBuilder builder)
+    {
+        foreach (var statement in block.Statements)
+        {
+            switch (statement)
+            {
+                case ReturnStatement returnStatement:
+                {
+                    var value = EmitExpression(builder, returnStatement.Expression);
+                    builder.Return(value);
+                    break;
+                }
+                case VariableDeclarationStatement variableDeclarationStatement:
+                {
+                    var ptr = builder.Alloca(MakeType(variableDeclarationStatement.InferredType.Value));
+                    var value = EmitExpression(builder, variableDeclarationStatement.Expression);
+                    builder.Store(value, ptr);
+                    builder.Load(ptr, variableDeclarationStatement.Name.Value);
+                    break;
+                }
+                case IfStatement ifStatement:
+                {
+                    var predicate = EmitExpression(builder, ifStatement.Predicate);
+                    builder.IfThen(predicate, (block) =>
+                    {
+                        EmitBlock(function, ifStatement.Then, new IrBuilder(block));
+                    });
+                    break;
+                }
+            }
+        }
+    }
+    
     public static string Generate(AstNode rootNode)
     {
         if (rootNode is not SourceFile sourceFile)
@@ -23,36 +57,20 @@ public static class CodeGenerator
         {
             if (def is not FunctionDefinition funcDef) 
                 continue;
+
+            var funcType = new FunctionType(
+                MakeType(funcDef.ReturnType.Value),
+                funcDef.Parameters.Select(x => 
+                    new IR.Parameter(x.Name.Value, MakeType(x.Type.Value))).ToList());
             
             var function = module.AppendFunction(
                 funcDef.Name.Value,
-                new FunctionType(
-                    MakeType(funcDef.ReturnType.Value),
-                    funcDef.Parameters.Select(x => new IR.Parameter(x.Name.Value, MakeType(x.Type.Value)))));
+                funcType);
 
-            var block = function.AppendBasicBlock();
+            var block = function.AddBlock("entry");
             var builder = new IrBuilder(block);
-
-            foreach (var statement in funcDef.Block.Statements)
-            {
-                switch (statement)
-                {
-                    case ReturnStatement returnStatement:
-                    {
-                        var value = EmitExpression(builder, returnStatement.Expression);
-                        builder.Return(value);
-                        break;
-                    }
-                    case VariableDeclarationStatement variableDeclarationStatement:
-                    {
-                        var ptr = builder.Alloca(MakeType(variableDeclarationStatement.InferredType.Value));
-                        var value = EmitExpression(builder, variableDeclarationStatement.Expression);
-                        builder.Store(value, ptr);
-                        builder.Load(ptr, variableDeclarationStatement.Name.Value);
-                        break;
-                    }
-                }
-            }
+            
+            EmitBlock(function, funcDef.Block, builder);
         }
 
         return module.Emit();
@@ -63,8 +81,8 @@ public static class CodeGenerator
         return type switch
         {
             "void"  => new VoidType(),
-            "int"   => new IntegerType(32),
-            "bool"  => new IntegerType(1),
+            "int"   => new IntType(32),
+            "bool"  => new IntType(1),
             "float" => new FloatType(),
             
             _ => throw new NotImplementedException()
@@ -79,7 +97,7 @@ public static class CodeGenerator
         if (!left.Type.Equals(right.Type))
             throw new ArgumentException();
 
-        if (left.Type.GetType() == typeof(IntegerType))
+        if (left.Type.GetType() == typeof(IntType))
         {
             return expression.Op switch
             {
@@ -120,7 +138,7 @@ public static class CodeGenerator
 
     static Value EmitFunctionCallExpression(IrBuilder builder, CallExpression call)
     {
-        return builder.Call(call.Name.Value, call.Arguments.Select(a => new Argument(new IntegerType(32), EmitExpression(builder, a.Expression))).ToList());
+        return builder.Call(call.Name.Value, call.Arguments.Select(a => new Argument(new IntType(32), EmitExpression(builder, a.Expression))).ToList());
     }
     
     static Value EmitExpression(IrBuilder builder, Expression expression)
@@ -129,7 +147,7 @@ public static class CodeGenerator
         {
             return c.Type.Value switch
             {
-                "int"   => new IntegerValue(int.Parse(c.Value)),
+                "int"   => new IntValue(int.Parse(c.Value)),
                 "float" => new FloatValue(float.Parse(c.Value)),
                 
                 _ => throw new NotImplementedException()

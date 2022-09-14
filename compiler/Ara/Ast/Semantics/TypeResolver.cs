@@ -51,8 +51,10 @@ public class TypeResolver : Visitor
         {
             b.InferredType = new InferredType("bool");
         }
-        
-        b.InferredType = b.Left.InferredType;
+        else
+        {
+            b.InferredType = b.Left.InferredType;
+        }        
     }
 
     static void ResolveUnaryExpression(UnaryExpression u)
