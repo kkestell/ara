@@ -1,4 +1,4 @@
-﻿namespace Ara.Tests.Instructions;
+﻿namespace Ara.Tests.CodeGen.Instructions;
 
 public class SubTests : TestBase
 {
@@ -7,11 +7,12 @@ public class SubTests : TestBase
     {
         builder.Sub(new IntValue(1), new IntValue(1));
 
-        var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo(@"define void @test () {
-entry:
-%""0"" = sub i32 1, 1
-}"));
+        AssertIr(module.Emit(), @"
+            define void @test () {
+            entry:
+                %""0"" = sub i32 1, 1
+            }
+        ");
     }
     
     [Test]

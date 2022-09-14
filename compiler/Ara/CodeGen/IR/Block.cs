@@ -5,33 +5,36 @@ namespace Ara.CodeGen.IR;
 
 public class Block
 {
-    readonly string name;
     readonly List<Value> instructions = new();
     readonly Block? parent;
+    readonly NameScope scope;
 
-    public Block(string name, Function function, Block? parent = null)
+    public Block(Function function)
     {
-        this.name = name;
+        Function = function;
+        scope = new NameScope();
+        AddInstruction(new Label(this, "entry"));
+    }
+    
+    public Block(Function function, Label name, Block parent)
+    {
         this.parent = parent;
         Function = function;
-
-        if (parent is not null)
-        {
-            Scope = parent.Scope.Clone();
-        }
-        else
-        {
-            Scope = new NameScope();
-        }
+        scope = parent.scope.Clone();
+        AddInstruction(name);
     }
     
     public Function Function { get; }
 
-    public NameScope Scope { get; }
 
-    public Block AddChildBlock(string childName)
+    public string RegisterName(string name)
     {
-        var newBlock = new Block(childName, Function, this);
+        return scope.Register(name);
+    }
+
+    public Block AddChildBlock(Label name)
+    {
+        var newBlock = new Block(Function, name, this);
         Function.AddBlock(newBlock);
         return newBlock;
     }
@@ -49,7 +52,6 @@ public class Block
     
     public void Emit(StringBuilder sb)
     {
-        sb.AppendLine($"{name}:");
         foreach (var inst in instructions)
         {
             inst.Emit(sb);

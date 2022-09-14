@@ -53,6 +53,13 @@ public class NameScope
         if (!names.Contains(name))
             return name;
 
-        throw new NotImplementedException();
+        var i = 0;
+        while (true)
+        {
+            var newName = $"{name}.{i}";
+            if (!names.Contains(newName))
+                return newName;
+            i++;
+        }
     }
 }

@@ -1,4 +1,3 @@
-using Ara.Ast;
 using Ara.Ast.Nodes;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
@@ -34,7 +33,7 @@ public static class CodeGenerator
                 case IfStatement ifStatement:
                 {
                     var predicate = EmitExpression(builder, ifStatement.Predicate);
-                    builder.IfThen(predicate, (then) =>
+                    builder.IfThen(predicate, then =>
                     {
                         EmitBlock(ifStatement.Then, then.Builder());
                     });
@@ -65,7 +64,7 @@ public static class CodeGenerator
                 funcDef.Name.Value,
                 funcType);
 
-            var block = function.AddBlock("entry");
+            var block = function.NewBlock();
             var builder = block.Builder();
             
             EmitBlock(funcDef.Block, builder);
@@ -90,10 +89,11 @@ public static class CodeGenerator
                 BinaryOperator.Subtract   => builder.Sub(left, right),
                 BinaryOperator.Multiply   => builder.Mul(left, right),
                 BinaryOperator.Divide     => builder.SDiv(left, right),
-
+                // FIXME: Modulo
+                
                 BinaryOperator.Equality   => builder.Icmp(IcmpCondition.Equal, left, right),
                 BinaryOperator.Inequality => builder.Icmp(IcmpCondition.NotEqual, left, right),
-                
+
                 _ => throw new NotImplementedException()
             };
         }
@@ -106,6 +106,7 @@ public static class CodeGenerator
                 BinaryOperator.Subtract   => builder.FSub(left, right),
                 BinaryOperator.Multiply   => builder.FMul(left, right),
                 BinaryOperator.Divide     => builder.FDiv(left, right),
+                // FIXME: Modulo
 
                 BinaryOperator.Equality   => builder.Fcmp(FcmpCondition.OrderedAndEqual, left, right),
                 BinaryOperator.Inequality => builder.Fcmp(FcmpCondition.OrderedAndNotEqual, left, right),

@@ -1,4 +1,4 @@
-namespace Ara.Tests.Instructions;
+namespace Ara.Tests.CodeGen.Instructions;
 
 public class FDivTests : TestBase
 {
@@ -7,11 +7,12 @@ public class FDivTests : TestBase
     {
         builder.FDiv(new FloatValue(3.14f), new FloatValue(2.17f));
 
-        var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo(@"define void @test () {
-entry:
-%""0"" = fdiv float 0x40091EB860000000, 0x40015C2900000000
-}"));
+        AssertIr(module.Emit(), @"
+            define void @test () {
+            entry:
+              %""0"" = fdiv float 0x40091EB860000000, 0x40015C2900000000
+            }
+        ");
     }
     
     [Test]

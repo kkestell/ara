@@ -1,4 +1,4 @@
-﻿namespace Ara.Tests.Instructions;
+﻿namespace Ara.Tests.CodeGen.Instructions;
 
 public class LoadTests : TestBase
 {
@@ -12,11 +12,13 @@ public class LoadTests : TestBase
         
         Assert.Multiple(() =>
         {
-            Assert.That(ir, Is.EqualTo(@"define void @test () {
-entry:
-%""0"" = alloca i32, align 4
-%""1"" = load i32, ptr %""0""
-}"));
+            AssertIr(ir, @"
+                define void @test () {
+                entry:
+                  %""0"" = alloca i32, align 4
+                  %""1"" = load i32, ptr %""0""
+                }
+            ");
             Assert.That(value.Type, Is.InstanceOf<IntType>());
         });
     }
