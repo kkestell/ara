@@ -3,15 +3,15 @@ using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR.Values;
 
-public class IntValue : ConstantValue
+public class BoolValue : ConstantValue
 {
     readonly int value;
     
-    public override IrType Type => IrType.Int;
+    public override IrType Type => IrType.Bool;
 
-    public IntValue(int value)
+    public BoolValue(bool value)
     {
-        this.value = value;
+        this.value = value ? 1 : 0;
     }
 
     public override string Resolve()

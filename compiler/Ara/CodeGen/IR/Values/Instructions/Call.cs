@@ -8,7 +8,7 @@ public class Call : Instruction
     readonly string functionName;
     readonly IEnumerable<IR.Argument> args;
 
-    public override IrType Type => new IntType(32);
+    public override IrType Type => IrType.Int;
 
     public Call(Block block, string functionName, IEnumerable<IR.Argument> args, string? name = null) : base(block, name)
     {

@@ -1,6 +1,5 @@
 using System.Text;
-using Ara.Ast.Nodes.Expressions;
-using Ara.Ast.Nodes.Statements;
+using Ara.Ast.Nodes;
 
 namespace Ara.Ast.Errors;
 
@@ -23,13 +22,6 @@ public class BinaryExpressionTypeException : CompilerException
         sb.AppendLine(statement.Node.Span.ToString());
         sb.AppendLine("---");
         sb.AppendLine($"Binary expression left hand side `{binaryExpression.Left.Node.Span.ToString()}` ({binaryExpression.Left.InferredType.Value}) doesn't match right hand side `{binaryExpression.Right.Node.Span.ToString()}` ({binaryExpression.Right.InferredType.Value})");
-
-        //var func = ifStatement.NearestAncestor<FunctionDefinition>();
-
-        
-        //sb.AppendLine($"fn {func.Name.Node.Span.ToString()} ({string.Join(", ", func.Parameters.Select(p => p.Node.Span.ToString()))}) -> {func.ReturnType.Node.Span.ToString()} {{");
-        //sb.AppendLine($"  if {ifStatement.Predicate.Node.Span.ToString()} {{");
-        //sb.Append($"     ⮤ Invalid predicate type `{ifStatement.Predicate.InferredType?.Value}` where `bool` was expected");
 
         return sb.ToString();
     }

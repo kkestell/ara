@@ -1,4 +1,4 @@
-namespace Ara.Ast.Nodes.Expressions;
+namespace Ara.Ast.Nodes;
 
 public enum BinaryOperator
 {

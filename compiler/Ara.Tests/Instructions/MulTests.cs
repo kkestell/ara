@@ -8,7 +8,10 @@ public class MulTests : TestBase
         builder.Mul(new IntValue(1), new IntValue(1));
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = mul i32 1, 1\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+%""0"" = mul i32 1, 1
+}"));
     }
     
     [Test]

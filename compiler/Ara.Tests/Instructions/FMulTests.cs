@@ -8,7 +8,10 @@ public class FMulTests : TestBase
         builder.FMul(new FloatValue(3.14f), new FloatValue(2.71f));
 
         var ir = module.Emit();
-        Assert.That(ir, Is.EqualTo("define void @test () {\n%\"0\" = fmul float 0x40091EB860000000, 0x4005AE1480000000\n}"));
+        Assert.That(ir, Is.EqualTo(@"define void @test () {
+entry:
+%""0"" = fmul float 0x40091EB860000000, 0x4005AE1480000000
+}"));
     }
 
     [Test]

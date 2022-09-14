@@ -3,9 +3,6 @@ using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
-/// <summary>
-/// https://llvm.org/docs/LangRef.html#load-instruction
-/// </summary>
 public class Load : Instruction
 {
     readonly NamedValue pointer;

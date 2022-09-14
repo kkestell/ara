@@ -3,9 +3,6 @@ using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
-/// <summary>
-/// https://llvm.org/docs/LangRef.html#alloca-instruction
-/// </summary>
 public class Alloca : Instruction
 {
     readonly IrType type;
