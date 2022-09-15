@@ -1,11 +1,11 @@
 using Ara.Ast.Nodes;
-using Ara.CodeGen.IR;
-using Ara.CodeGen.IR.Types;
-using Ara.CodeGen.IR.Values;
-using Ara.CodeGen.IR.Values.Instructions;
-using Argument = Ara.CodeGen.IR.Argument;
+using LlvmIR;
+using LlvmIR.Types;
+using LlvmIR.Values;
+using LlvmIR.Values.Instructions;
+using Argument = LlvmIR.Argument;
 using Block = Ara.Ast.Nodes.Block;
-using Parameter = Ara.CodeGen.IR.Parameter;
+using Parameter = LlvmIR.Parameter;
 
 namespace Ara.CodeGen;
 
@@ -20,7 +20,7 @@ public class CodeGenerator
             def.Parameters.Select(x =>
                 new Parameter(x.Name.Value, IrType.FromString(x.Type.Value))).ToList());
     }
-    
+
     public string Generate(AstNode root)
     {
         if (root is not SourceFile sourceFile)
@@ -28,13 +28,7 @@ public class CodeGenerator
 
         var module = new Module();
 
-        foreach (var def in sourceFile.Definitions)
-        {
-            if (def is not FunctionDefinition f)
-                continue;
-            
-            functionTypes.Add(f.Name.Value, MakeFunctionType(f));
-        }
+        CacheFunctionTypes(sourceFile.Definitions);
 
         foreach (var def in sourceFile.Definitions)
         {
@@ -49,12 +43,23 @@ public class CodeGenerator
         return module.Emit();
     }
     
+    void CacheFunctionTypes(IEnumerable<Definition> defs)
+    {
+        foreach (var d in defs)
+        {
+            if (d is not FunctionDefinition f)
+                continue;
+            
+            functionTypes.Add(f.Name.Value, MakeFunctionType(f));
+        }
+    }
+    
     void EmitFunction(Module module, FunctionDefinition def)
     {
         var type = functionTypes[def.Name.Value];
-        var function = module.AppendFunction(def.Name.Value, type);
-        var block = function.NewBlock();
-        var builder = block.Builder();
+        var function = module.AddFunction(def.Name.Value, type);
+        var block = function.AddBlock();
+        var builder = block.IrBuilder();
 
         EmitBlock(def.Block, builder);
     }
@@ -82,13 +87,13 @@ public class CodeGenerator
                 case If i:
                 {
                     var predicate = EmitExpression(builder, i.Predicate);
-                    builder.IfThen(predicate, then => EmitBlock(i.Then, then.Builder()));
+                    builder.IfThen(predicate, then => EmitBlock(i.Then, then.IrBuilder()));
                     break;
                 }
                 case Assignment a:
                 {
                     var val = EmitExpression(builder, a.Expression);
-                    var ptr = builder.Block.NamedValue<Alloca>(a.Name.Value);
+                    var ptr = builder.Block.FindNamedValue<Alloca>(a.Name.Value);
                     builder.Store(val, ptr, a.Name.Value);
                     break;
                 }
@@ -142,16 +147,33 @@ public class CodeGenerator
 
     Value EmitVariableReference(IrBuilder builder, VariableReference reference)
     {
-        return builder.Block.NamedValue(reference.Name.Value);
+        return builder.Block.FindNamedValue(reference.Name.Value);
     }
 
     Value EmitFunctionCallExpression(IrBuilder builder, Ast.Nodes.Call call)
     {
-        var functionType = functionTypes[call.Name.Value];
+        var name = call.Name.Value;
+
+        if (!functionTypes.ContainsKey(name))
+            throw new Exception($"No such function `{name}`");
         
-        var args = call.Arguments.Select(a => new Argument(
-            functionType.Parameters.Single(x => x.Name == a.Name.Value).Type,
-            builder.ResolveValue(EmitExpression(builder, a.Expression)))).ToList();
+        var functionType = functionTypes[call.Name.Value];
+
+        var args = new List<Argument>();
+        foreach (var a in call.Arguments)
+        {
+            var p = functionType.Parameters.SingleOrDefault(x => x.Name == a.Name.Value);
+            
+            if (p is null)
+                throw new Exception($"Function {name} has no parameter {a.Name}");
+
+            var v = EmitExpression(builder, a.Expression);
+
+            if (!v.Type.Equals(p.Type))
+                throw new Exception($"Argument {a.Name.Value} got {v.Type.ToIr()} but expected {p.Type.ToIr()}");
+            
+            args.Add(new Argument(p.Type, v));
+        }
         
         return builder.Call(call.Name.Value, args);
     }

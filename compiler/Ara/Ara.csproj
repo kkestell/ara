@@ -22,4 +22,8 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Ara.IR\Ara.IR.csproj" />
+      <ProjectReference Include="..\LlvmIR\LlvmIR.csproj" />
+    </ItemGroup>
 </Project>
