@@ -9,14 +9,32 @@ using Parameter = Ara.CodeGen.IR.Parameter;
 
 namespace Ara.CodeGen;
 
-public static class CodeGenerator
+public class CodeGenerator
 {
-    public static string Generate(AstNode root)
+    readonly Dictionary<string, FunctionType> functionTypes = new ();
+
+    FunctionType MakeFunctionType(FunctionDefinition def)
+    {
+        return new FunctionType(
+            IrType.FromString(def.ReturnType.Value),
+            def.Parameters.Select(x =>
+                new Parameter(x.Name.Value, IrType.FromString(x.Type.Value))).ToList());
+    }
+    
+    public string Generate(AstNode root)
     {
         if (root is not SourceFile sourceFile)
             throw new NotSupportedException();
 
         var module = new Module();
+
+        foreach (var def in sourceFile.Definitions)
+        {
+            if (def is not FunctionDefinition f)
+                continue;
+            
+            functionTypes.Add(f.Name.Value, MakeFunctionType(f));
+        }
 
         foreach (var def in sourceFile.Definitions)
         {
@@ -31,12 +49,9 @@ public static class CodeGenerator
         return module.Emit();
     }
     
-    static void EmitFunction(Module module, FunctionDefinition def)
+    void EmitFunction(Module module, FunctionDefinition def)
     {
-        var type = new FunctionType(
-            IrType.FromString(def.ReturnType.Value),
-            def.Parameters.Select(x =>
-                new Parameter(x.Name.Value, IrType.FromString(x.Type.Value))).ToList());
+        var type = functionTypes[def.Name.Value];
         var function = module.AppendFunction(def.Name.Value, type);
         var block = function.NewBlock();
         var builder = block.Builder();
@@ -44,7 +59,7 @@ public static class CodeGenerator
         EmitBlock(def.Block, builder);
     }
     
-    static void EmitBlock(Block block, IrBuilder builder)
+    void EmitBlock(Block block, IrBuilder builder)
     {
         foreach (var statement in block.Statements)
         {
@@ -81,7 +96,7 @@ public static class CodeGenerator
         }
     }
 
-    static Value EmitBinaryExpression(IrBuilder builder, BinaryExpression expression)
+    Value EmitBinaryExpression(IrBuilder builder, BinaryExpression expression)
     {
         var left  = builder.ResolveValue(EmitExpression(builder, expression.Left));
         var right = builder.ResolveValue(EmitExpression(builder, expression.Right));
@@ -125,21 +140,23 @@ public static class CodeGenerator
         throw new NotImplementedException();
     }
 
-    static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
+    Value EmitVariableReference(IrBuilder builder, VariableReference reference)
     {
         return builder.Block.NamedValue(reference.Name.Value);
     }
 
-    static Value EmitFunctionCallExpression(IrBuilder builder, Ast.Nodes.Call call)
+    Value EmitFunctionCallExpression(IrBuilder builder, Ast.Nodes.Call call)
     {
+        var functionType = functionTypes[call.Name.Value];
+        
         var args = call.Arguments.Select(a => new Argument(
-            // FIXME
-            IrType.Int,
+            functionType.Parameters.Single(x => x.Name == a.Name.Value).Type,
             builder.ResolveValue(EmitExpression(builder, a.Expression)))).ToList();
+        
         return builder.Call(call.Name.Value, args);
     }
     
-    static Value EmitExpression(IrBuilder builder, Expression expression)
+    Value EmitExpression(IrBuilder builder, Expression expression)
     {
         if (expression is Constant c)
         {
