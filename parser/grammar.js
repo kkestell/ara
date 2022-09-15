@@ -18,7 +18,7 @@ module.exports = grammar({
 
     _definition: $ => choice(
       $.function_definition,
-      $.record_definition
+      // $.record_definition
     ),
 
     function_definition: $ => seq(
@@ -42,27 +42,27 @@ module.exports = grammar({
       $.identifier
     ),
 
-    field_definition: $ => seq(
-      $.identifier,
-      ':',
-      $.identifier
-    ),
+    // field_definition: $ => seq(
+    //   $.identifier,
+    //   ':',
+    //   $.identifier
+    // ),
 
-    record_definition: $ => seq(
-      'rec',
-      $.identifier,
-      '{',
-      $.field_definition_list,
-      '}'
-    ),
+    // record_definition: $ => seq(
+    //   'rec',
+    //   $.identifier,
+    //   '{',
+    //   $.field_definition_list,
+    //   '}'
+    // ),
 
-    field_definition_list: $ => seq(
-      repeat1($.field_definition)
-    ),
+    // field_definition_list: $ => seq(
+    //   repeat1($.field_definition)
+    // ),
 
-    list_type: $ => seq(
-      $.identifier
-    ),
+    // list_type: $ => seq(
+    //   $.identifier
+    // ),
 
     block: $ => seq(
       '{',
@@ -103,23 +103,23 @@ module.exports = grammar({
       $._expression
     ),
 
-    record: $ => seq(
-      'new',
-      $.identifier,
-      $.field_list
-    ),
+    // record: $ => seq(
+    //   'new',
+    //   $.identifier,
+    //   $.field_list
+    // ),
 
-    field_list: $ => seq(
-      '{',
-      commaSep1($.field),
-      '}'
-    ),
+    // field_list: $ => seq(
+    //   '{',
+    //   commaSep1($.field),
+    //   '}'
+    // ),
 
-    field: $ => seq(
-      $.identifier,
-      ':',
-      $._expression
-    ),
+    // field: $ => seq(
+    //   $.identifier,
+    //   ':',
+    //   $._expression
+    // ),
 
     list: $ => seq(
       '[',
@@ -158,7 +158,7 @@ module.exports = grammar({
       $.float,
       $.bool,
       $.string,
-      $.record,
+      // $.record,
       $.list
     ),
 

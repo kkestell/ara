@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace Ara.CodeGen.IR.Types;
 
 public class FunctionType

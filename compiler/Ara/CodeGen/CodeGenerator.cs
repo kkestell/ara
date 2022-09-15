@@ -5,78 +5,86 @@ using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
 using Block = Ara.Ast.Nodes.Block;
+using Parameter = Ara.CodeGen.IR.Parameter;
 
 namespace Ara.CodeGen;
 
 public static class CodeGenerator
 {
-    static void EmitBlock(Block block, IrBuilder builder)
+    public static string Generate(AstNode root)
     {
-        foreach (var statement in block.Statements)
-        {
-            switch (statement)
-            {
-                case ReturnStatement returnStatement:
-                {
-                    var value = EmitExpression(builder, returnStatement.Expression);
-                    builder.Return(value);
-                    break;
-                }
-                case VariableDeclaration variableDeclarationStatement:
-                {
-                    var ptr = builder.Alloca(IrType.FromString(variableDeclarationStatement.InferredType.Value));
-                    var value = EmitExpression(builder, variableDeclarationStatement.Expression);
-                    builder.Store(value, ptr);
-                    builder.Load(ptr, variableDeclarationStatement.Name.Value);
-                    break;
-                }
-                case IfStatement ifStatement:
-                {
-                    var predicate = EmitExpression(builder, ifStatement.Predicate);
-                    builder.IfThen(predicate, then =>
-                    {
-                        EmitBlock(ifStatement.Then, then.Builder());
-                    });
-                    break;
-                }
-            }
-        }
-    }
-    
-    public static string Generate(AstNode rootNode)
-    {
-        if (rootNode is not SourceFile sourceFile)
+        if (root is not SourceFile sourceFile)
             throw new NotSupportedException();
 
         var module = new Module();
 
         foreach (var def in sourceFile.Definitions)
         {
-            if (def is not FunctionDefinition funcDef) 
-                continue;
-
-            var funcType = new FunctionType(
-                IrType.FromString(funcDef.ReturnType.Value),
-                funcDef.Parameters.Select(x => 
-                    new IR.Parameter(x.Name.Value, IrType.FromString(x.Type.Value))).ToList());
-            
-            var function = module.AppendFunction(
-                funcDef.Name.Value,
-                funcType);
-
-            var block = function.NewBlock();
-            var builder = block.Builder();
-            
-            EmitBlock(funcDef.Block, builder);
+            switch (def)
+            {
+                case FunctionDefinition f:
+                    EmitFunction(module, f);
+                    break;
+            }
         }
 
         return module.Emit();
     }
+    
+    static void EmitFunction(Module module, FunctionDefinition def)
+    {
+        var type = new FunctionType(
+            IrType.FromString(def.ReturnType.Value),
+            def.Parameters.Select(x =>
+                new Parameter(x.Name.Value, IrType.FromString(x.Type.Value))).ToList());
+        var function = module.AppendFunction(def.Name.Value, type);
+        var block = function.NewBlock();
+        var builder = block.Builder();
+
+        EmitBlock(def.Block, builder);
+    }
+    
+    static void EmitBlock(Block block, IrBuilder builder)
+    {
+        foreach (var statement in block.Statements)
+        {
+            switch (statement)
+            {
+                case Return r:
+                {
+                    var expr = EmitExpression(builder, r.Expression);
+                    var val = builder.ResolveValue(expr);
+                    builder.Return(val);
+                    break;
+                }
+                case VariableDeclaration v:
+                {
+                    var val = EmitExpression(builder, v.Expression);
+                    var ptr = builder.Alloca(IrType.FromString(v.InferredType!.Value), 1, v.Name.Value);
+                    builder.Store(val, ptr);
+                    break;
+                }
+                case If i:
+                {
+                    var predicate = EmitExpression(builder, i.Predicate);
+                    builder.IfThen(predicate, then => EmitBlock(i.Then, then.Builder()));
+                    break;
+                }
+                case Assignment a:
+                {
+                    var val = EmitExpression(builder, a.Expression);
+                    var ptr = builder.Block.NamedValue<Alloca>(a.Name.Value);
+                    builder.Store(val, ptr, a.Name.Value);
+                    break;
+                }
+            }
+        }
+    }
 
     static Value EmitBinaryExpression(IrBuilder builder, BinaryExpression expression)
     {
-        var left  = EmitExpression(builder, expression.Left);
-        var right = EmitExpression(builder, expression.Right);
+        var left  = builder.ResolveValue(EmitExpression(builder, expression.Left));
+        var right = builder.ResolveValue(EmitExpression(builder, expression.Right));
 
         if (!left.Type.Equals(right.Type))
             throw new ArgumentException();
@@ -122,9 +130,13 @@ public static class CodeGenerator
         return builder.Block.NamedValue(reference.Name.Value);
     }
 
-    static Value EmitFunctionCallExpression(IrBuilder builder, CallExpression call)
+    static Value EmitFunctionCallExpression(IrBuilder builder, Ast.Nodes.Call call)
     {
-        return builder.Call(call.Name.Value, call.Arguments.Select(a => new Argument(IrType.Int, EmitExpression(builder, a.Expression))).ToList());
+        var args = call.Arguments.Select(a => new Argument(
+            // FIXME
+            IrType.Int,
+            builder.ResolveValue(EmitExpression(builder, a.Expression)))).ToList();
+        return builder.Call(call.Name.Value, args);
     }
     
     static Value EmitExpression(IrBuilder builder, Expression expression)
@@ -142,9 +154,9 @@ public static class CodeGenerator
         
         return expression switch
         {
-            BinaryExpression       e => EmitBinaryExpression(builder, e),
-            VariableReference      r => EmitVariableReference(builder, r),
-            CallExpression f => EmitFunctionCallExpression(builder, f),
+            BinaryExpression  e => EmitBinaryExpression(builder, e),
+            VariableReference r => EmitVariableReference(builder, r),
+            Ast.Nodes.Call    f => EmitFunctionCallExpression(builder, f),
             _ => throw new NotImplementedException()
         };
     }

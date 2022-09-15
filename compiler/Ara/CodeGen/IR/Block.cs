@@ -58,6 +58,11 @@ public class Block
         }
     }
 
+    public T NamedValue<T>(string valueName) where T: Value
+    {
+        return (T)NamedValue(valueName);
+    }
+
     public Value NamedValue(string valueName)
     {
         foreach (var inst in instructions)
