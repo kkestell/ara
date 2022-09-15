@@ -5,9 +5,9 @@ namespace Ara.Ast.Errors;
 
 public class IfPredicateTypeException : CompilerException
 {
-    readonly IfStatement ifStatement;
+    readonly If ifStatement;
 
-    public IfPredicateTypeException(IfStatement ifStatement) : base(ifStatement.Node)
+    public IfPredicateTypeException(If ifStatement) : base(ifStatement.Node)
     {
         this.ifStatement = ifStatement;
     }

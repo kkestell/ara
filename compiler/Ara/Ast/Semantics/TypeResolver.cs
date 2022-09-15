@@ -19,7 +19,7 @@ public class TypeResolver : Visitor
             case BinaryExpression b:
                 ResolveBinaryExpression(b);
                 break;
-            case CallExpression c:
+            case Call c:
                 ResolveCallExpression(c);
                 break;
             case UnaryExpression u:
@@ -69,7 +69,7 @@ public class TypeResolver : Visitor
         e.InferredType = new InferredType(type);
     }
 
-    static void ResolveCallExpression(CallExpression e)
+    static void ResolveCallExpression(Call e)
     {
         var func = e.NearestAncestor<SourceFile>()!.Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name.Value == e.Name.Value);
 

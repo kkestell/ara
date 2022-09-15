@@ -5,9 +5,9 @@ namespace Ara.Ast.Errors;
 
 public class ReturnTypeException : CompilerException
 {
-    readonly ReturnStatement returnStatement;
+    readonly Return returnStatement;
     
-    public ReturnTypeException(ReturnStatement returnStatement) : base(returnStatement.Node)
+    public ReturnTypeException(Return returnStatement) : base(returnStatement.Node)
     {
         this.returnStatement = returnStatement;
     }

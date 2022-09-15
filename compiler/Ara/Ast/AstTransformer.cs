@@ -19,6 +19,7 @@ public static class AstTransformer
         {
             "argument"                       => Argument(node, children),
             "argument_list"                  => ArgumentList(node, children),
+            "assignment_statement"           => AssignmentStatement(node, children),
             "binary_expression"              => BinaryExpression(node, children),
             "block"                          => Block(node, children),
             "bool"                           => Bool(node),
@@ -57,6 +58,9 @@ public static class AstTransformer
     static NodeList<Argument> ArgumentList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Argument)x).ToList());
 
+    static Assignment AssignmentStatement(Node n, IReadOnlyList<AstNode> c) =>
+        new (n, (Identifier)c[0], (Expression)c[1]);
+
     static BinaryExpression BinaryExpression(Node n, IReadOnlyList<AstNode> c)
     {
         var op = n.ChildByFieldName("op")!.Span.ToString() switch
@@ -80,7 +84,7 @@ public static class AstTransformer
     static NodeList<Definition> DefinitionList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Definition)x));
     
-    static CallExpression FunctionCallExpression(Node n, IReadOnlyList<AstNode> c) =>
+    static Call FunctionCallExpression(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Identifier)c[0], ((NodeList<Argument>)c[1]).Nodes.ToList());
 
     static FunctionDefinition FunctionDefinition(Node n, IReadOnlyList<AstNode> c) =>
@@ -89,7 +93,7 @@ public static class AstTransformer
     static Identifier Identifier(Node n) =>
         new (n, n.Span.ToString());
 
-    static IfStatement IfStatement(Node n, IReadOnlyList<AstNode> c) =>
+    static If IfStatement(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Expression)c[0], (Block)c[1]);
 
     static Constant Bool(Node n) =>
@@ -113,7 +117,7 @@ public static class AstTransformer
     static NodeList<Parameter> ParameterList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Parameter)x).ToList());
 
-    static ReturnStatement ReturnStatement(Node n, IReadOnlyList<AstNode> c) =>
+    static Return ReturnStatement(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Expression)c[0]);
 
     static SourceFile SourceFile(Node n, IReadOnlyList<AstNode> c) =>

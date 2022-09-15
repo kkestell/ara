@@ -15,6 +15,18 @@ public class IrBuilder
 
     public Function Function => Block.Function;
 
+    public Value ResolveValue(Value value)
+    {
+        if (value is Alloca a)
+        {
+            return Load(a);
+        }
+        else
+        {
+            return value;
+        }
+    }
+
     public Label Label(string value)
     {
         return new Label(Block, value);

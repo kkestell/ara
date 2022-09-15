@@ -10,17 +10,17 @@ public class TypeChecker : Visitor
     {
         switch (node)
         {
-            case ReturnStatement r:
+            case Return r:
                 CheckReturnStatement(r);
                 break;
 
-            case IfStatement i:
+            case If i:
                 CheckIfStatement(i);
                 break;
         }
     }
 
-    void CheckReturnStatement(ReturnStatement r)
+    void CheckReturnStatement(Return r)
     {
         var func = r.NearestAncestor<FunctionDefinition>();
 
@@ -34,7 +34,7 @@ public class TypeChecker : Visitor
             throw new ReturnTypeException(r);
     }
 
-    void CheckIfStatement(IfStatement i)
+    void CheckIfStatement(If i)
     {
         if (i.Predicate.InferredType is null)
             throw new Exception("Unable to infer predicate type");
