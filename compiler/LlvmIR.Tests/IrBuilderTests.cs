@@ -38,7 +38,7 @@ public class IrBuilderTests : TestBase
         AssertIr(module.Emit(), @"
             define i32 @main () {
             entry:
-                ret i32 24
+                ret i32 42
             }
         ");
     }
