@@ -15,8 +15,8 @@ public class FunctionTests : TestBase
         
         builder = block.IrBuilder();
         
-        var a = function.Argument("a");
-        var b = function.Argument("b");
+        var a = function.Argument("a")!;
+        var b = function.Argument("b")!;
         builder.Return(builder.Add(a, b));
         
         Console.WriteLine(module.Emit());

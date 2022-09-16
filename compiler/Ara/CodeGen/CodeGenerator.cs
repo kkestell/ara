@@ -165,7 +165,7 @@ public class CodeGenerator
             var p = functionType.Parameters.SingleOrDefault(x => x.Name == a.Name.Value);
             
             if (p is null)
-                throw new Exception($"Function {name} has no parameter {a.Name}");
+                throw new Exception($"Function {name} has no parameter {a.Name.Value}");
 
             var v = EmitExpression(builder, a.Expression);
 
