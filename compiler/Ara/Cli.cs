@@ -21,7 +21,7 @@ public static class Cli
         var ast = AstTransformer.Transform(tree);
         
         // Semantics
-        
+
         try
         {
             new TypeResolver().Visit(ast);
@@ -32,6 +32,12 @@ public static class Cli
             Console.WriteLine(ex.ToString());
             return 1;
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.StackTrace);
+        }
+        
         
         // Generate IR
         
@@ -49,8 +55,8 @@ public static class Cli
         
         // Make binary
         
-        Run("llc", $"-filetype=obj -opaque-pointers {name}.ll -o {name}.o", dir);
-        Run("clang", $"{name}.o -o {name}", dir);
+        Run("/usr/local/opt/llvm/bin/llc", $"-filetype=obj -opaque-pointers {name}.ll -o {name}.o", dir);
+        Run("/usr/local/opt/llvm/bin/clang", $"{name}.o -o {name}", dir);
         Copy(dir, name);
 
         // Make AST graph

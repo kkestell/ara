@@ -50,11 +50,20 @@ public class GraphGenerator
             Label = name
         };
 
-        if (node is Expression en)
+        if (node is BinaryExpression b)
+        {
+            graphNode.Label.Text = $"{graphNode.Label.Text} {b.Node.ChildByFieldName("op")!.Span.ToString()}";
+        }
+
+        if (node is Identifier i)
+        {
+            graphNode.Label.Text = $"{graphNode.Label.Text} ({i.Value})";
+        }
+        else if (node is Expression en)
         {
             graphNode.Label.Text = $"{graphNode.Label.Text} ({en.InferredType?.Value})";
         }
-        
+
         graph.Elements.Add(graphNode);
 
         if (parent is null) 
