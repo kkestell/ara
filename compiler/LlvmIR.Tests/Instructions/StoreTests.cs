@@ -1,4 +1,7 @@
-﻿namespace LlvmIR.Tests.Instructions;
+﻿using Ara.CodeGen.Types;
+using Ara.CodeGen.Values;
+
+namespace LlvmIR.Tests.Instructions;
 
 public class StoreTests : TestBase
 {

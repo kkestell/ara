@@ -1,3 +1,5 @@
+using Ara.CodeGen.Values;
+
 namespace LlvmIR.Tests.Instructions;
 
 public class FSubTests : TestBase

@@ -1,3 +1,6 @@
+using Ara.CodeGen;
+using Ara.CodeGen.Types;
+
 namespace LlvmIR.Tests;
 
 public class FunctionTests : TestBase

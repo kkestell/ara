@@ -1,4 +1,6 @@
-﻿namespace LlvmIR.Tests.Instructions;
+﻿using Ara.CodeGen.Values;
+
+namespace LlvmIR.Tests.Instructions;
 
 public class SDivTests : TestBase
 {

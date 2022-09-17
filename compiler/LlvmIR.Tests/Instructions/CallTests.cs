@@ -1,3 +1,7 @@
+using Ara.CodeGen;
+using Ara.CodeGen.Types;
+using Ara.CodeGen.Values;
+
 namespace LlvmIR.Tests.Instructions;
 
 public class CallTests : TestBase

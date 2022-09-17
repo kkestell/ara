@@ -1,3 +1,6 @@
+using Ara.CodeGen.Values;
+using Ara.CodeGen.Values.Instructions;
+
 namespace LlvmIR.Tests.Instructions;
 
 public class BrTests : TestBase

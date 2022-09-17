@@ -58,15 +58,17 @@ public static class Cli
         
         // Make binary
         
-        Run("/usr/local/opt/llvm/bin/llc", $"-filetype=obj -opaque-pointers {name}.ll -o {name}.o", dir);
-        Run("/usr/local/opt/llvm/bin/clang", $"{name}.o -o {name}", dir);
+        Run("llc", $"-filetype=obj -opaque-pointers -O3 {name}.ll -o {name}.o", dir);
+        Run("clang", $"{name}.o -o {name}", dir);
         Copy(dir, name);
 
         // Make AST graph
         
+        /*
         new GraphGenerator().Generate(ast, Path.Combine(dir, $"{name}.dot"));
         Run("dot", $"-Tpdf {name}.dot -o {name}.pdf", dir);
         Copy(dir, name, ".pdf");
+        */
         
         #endregion
         

@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LlvmIR\LlvmIR.csproj" />
+      <ProjectReference Include="..\Ara.CodeGen\Ara.CodeGen.csproj" />
     </ItemGroup>
 
 </Project>

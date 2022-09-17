@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DotNetGraph" Version="2.7.0" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Remove="Ast\Nodes\Statements\" />
       <None Remove="Ast\Nodes\Expressions\" />
       <None Remove="Ast\Nodes\Expressions\Atoms\" />
@@ -23,6 +19,8 @@
       </Content>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\LlvmIR\LlvmIR.csproj" />
+      <ProjectReference Include="..\Ara.Ast\Ara.Ast.csproj" />
+      <ProjectReference Include="..\Ara.CodeGen\Ara.CodeGen.csproj" />
+      <ProjectReference Include="..\Ara.Parsing\Ara.Parsing.csproj" />
     </ItemGroup>
 </Project>

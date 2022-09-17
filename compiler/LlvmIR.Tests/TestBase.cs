@@ -1,10 +1,9 @@
 global using System;
 global using System.Collections.Generic;
 global using System.Linq;
-global using LlvmIR.Types;
-global using LlvmIR.Values;
-global using LlvmIR.Values.Instructions;
 global using NUnit.Framework;
+using Ara.CodeGen;
+using Ara.CodeGen.Types;
 
 namespace LlvmIR.Tests;
 
