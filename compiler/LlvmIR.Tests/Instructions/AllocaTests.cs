@@ -1,4 +1,6 @@
-﻿namespace LlvmIR.Tests.Instructions;
+﻿using Ara.CodeGen.Types;
+
+namespace LlvmIR.Tests.Instructions;
 
 public class AllocaTests : TestBase
 {

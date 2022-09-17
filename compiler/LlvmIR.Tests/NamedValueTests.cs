@@ -1,3 +1,6 @@
+using Ara.CodeGen.Types;
+using Ara.CodeGen.Values;
+
 namespace LlvmIR.Tests;
 
 public class NamedValueTests : TestBase
