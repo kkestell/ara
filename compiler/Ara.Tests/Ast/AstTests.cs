@@ -11,7 +11,7 @@ public class Tests : TestBase
         using var tree = Parse(@"
             module main
 
-            fn main() -> int {
+            int main() {
               return 1
             }
         ");

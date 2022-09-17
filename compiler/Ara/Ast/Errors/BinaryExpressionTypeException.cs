@@ -5,24 +5,22 @@ namespace Ara.Ast.Errors;
 
 public class BinaryExpressionTypeException : CompilerException
 {
-    readonly BinaryExpression binaryExpression;
+    readonly BinaryExpression astNode;
 
-    public BinaryExpressionTypeException(BinaryExpression binaryExpression) : base(binaryExpression.Node)
+    public BinaryExpressionTypeException(BinaryExpression astNode) : base(astNode.Node)
     {
-        this.binaryExpression = binaryExpression;
+        this.astNode = astNode;
     }
 
     public override string ToString()
     {
         var sb = new StringBuilder();
 
-        var statement = binaryExpression.NearestAncestor<Statement>();
-
-        sb.AppendLine("---");
-        sb.AppendLine(statement.Node.Span.ToString());
-        sb.AppendLine("---");
-        sb.AppendLine($"Binary expression left hand side `{binaryExpression.Left.Node.Span.ToString()}` ({binaryExpression.Left.InferredType.Value}) doesn't match right hand side `{binaryExpression.Right.Node.Span.ToString()}` ({binaryExpression.Right.InferredType.Value})");
-
+        sb.AppendLine("BinaryExpressionTypeException");
+        sb.AppendLine(Location.ToString());
+        sb.AppendLine(Location.Context);
+        sb.AppendLine(Indented($"Binary expression left hand side {astNode.Left.InferredType!.Value} doesn't match right hand side {astNode.Right.InferredType!.Value}"));
+        
         return sb.ToString();
     }
 }

@@ -16,10 +16,10 @@ public sealed class Parser : IDisposable
         delete_parser(handle);
     }
 
-    public Tree Parse(string source)
+    public Tree Parse(string source, string? filename = null)
     {
         var tree = parse(handle, source);
-        return new Tree(tree, source);
+        return new Tree(tree, source, filename);
     }
 
     [DllImport("parser.so")]

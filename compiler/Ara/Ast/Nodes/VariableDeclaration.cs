@@ -3,7 +3,7 @@ using Ara.Parsing;
 
 namespace Ara.Ast.Nodes;
 
-public record VariableDeclaration(Node Node, Identifier Name, Expression Expression) : Statement(Node)
+public record VariableDeclaration(Node Node, Identifier Type, Identifier Name, Expression Expression) : Statement(Node)
 {
-    public InferredType? InferredType { get; set; }
+    public readonly InferredType? InferredType = new (Type.Value);
 }

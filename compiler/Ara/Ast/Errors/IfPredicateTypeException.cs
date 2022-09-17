@@ -5,23 +5,22 @@ namespace Ara.Ast.Errors;
 
 public class IfPredicateTypeException : CompilerException
 {
-    readonly If ifStatement;
+    readonly If astNode;
 
-    public IfPredicateTypeException(If ifStatement) : base(ifStatement.Node)
+    public IfPredicateTypeException(If astNode) : base(astNode.Node)
     {
-        this.ifStatement = ifStatement;
+        this.astNode = astNode;
     }
 
     public override string ToString()
     {
-        var func = ifStatement.NearestAncestor<FunctionDefinition>();
-
         var sb = new StringBuilder();
-        
-        sb.AppendLine($"fn {func.Name.Node.Span.ToString()} ({string.Join(", ", func.Parameters.Select(p => p.Node.Span.ToString()))}) -> {func.ReturnType.Node.Span.ToString()} {{");
-        sb.AppendLine($"  if {ifStatement.Predicate.Node.Span.ToString()} {{");
-        sb.Append($"     ↑ Invalid predicate type `{ifStatement.Predicate.InferredType?.Value}` where `bool` was expected");
 
+        sb.AppendLine("IfPredicateTypeException");
+        sb.AppendLine(Location.ToString());
+        sb.AppendLine(Location.Context);
+        sb.AppendLine(Indented($"Invalid predicate type {astNode.Predicate.InferredType!.Value} where bool was expected"));
+        
         return sb.ToString();
     }
 }

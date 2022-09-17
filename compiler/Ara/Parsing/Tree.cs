@@ -7,11 +7,14 @@ public sealed class Tree : IDisposable
     readonly Handle<Tree> handle;
     readonly string source;
 
-    public Tree(Handle<Tree> handle, string source)
+    public Tree(Handle<Tree> handle, string source, string? filename = null)
     {
         this.handle = handle;
         this.source = source;
+        Filename = filename;
     }
+
+    public string? Filename { get; }
 
     public Node Root => new(ts_tree_root_node(handle), this);
 
@@ -20,9 +23,14 @@ public sealed class Tree : IDisposable
         delete_tree(handle);
     }
 
-    public ReadOnlySpan<char> Span(int startByte, int endByte)
+    public ReadOnlySpan<char> AsSpan(int startByte, int endByte)
     {
         return source.AsSpan().Slice(startByte, endByte - startByte);
+    }
+
+    public ReadOnlySpan<char> AsSpan()
+    {
+        return source.AsSpan();
     }
 
     [DllImport("parser.so")]

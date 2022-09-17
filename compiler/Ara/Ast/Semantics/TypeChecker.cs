@@ -28,7 +28,7 @@ public class TypeChecker : Visitor
             throw new Exception("This shouldn't be possible.");
             
         if (r.Expression.InferredType is null)
-            throw new Exception("Unable to infer type of return expression!");
+            throw new GenericCompilerException(r.Expression.Node);
             
         if (!r.Expression.InferredType.Equals(func.InferredType))
             throw new ReturnTypeException(r);
@@ -37,7 +37,7 @@ public class TypeChecker : Visitor
     void CheckIfStatement(If i)
     {
         if (i.Predicate.InferredType is null)
-            throw new Exception("Unable to infer predicate type");
+            throw new GenericCompilerException(i.Predicate.Node);
                 
         if (!i.Predicate.InferredType.Equals(new InferredType("bool")))
             throw new IfPredicateTypeException(i);

@@ -1,0 +1,17 @@
+module main
+
+int sum(n: int) {
+  int sum = 0
+  for i in 0..n {
+    sum = sum + i
+  }
+  return sum
+}
+
+int main() {
+  int s = sum(n: 100)
+  if s == 4950 {
+    return 1
+  }
+  return 0
+}
