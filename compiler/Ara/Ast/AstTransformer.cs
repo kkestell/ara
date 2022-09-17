@@ -24,6 +24,7 @@ public static class AstTransformer
             "block"                          => Block(node, children),
             "bool"                           => Bool(node),
             "definition_list"                => DefinitionList(node, children),
+            "for_statement"                  => ForStatement(node, children),
             "float"                          => Float(node),
             "function_call_expression"       => FunctionCallExpression(node, children),
             "function_definition"            => FunctionDefinition(node, children),
@@ -83,12 +84,15 @@ public static class AstTransformer
     
     static NodeList<Definition> DefinitionList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Definition)x));
+
+    static ForStatement ForStatement(Node n, IReadOnlyList<AstNode> c) =>
+        new (n, (Identifier)c[0], (Expression)c[1], (Expression)c[2], (Block)c[3]);
     
     static Call FunctionCallExpression(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Identifier)c[0], ((NodeList<Argument>)c[1]).Nodes.ToList());
 
     static FunctionDefinition FunctionDefinition(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], ((NodeList<Parameter>)c[1]).Nodes.ToList(), (Identifier)c[2], (Block)c[3]);
+        new (n, (Identifier)c[0], (Identifier)c[1], ((NodeList<Parameter>)c[2]).Nodes.ToList(), (Block)c[3]);
 
     static Identifier Identifier(Node n) =>
         new (n, n.Span.ToString());
@@ -143,5 +147,5 @@ public static class AstTransformer
     }
 
     static VariableDeclaration VariableDeclarationStatement(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (Expression)c[1]);
+        new (n, (Identifier)c[0], (Identifier)c[1], (Expression)c[2]);
 }

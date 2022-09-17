@@ -5,23 +5,24 @@ namespace Ara.Ast.Errors;
 
 public class ReturnTypeException : CompilerException
 {
-    readonly Return returnStatement;
+    readonly Return astNode;
     
-    public ReturnTypeException(Return returnStatement) : base(returnStatement.Node)
+    public ReturnTypeException(Return astNode) : base(astNode.Node)
     {
-        this.returnStatement = returnStatement;
+        this.astNode = astNode;
     }
 
     public override string ToString()
     {
-        var func = returnStatement.NearestAncestor<FunctionDefinition>();
+        var func = astNode.NearestAncestor<FunctionDefinition>()!;
 
         var sb = new StringBuilder();
-        
-        sb.AppendLine($"fn {func.Name.Node.Span.ToString()} ({string.Join(", ", func.Parameters.Select(p => p.Node.Span.ToString()))}) -> {func.ReturnType.Node.Span.ToString()} {{");
-        sb.AppendLine($"  return {returnStatement.Expression.Node.Span.ToString()}");
-        sb.Append($"         ↑ Invalid return type `{returnStatement.Expression.InferredType?.Value}` where `{func.InferredType.Value}` was expected");
 
+        sb.AppendLine("ReturnTypeException");
+        sb.AppendLine(Location.ToString());
+        sb.AppendLine(Location.Context);
+        sb.AppendLine(Indented($"Invalid return type {astNode.Expression.InferredType!.Value} where {func.InferredType!.Value} was expected"));
+        
         return sb.ToString();
     }
 }

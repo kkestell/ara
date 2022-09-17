@@ -25,9 +25,6 @@ public class TypeResolver : Visitor
             case UnaryExpression u:
                 ResolveUnaryExpression(u);
                 break;
-            case VariableDeclaration d:
-                ResolveVariableDeclarationStatement(d);
-                break;
         }
     }
 
@@ -39,7 +36,7 @@ public class TypeResolver : Visitor
     static void ResolveBinaryExpression(BinaryExpression b)
     {
         if (b.Left.InferredType is null || b.Right.InferredType is null)
-            throw new Exception("Cannot infer type of binary expression");
+            throw new GenericCompilerException(b.Node);
 
         if (!b.Left.InferredType.Equals(b.Right.InferredType))
             throw new BinaryExpressionTypeException(b);
@@ -59,28 +56,24 @@ public class TypeResolver : Visitor
         u.InferredType = u.Right.InferredType;
     }
 
-    static void ResolveVariableReference(VariableReference e)
+    static void ResolveVariableReference(VariableReference r)
     {
-        var type = e.ResolveVariableReference(e.Name.Value);
+        var type = r.ResolveVariableReference(r.Name.Value);
 
         if (type is null)
-            throw new Exception($"Unable to find declaration of `{e.Name.Value}`.");
+            throw new ReferenceException(r);
 
-        e.InferredType = new InferredType(type);
+        r.InferredType = type;
     }
 
-    static void ResolveCallExpression(Call e)
+    static void ResolveCallExpression(Call c)
     {
-        var func = e.NearestAncestor<SourceFile>()!.Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name.Value == e.Name.Value);
+        var func = c.NearestAncestor<SourceFile>()!
+            .Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name.Value == c.Name.Value);
 
         if (func is not FunctionDefinition functionDefinition)
-            throw new Exception($"Unable to find definition for function {e.Name.Value}");
+            throw new ReferenceException(c);
 
-        e.InferredType = new InferredType(functionDefinition.ReturnType.Value);
-    }
-
-    static void ResolveVariableDeclarationStatement(VariableDeclaration d)
-    {
-        d.InferredType = d.Expression.InferredType;
+        c.InferredType = new InferredType(functionDefinition.ReturnType.Value);
     }
 }

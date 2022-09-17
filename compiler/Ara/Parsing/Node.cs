@@ -17,16 +17,21 @@ public sealed class Node
     const string SharedLibrary = "parser.so";
 
     readonly TsNode handle;
-    readonly Tree tree;
+    public readonly Tree Tree;
 
     public Node(TsNode handle, Tree tree)
     {
         this.handle = handle;
-        this.tree = tree;
+        this.Tree = tree;
     }
 
+    public Location Location => new Location(this);
+
+    public Tuple<int, int> Offset => 
+        new Tuple<int, int>(ts_node_start_byte(handle), ts_node_end_byte(handle));
+
     public ReadOnlySpan<char> Span => 
-        tree.Span(ts_node_start_byte(handle), ts_node_end_byte(handle));
+        Tree.AsSpan(ts_node_start_byte(handle), ts_node_end_byte(handle));
 
     public string Type => 
         Marshal.PtrToStringAuto(ts_node_type(handle))!;
@@ -57,7 +62,7 @@ public sealed class Node
         get
         {
             for (var i = 0; i < ChildCount; i++)
-                yield return new Node(ts_node_child(handle, i), tree);
+                yield return new Node(ts_node_child(handle, i), Tree);
         }
     }
 
@@ -66,12 +71,12 @@ public sealed class Node
         get
         {
             for (var i = 0; i < NamedChildCount; i++)
-                yield return new Node(ts_node_named_child(handle, i), tree);
+                yield return new Node(ts_node_named_child(handle, i), Tree);
         }
     }
 
     Node? OptionalNode(TsNode node) =>
-        ts_node_is_null(node) ? null : new Node(node, tree);
+        ts_node_is_null(node) ? null : new Node(node, Tree);
 
     [DllImport(SharedLibrary)]
     static extern IntPtr ts_node_type(TsNode node);

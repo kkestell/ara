@@ -27,7 +27,7 @@ public class Block
     public Function Function { get; }
 
 
-    public string RegisterName(string name)
+    public string RegisterName(string? name = null)
     {
         return scope.Register(name);
     }

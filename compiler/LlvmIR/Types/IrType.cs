@@ -12,6 +12,7 @@ public abstract record IrType
             "int"   => Int32,
             "bool"  => Bool,
             "float" => Float,
+            "string" => String,
             
             _ => throw new NotImplementedException()
         };
@@ -21,4 +22,5 @@ public abstract record IrType
     public static readonly IntType Int32 = new (32);
     public static readonly BitType Bool = new ();
     public static readonly FloatType Float = new ();
+    public static readonly StringType String = new();
 }

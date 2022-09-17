@@ -41,6 +41,74 @@ public class IrBuilder
         Block = Block.AddChild(l2);
     }
 
+    public void IfElse(Value predicate, Action<Block> thenAction, Action<Block> elseAction)
+    {
+        var l1 = new Label(Block, "if");
+        var l2 = new Label(Block, "else");
+        var l3 = new Label(Block, "endif");
+        
+        Br(predicate, l1, l2);
+        var thenBlock = Block.AddChild(l1);
+        thenAction.Invoke(thenBlock);
+        Block = thenBlock;
+        Br(l3);
+        var elseBlock = Block.AddChild(l2);
+        elseAction.Invoke(elseBlock);
+        Block = elseBlock;
+        Br(l3);
+        Block = Block.AddChild(l3);
+    }
+
+    public void For(string counter, Value start, Value end, Action<Block, NamedValue> loop)
+    {
+        var l1 = new Label(Block, "for");
+        var l2 = new Label(Block, "endfor");
+
+        // Loop direction
+        var dp = Icmp(IcmpCondition.SignedGreaterThan, end, start);
+        var delta = Alloca(IrType.Int32, 1, "delta");
+        IfElse(dp, up => up.IrBuilder().Store(new IntValue(1), delta), down => down.IrBuilder().Store(new IntValue(-1), delta));
+
+        // Init counter
+        var c = Alloca(new IntType(32), 1);
+        Store(start, c);
+        Br(l1);
+
+        // Loop body
+        var b = Block.AddChild(l1);
+        b.IrBuilder().Load(c, counter);
+        loop.Invoke(b, c);
+        Block = b;
+        
+        // Update counter
+        Store(Add(Load(c), Load(delta)), c);
+
+        var foo = Load(c);
+
+        // Loop or end
+        IfElse(
+            dp,
+            up => {
+                var upBuilder = up.IrBuilder();
+                var upP = upBuilder.Icmp(IcmpCondition.SignedLessThan, foo, end);
+                upBuilder.Br(upP, l1, l2);
+            },
+            down => {
+                var downBuilder = down.IrBuilder();
+                var downP = downBuilder.Icmp(IcmpCondition.SignedGreaterThan, foo, end);
+                downBuilder.Br(downP, l1, l2);
+            }
+        );
+
+        Br(l2);
+        Block = Block.AddChild(l2);
+    }
+
+    public void Br(Label label)
+    {
+        Block.AddInstruction(new UBr(Block, label));
+    }
+
     public void Br(Value predicate, Label l1, Label l2)
     {
         Block.AddInstruction(new Br(Block, predicate, l1, l2));

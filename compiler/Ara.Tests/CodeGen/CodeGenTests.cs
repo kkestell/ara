@@ -11,7 +11,7 @@ public class CodeGenTests : TestBase
         using var tree = Parse(@"
             module main
 
-            fn main() -> int {
+            int main() {
               return 1
             }
         ");
@@ -32,7 +32,7 @@ public class CodeGenTests : TestBase
         using var tree = Parse(@"
             module main
 
-            fn fib(n: int) -> int {
+            int fib(n: int) {
               if n == 0 {
                 return 0
               }
@@ -40,10 +40,6 @@ public class CodeGenTests : TestBase
                 return 1
               }
               return fib(n: n-2) + fib(n: n-1)
-            }
-
-            fn main() -> int {
-              return fib(n: 10)
             }
         ");
         var ast = AstTransformer.Transform(tree);
@@ -68,11 +64,6 @@ public class CodeGenTests : TestBase
               %""7"" = call i32 @fib(i32 %""6"")
               %""8"" = add i32 %""5"", %""7""
               ret i32 %""8""
-            }
-            define i32 @main () {
-            entry:
-              %""0"" = call i32 @fib(i32 10)
-              ret i32 %""0""
             }
         ");
     }

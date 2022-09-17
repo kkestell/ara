@@ -2,7 +2,7 @@ namespace LlvmIR.Values;
 
 public abstract class NamedValue : Value
 {
-    protected NamedValue(Block block, string? name)
+    protected NamedValue(Block block, string? name = null)
     {
         Name = block.RegisterName(name);
     }

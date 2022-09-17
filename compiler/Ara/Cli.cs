@@ -14,7 +14,7 @@ public static class Cli
         // Parse
             
         using var parser = new Parser();
-        using var tree = parser.Parse(File.ReadAllText(filename));
+        using var tree = parser.Parse(File.ReadAllText(filename), filename);
         
         // AST
         
@@ -24,6 +24,7 @@ public static class Cli
 
         try
         {
+            new ScopeBuilder().Visit(ast);
             new TypeResolver().Visit(ast);
             new TypeChecker().Visit(ast);
         }
@@ -42,6 +43,8 @@ public static class Cli
         // Generate IR
         
         var ir = new CodeGenerator().Generate(ast);
+
+        Console.WriteLine(ir);
         
         #region Output
         

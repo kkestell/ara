@@ -97,6 +97,13 @@ public class CodeGenerator
                     builder.Store(val, ptr, a.Name.Value);
                     break;
                 }
+                case ForStatement f:
+                {
+                    var s = EmitExpression(builder, f.Start);
+                    var e = EmitExpression(builder, f.End);
+                    builder.For(f.Counter.Value, s, e, (loop, cnt) => EmitBlock(f.Block, loop.IrBuilder()));
+                    break;
+                }
             }
         }
     }

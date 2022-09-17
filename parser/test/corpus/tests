@@ -1,10 +1,11 @@
 =================================================
-Return Int
+String
 =================================================
 
 module test
-fn test() -> int {
-  return 1
+
+void main() {
+  string str = "hello world"
 }
 
 -------------------------------------------------
@@ -15,81 +16,11 @@ fn test() -> int {
   (definition_list
     (function_definition
       (identifier)
-      (parameter_list)
-      (type)
-      (block
-        (statement_list
-          (return_statement
-            (integer)))))))
-
-=================================================
-Return String
-=================================================
-
-module test
-fn test() -> string {
-  return "hello world"
-}
-
--------------------------------------------------
-
-(source_file
-  (module_declaration
-    (identifier))
-  (definition_list
-    (function_definition
       (identifier)
       (parameter_list)
-      (type)
       (block
         (statement_list
-          (return_statement
+          (variable_declaration_statement
+            (identifier)
+            (identifier)
             (string)))))))
-
-=================================================
-Return Bool
-=================================================
-
-module test
-fn test() -> bool {
-  return true
-}
-
--------------------------------------------------
-
-(source_file
-  (module_declaration
-    (identifier))
-  (definition_list
-    (function_definition
-      (identifier)
-      (parameter_list)
-      (type)
-      (block
-        (statement_list
-          (return_statement
-            (bool)))))))
-
-=================================================
-Return Float
-=================================================
-
-module test
-fn test() -> float {
-  return 3.14
-}
-
--------------------------------------------------
-
-(source_file
-  (module_declaration
-    (identifier))
-  (definition_list
-    (function_definition
-      (identifier)
-      (parameter_list)
-      (type)
-      (block
-        (statement_list
-          (return_statement
-            (float)))))))
