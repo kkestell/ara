@@ -4,13 +4,12 @@ namespace Ara.Ast.Errors;
 
 public class IfPredicateTypeException : SemanticException
 {
-    IfPredicateTypeException(If node, string message) : base(node.Node, message)
+    public IfPredicateTypeException(If node) : base(node, BuildMessage(node))
     {
     }
 
-    public static IfPredicateTypeException Create(If node)
+    static string BuildMessage(If node)
     {
-        var message = $"Invalid predicate type {node.Predicate.InferredType!.Value} where bool was expected.";
-        return new IfPredicateTypeException(node, message);
+        return $"Invalid predicate type {node.Predicate.InferredType!.Value} where bool was expected.";
     }
 }

@@ -4,13 +4,12 @@ namespace Ara.Ast.Errors;
 
 public class BinaryExpressionTypeException : SemanticException
 {
-    BinaryExpressionTypeException(BinaryExpression node, string message) : base(node.Node, message)
+    public BinaryExpressionTypeException(BinaryExpression node) : base(node, BuildMessage(node))
     {
     }
 
-    public static BinaryExpressionTypeException Create(BinaryExpression node)
+    static string BuildMessage(BinaryExpression node)
     {
-        var message = $"Binary expression left hand side {node.Left.InferredType!.Value} doesn't match right hand side {node.Right.InferredType!.Value}.";
-        return new BinaryExpressionTypeException(node, message);
+        return $"Binary expression left hand side {node.Left.InferredType!.Value} doesn't match right hand side {node.Right.InferredType!.Value}.";
     }
 }

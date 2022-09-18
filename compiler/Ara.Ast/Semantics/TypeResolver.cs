@@ -19,11 +19,11 @@ public class TypeResolver : Visitor
             case BinaryExpression b:
                 ResolveBinaryExpression(b);
                 break;
-            case Call c:
-                ResolveCallExpression(c);
-                break;
             case UnaryExpression u:
                 ResolveUnaryExpression(u);
+                break;
+            case Call c:
+                ResolveCallExpression(c);
                 break;
         }
     }
@@ -33,13 +33,23 @@ public class TypeResolver : Visitor
         c.InferredType = new InferredType(c.Type.Value);
     }
 
+    static void ResolveVariableReference(VariableReference r)
+    {
+        var type = r.ResolveVariableReference(r.Name.Value);
+
+        if (type is null)
+            throw new ReferenceException(r);
+
+        r.InferredType = type;
+    }
+    
     static void ResolveBinaryExpression(BinaryExpression b)
     {
         if (b.Left.InferredType is null || b.Right.InferredType is null)
-            throw BinaryExpressionTypeException.Create(b);
+            throw new BinaryExpressionTypeException(b);
 
         if (!b.Left.InferredType.Equals(b.Right.InferredType))
-            throw BinaryExpressionTypeException.Create(b);
+            throw new BinaryExpressionTypeException(b);
 
         if (b.Op is BinaryOperator.Equality or BinaryOperator.Inequality)
         {
@@ -56,23 +66,13 @@ public class TypeResolver : Visitor
         u.InferredType = u.Right.InferredType;
     }
 
-    static void ResolveVariableReference(VariableReference r)
-    {
-        var type = r.ResolveVariableReference(r.Name.Value);
-
-        if (type is null)
-            throw ReferenceException.Create(r);
-
-        r.InferredType = type;
-    }
-
     static void ResolveCallExpression(Call c)
     {
         var func = c.NearestAncestor<SourceFile>()!
             .Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name.Value == c.Name.Value);
 
         if (func is not FunctionDefinition functionDefinition)
-            throw ReferenceException.Create(c);
+            throw new ReferenceException(c);
 
         c.InferredType = new InferredType(functionDefinition.ReturnType.Value);
     }

@@ -4,11 +4,11 @@ namespace Ara.Ast.Errors;
 
 public class ReferenceException : SemanticException
 {
-    ReferenceException(AstNode node, string message) : base(node.Node, message)
+    public ReferenceException(AstNode node) : base(node, BuildMessage(node))
     {
     }
 
-    public static ReferenceException Create(AstNode node)
+    static string BuildMessage(AstNode node)
     {
         var name = node switch
         {
@@ -17,7 +17,6 @@ public class ReferenceException : SemanticException
             _ => throw new Exception($"Unsupported node type {node.GetType()}")
         };
         
-        var message = $"The name {name} is not defined.";
-        return new ReferenceException(node, message);
+        return $"The name {name} is not defined.";
     }
 }
