@@ -28,18 +28,18 @@ public class TypeChecker : Visitor
             throw new Exception("This shouldn't be possible.");
             
         if (r.Expression.InferredType is null)
-            throw new GenericCompilerException(r.Expression.Node, "Expression type could not be inferred.");
+            throw SemanticException.Create(r.Expression, "Expression type could not be inferred.");
             
         if (!r.Expression.InferredType.Equals(func.InferredType))
-            throw new ReturnTypeException(r);
+            throw ReturnTypeException.Create(r);
     }
 
     void CheckIfStatement(If i)
     {
         if (i.Predicate.InferredType is null)
-            throw new GenericCompilerException(i.Predicate.Node, "Expression type could not be inferred.");
+            throw SemanticException.Create(i.Predicate, "Expression type could not be inferred.");
                 
         if (!i.Predicate.InferredType.Equals(new InferredType("bool")))
-            throw new IfPredicateTypeException(i);
+            throw IfPredicateTypeException.Create(i);
     }
 }

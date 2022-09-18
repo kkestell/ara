@@ -1,6 +1,20 @@
 # Ara
 
-Ara is an imperative, statically typed programming language.
+Ara is an imperative, statically typed programming language that compiles to LLVM IR.
+
+## TODO
+
+- [ ] Arrays
+- [ ] Strings
+- [ ] Structs
+- [ ] Fix up `for` code generation
+- [ ] Escape analysis
+- [ ] CI/CD
+- [ ] Proper CLI w/ options
+- [ ] Precompiled parser for macOS, Linux, and Windows
+- [ ] Native AOT
+- [ ] .NET 7
+- [ ] Windows support?
 
 ## Overview
 

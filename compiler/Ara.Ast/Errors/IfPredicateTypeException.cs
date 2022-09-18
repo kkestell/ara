@@ -2,10 +2,15 @@ using Ara.Ast.Nodes;
 
 namespace Ara.Ast.Errors;
 
-public class IfPredicateTypeException : CompilerException
+public class IfPredicateTypeException : SemanticException
 {
-    public IfPredicateTypeException(If astNode) : base(astNode.Node)
+    IfPredicateTypeException(If node, string message) : base(node.Node, message)
     {
-        Description = $"Invalid predicate type {astNode.Predicate.InferredType!.Value} where bool was expected.";
+    }
+
+    public static IfPredicateTypeException Create(If node)
+    {
+        var message = $"Invalid predicate type {node.Predicate.InferredType!.Value} where bool was expected.";
+        return new IfPredicateTypeException(node, message);
     }
 }

@@ -6,7 +6,7 @@ namespace Ara.Ast.Tests.Semantics;
 public class TypeResolverTests : TestBase
 {
     [Test]
-    public void InferrsTypeOfExpressions()
+    public void InfersTypeOfExpressions()
     {
         using var tree = Parse(@"
             module main

@@ -1,5 +1,6 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
+using Ara.CodeGen.Errors;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
@@ -115,7 +116,7 @@ public class CodeGenerator
         var right = builder.ResolveValue(EmitExpression(builder, expression.Right));
 
         if (!left.Type.Equals(right.Type))
-            throw new BinaryExpressionTypeException(expression);
+            throw new CodeGenException($"Binary expression types {left.Type.ToIr()} and {right.Type.ToIr()} don't match.");
 
         if (left.Type.GetType() == typeof(IntType))
         {
@@ -130,7 +131,7 @@ public class CodeGenerator
                 BinaryOperator.Equality   => builder.Icmp(IcmpCondition.Equal, left, right),
                 BinaryOperator.Inequality => builder.Icmp(IcmpCondition.NotEqual, left, right),
 
-                _ => throw new GenericCompilerException(expression.Node, $"Unsupported unary operator {expression.Op.ToString()}.")
+                _ => throw new CodeGenException($"Unsupported unary operator {expression.Op.ToString()}.")
             };
         }
         
@@ -147,11 +148,11 @@ public class CodeGenerator
                 BinaryOperator.Equality   => builder.Fcmp(FcmpCondition.OrderedAndEqual, left, right),
                 BinaryOperator.Inequality => builder.Fcmp(FcmpCondition.OrderedAndNotEqual, left, right),
                 
-                _ => throw new GenericCompilerException(expression.Node, $"Unsupported binary operator {expression.Op.ToString()}.")
+                _ => throw new CodeGenException($"Unsupported binary operator {expression.Op.ToString()}.")
             };   
         }
 
-        throw new GenericCompilerException(expression.Node, $"Unsupported binary operand type {left.Type.ToIr()}");
+        throw new CodeGenException($"Unsupported binary operand type {left.Type.ToIr()}");
     }
 
     Value EmitVariableReference(IrBuilder builder, VariableReference reference)
@@ -174,12 +175,12 @@ public class CodeGenerator
             var p = functionType.Parameters.SingleOrDefault(x => x.Name == a.Name.Value);
             
             if (p is null)
-                throw new GenericCompilerException(a.Node, $"Function {name} has no parameter {a.Name.Value}");
+                throw new CodeGenException($"Function {name} has no parameter {a.Name.Value}");
 
             var v = EmitExpression(builder, a.Expression);
 
             if (!v.Type.Equals(p.Type))
-                throw new GenericCompilerException(a.Expression.Node, $"Invalid argument type {v.Type.ToIr()} where {p.Type.ToIr()} was expected.");
+                throw new CodeGenException($"Invalid argument type {v.Type.ToIr()} where {p.Type.ToIr()} was expected.");
             
             args.Add(new Argument(p.Type, v));
         }
@@ -189,15 +190,15 @@ public class CodeGenerator
     
     Value EmitExpression(IrBuilder builder, Expression expression)
     {
-        if (expression is Constant c)
+        if (expression is Constant constant)
         {
-            return c.Type.Value switch
+            return constant.Type.Value switch
             {
-                "int"   => new IntValue(int.Parse(c.Value)),
-                "float" => new FloatValue(float.Parse(c.Value)),
-                "bool"  => new BoolValue(bool.Parse(c.Value)),
+                "int"   => new IntValue(int.Parse(constant.Value)),
+                "float" => new FloatValue(float.Parse(constant.Value)),
+                "bool"  => new BoolValue(bool.Parse(constant.Value)),
                 
-                _ => throw new GenericCompilerException(expression.Node, $"A constant of type {c.Type.Value} is not supported here.")
+                _ => throw new CodeGenException($"A constant of type {constant.Type.Value} is not supported here.")
             };
         }
         
@@ -205,9 +206,9 @@ public class CodeGenerator
         {
             BinaryExpression  e => EmitBinaryExpression(builder, e),
             VariableReference r => EmitVariableReference(builder, r),
-            Call    f => EmitFunctionCallExpression(builder, f),
+            Call              c => EmitFunctionCallExpression(builder, c),
             
-            _ => throw new GenericCompilerException(expression.Node, $"Unsupported expression type {expression.GetType()}.")
+            _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
         };
     }
 }
