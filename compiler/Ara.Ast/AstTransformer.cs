@@ -85,7 +85,7 @@ public static class AstTransformer
     static NodeList<Definition> DefinitionList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Definition)x));
 
-    static ForStatement ForStatement(Node n, IReadOnlyList<AstNode> c) =>
+    static For ForStatement(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Identifier)c[0], (Expression)c[1], (Expression)c[2], (Block)c[3]);
     
     static Call FunctionCallExpression(Node n, IReadOnlyList<AstNode> c) =>
