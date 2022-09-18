@@ -1,9 +1,9 @@
 module main
 
-fn add(a: int, b: int) -> int {
+int add(a: int, b: int) {
   return a + b
 }
 
-fn main() -> int {
+int main() {
   return add(a: 1, b: 2)
 }

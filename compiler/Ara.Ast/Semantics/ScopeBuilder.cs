@@ -9,7 +9,7 @@ public class ScopeBuilder : Visitor
     {
         switch (node)
         {
-            case ForStatement f:
+            case For f:
                 ResolveFor(f);
                 break;
             case FunctionDefinition f:
@@ -21,7 +21,7 @@ public class ScopeBuilder : Visitor
         }
     }
     
-    static void ResolveFor(ForStatement f)
+    static void ResolveFor(For f)
     {
         f.Block.Scope.Add(f.Counter.Value, new InferredType("int"));
     }
