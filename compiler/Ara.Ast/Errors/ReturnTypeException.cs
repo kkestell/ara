@@ -1,4 +1,3 @@
-using System.Text;
 using Ara.Ast.Nodes;
 
 namespace Ara.Ast.Errors;

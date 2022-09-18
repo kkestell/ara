@@ -2,25 +2,12 @@
 String
 =================================================
 
-module test
+module main
 
-void main() {
-  string str = "hello world"
+int main() {
+  return 0
 }
 
 -------------------------------------------------
 
-(source_file
-  (module_declaration
-    (identifier))
-  (definition_list
-    (function_definition
-      (identifier)
-      (identifier)
-      (parameter_list)
-      (block
-        (statement_list
-          (variable_declaration_statement
-            (identifier)
-            (identifier)
-            (string)))))))
+

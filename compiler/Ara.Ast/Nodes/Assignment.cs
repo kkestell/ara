@@ -1,5 +1,4 @@
-﻿using System;
-using Ara.Parsing;
+﻿using Ara.Parsing;
 
 namespace Ara.Ast.Nodes;
 
