@@ -36,10 +36,10 @@ public class TypeResolver : Visitor
     static void ResolveBinaryExpression(BinaryExpression b)
     {
         if (b.Left.InferredType is null || b.Right.InferredType is null)
-            throw new BinaryExpressionTypeException(b);
+            throw BinaryExpressionTypeException.Create(b);
 
         if (!b.Left.InferredType.Equals(b.Right.InferredType))
-            throw new BinaryExpressionTypeException(b);
+            throw BinaryExpressionTypeException.Create(b);
 
         if (b.Op is BinaryOperator.Equality or BinaryOperator.Inequality)
         {
@@ -61,7 +61,7 @@ public class TypeResolver : Visitor
         var type = r.ResolveVariableReference(r.Name.Value);
 
         if (type is null)
-            throw new ReferenceException(r);
+            throw ReferenceException.Create(r);
 
         r.InferredType = type;
     }
@@ -72,7 +72,7 @@ public class TypeResolver : Visitor
             .Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name.Value == c.Name.Value);
 
         if (func is not FunctionDefinition functionDefinition)
-            throw new ReferenceException(c);
+            throw ReferenceException.Create(c);
 
         c.InferredType = new InferredType(functionDefinition.ReturnType.Value);
     }

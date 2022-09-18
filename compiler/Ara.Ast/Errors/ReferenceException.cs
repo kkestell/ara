@@ -2,16 +2,22 @@ using Ara.Ast.Nodes;
 
 namespace Ara.Ast.Errors;
 
-public class ReferenceException : CompilerException
+public class ReferenceException : SemanticException
 {
-    public ReferenceException(AstNode astNode) : base(astNode.Node)
+    ReferenceException(AstNode node, string message) : base(node.Node, message)
     {
-        var name = astNode switch
+    }
+
+    public static ReferenceException Create(AstNode node)
+    {
+        var name = node switch
         {
             VariableReference r => r.Name.Value,
             Call c => c.Name.Value,
-            _ => throw new Exception($"Unsupported node type {astNode.GetType()}")
+            _ => throw new Exception($"Unsupported node type {node.GetType()}")
         };
-        Description = $"The name {name} is not defined.";
+        
+        var message = $"The name {name} is not defined.";
+        return new ReferenceException(node, message);
     }
 }

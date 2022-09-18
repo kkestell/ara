@@ -28,7 +28,7 @@ public static class Cli
             new TypeResolver().Visit(ast);
             new TypeChecker().Visit(ast);
         }
-        catch (CompilerException ex)
+        catch (SemanticException ex)
         {
             Console.WriteLine(ex.ToString());
             return 1;
