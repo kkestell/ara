@@ -5,15 +5,17 @@ VisualStudioVersion = 25.0.1700.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara", "Ara\Ara.csproj", "{13C65A58-C18E-4371-983B-7C364E7C9A76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LlvmIR.Tests", "LlvmIR.Tests\LlvmIR.Tests.csproj", "{51173D9F-F529-481A-87DC-E7ECA51049B1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.Tests", "Ara.Tests\Ara.Tests.csproj", "{E17D8CE5-1EA2-4862-B0EF-D0B040443453}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.Ast", "Ara.Ast\Ara.Ast.csproj", "{9ECAE75B-BC27-44BB-AB12-2CDF9647A80F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.CodeGen", "Ara.CodeGen\Ara.CodeGen.csproj", "{39158B27-0E8F-46DC-BFCA-33393011CC77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.Parsing", "Ara.Parsing\Ara.Parsing.csproj", "{1DCABB43-39EA-463A-958A-61FC8478B0A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.Parsing.Tests", "Ara.Parsing.Tests\Ara.Parsing.Tests.csproj", "{B10A8F58-5988-40F7-B6D8-31E2E139E48C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.CodeGen.Tests", "Ara.CodeGen.Tests\Ara.CodeGen.Tests.csproj", "{51173D9F-F529-481A-87DC-E7ECA51049B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.Ast.Tests", "Ara.Ast.Tests\Ara.Ast.Tests.csproj", "{E17D8CE5-1EA2-4862-B0EF-D0B040443453}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,11 +47,17 @@ Global
 		{1DCABB43-39EA-463A-958A-61FC8478B0A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DCABB43-39EA-463A-958A-61FC8478B0A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DCABB43-39EA-463A-958A-61FC8478B0A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B10A8F58-5988-40F7-B6D8-31E2E139E48C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B10A8F58-5988-40F7-B6D8-31E2E139E48C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B10A8F58-5988-40F7-B6D8-31E2E139E48C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B10A8F58-5988-40F7-B6D8-31E2E139E48C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2DF6109F-91BC-4B7A-ACD6-8B813DAFCF18}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

@@ -1,8 +1,12 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
-using Ara.CodeGen.Types;
-using Ara.CodeGen.Values;
-using Ara.CodeGen.Values.Instructions;
+using Ara.CodeGen.IR;
+using Ara.CodeGen.IR.Types;
+using Ara.CodeGen.IR.Values;
+using Ara.CodeGen.IR.Values.Instructions;
+using Argument = Ara.CodeGen.IR.Argument;
+using Call = Ara.Ast.Nodes.Call;
+using Parameter = Ara.CodeGen.IR.Parameter;
 
 namespace Ara.CodeGen;
 
@@ -155,7 +159,7 @@ public class CodeGenerator
         return builder.Block.FindNamedValue(reference.Name.Value);
     }
 
-    Value EmitFunctionCallExpression(IrBuilder builder, Ast.Nodes.Call call)
+    Value EmitFunctionCallExpression(IrBuilder builder, Call call)
     {
         var name = call.Name.Value;
 
@@ -201,7 +205,7 @@ public class CodeGenerator
         {
             BinaryExpression  e => EmitBinaryExpression(builder, e),
             VariableReference r => EmitVariableReference(builder, r),
-            Ast.Nodes.Call    f => EmitFunctionCallExpression(builder, f),
+            Call    f => EmitFunctionCallExpression(builder, f),
             
             _ => throw new GenericCompilerException(expression.Node, $"Unsupported expression type {expression.GetType()}.")
         };
