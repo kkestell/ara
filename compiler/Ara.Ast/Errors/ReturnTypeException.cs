@@ -4,15 +4,13 @@ namespace Ara.Ast.Errors;
 
 public class ReturnTypeException : SemanticException
 {
-    ReturnTypeException(AstNode node, string message) : base(node.Node, message)
+    public ReturnTypeException(Return node) : base(node, BuildMessage(node))
     {
     }
 
-    public static ReturnTypeException Create(Return node)
+    static string BuildMessage(Return node)
     {
         var func = node.NearestAncestor<FunctionDefinition>()!;
-        var message = $"Invalid return type {node.Expression.InferredType!.Value} where {func.InferredType!.Value} was expected.";
-        
-        return new ReturnTypeException(node, message);
+        return $"Invalid return type {node.Expression.InferredType!.Value} where {func.InferredType!.Value} was expected.";
     }
 }

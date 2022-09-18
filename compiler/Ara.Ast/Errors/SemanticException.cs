@@ -6,20 +6,15 @@ namespace Ara.Ast.Errors;
 
 public class SemanticException : Exception
 {
-    protected SemanticException(Node node, string message) : base(message)
+    public SemanticException(AstNode node, string message) : base(message)
     {
         Node = node;
     }
 
-    public Node Node { get; }
+    public AstNode Node { get; }
 
-    public Location Location => Node.Location;
+    public Location Location => Node.Node.Location;
 
-    public static SemanticException Create(AstNode node, string message)
-    {
-        return new SemanticException(node.Node, message);
-    }
-    
     public override string ToString()
     {
         var sb = new StringBuilder();
