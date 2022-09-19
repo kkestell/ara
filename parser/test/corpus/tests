@@ -1,13 +1,33 @@
 =================================================
-String
+Variable Declaration
 =================================================
 
 module main
 
-int main() {
-  return 0
+void main() {
+  int[] x
+  int y = 1
 }
 
 -------------------------------------------------
 
-
+(source_file
+  (module_declaration
+    (identifier))
+  (definition_list
+    (function_definition
+      (type
+        (identifier))
+      (identifier)
+      (parameter_list)
+      (block
+        (statement_list
+          (variable_declaration_statement
+            (type
+              (identifier))
+            (identifier))
+          (variable_declaration_statement
+            (type
+              (identifier))
+            (identifier)
+            (integer)))))))

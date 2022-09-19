@@ -1,4 +1,3 @@
-using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
 using Ara.CodeGen.Errors;
 using Ara.CodeGen.IR;
@@ -6,7 +5,10 @@ using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
+using Block = Ara.Ast.Nodes.Block;
 using Call = Ara.Ast.Nodes.Call;
+using FloatType = Ara.CodeGen.IR.Types.FloatType;
+using IntegerType = Ara.CodeGen.IR.Types.IntegerType;
 using Parameter = Ara.CodeGen.IR.Parameter;
 
 namespace Ara.CodeGen;
@@ -18,9 +20,9 @@ public class CodeGenerator
     FunctionType MakeFunctionType(FunctionDefinition def)
     {
         return new FunctionType(
-            IrType.FromString(def.ReturnType.Value),
+            IrType.FromType(def.Type),
             def.Parameters.Select(x =>
-                new Parameter(x.Name.Value, IrType.FromString(x.Type.Value))).ToList());
+                new Parameter(x.Name.Value, IrType.FromType(x.Type))).ToList());
     }
 
     public string Generate(AstNode root)
@@ -66,7 +68,7 @@ public class CodeGenerator
         EmitBlock(def.Block, builder);
     }
     
-    void EmitBlock(Ast.Nodes.Block block, IrBuilder builder)
+    void EmitBlock(Block block, IrBuilder builder)
     {
         foreach (var statement in block.Statements)
         {
@@ -81,9 +83,12 @@ public class CodeGenerator
                 }
                 case VariableDeclaration v:
                 {
-                    var val = EmitExpression(builder, v.Expression);
-                    var ptr = builder.Alloca(IrType.FromString(v.InferredType!.Value), 1, v.Name.Value);
-                    builder.Store(val, ptr);
+                    var ptr = builder.Alloca(IrType.FromType(v.Type), 1, v.Name.Value);
+                    if (v.Expression is not null)
+                    {
+                        var val = EmitExpression(builder, v.Expression);
+                        builder.Store(val, ptr);
+                    }
                     break;
                 }
                 case If i:
@@ -118,7 +123,7 @@ public class CodeGenerator
         if (!left.Type.Equals(right.Type))
             throw new CodeGenException($"Binary expression types {left.Type.ToIr()} and {right.Type.ToIr()} don't match.");
 
-        if (left.Type.GetType() == typeof(IntType))
+        if (left.Type.GetType() == typeof(IntegerType))
         {
             return expression.Op switch
             {
@@ -192,13 +197,16 @@ public class CodeGenerator
     {
         if (expression is Constant constant)
         {
-            return constant.Type.Value switch
+            if (constant.Type is null)
+                throw new NullReferenceException();
+            
+            return constant.Type! switch
             {
-                "int"   => new IntValue(int.Parse(constant.Value)),
-                "float" => new FloatValue(float.Parse(constant.Value)),
-                "bool"  => new BoolValue(bool.Parse(constant.Value)),
+                Ast.Semantics.IntegerType  => new IntegerValue(int.Parse(constant.Value)),
+                Ast.Semantics.FloatType    => new FloatValue(float.Parse(constant.Value)),
+                Ast.Semantics.BooleanType  => new BooleanValue(bool.Parse(constant.Value)),
                 
-                _ => throw new CodeGenException($"A constant of type {constant.Type.Value} is not supported here.")
+                _ => throw new CodeGenException($"A constant of type {constant.Type} is not supported here.")
             };
         }
         

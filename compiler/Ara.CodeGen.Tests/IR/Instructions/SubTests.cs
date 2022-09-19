@@ -8,7 +8,7 @@ public class SubTests : TestBase
     [Test]
     public void SubtractTwoIntegers()
     {
-        builder.Sub(new IntValue(1), new IntValue(1));
+        builder.Sub(new IntegerValue(1), new IntegerValue(1));
 
         AssertIr(module.Emit(), @"
             define void @test () {
@@ -23,7 +23,7 @@ public class SubTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Sub(new IntValue(1), new FloatValue(3.14f));
+            builder.Sub(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 

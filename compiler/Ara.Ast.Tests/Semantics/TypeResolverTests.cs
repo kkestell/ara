@@ -23,7 +23,7 @@ public class TypeResolverTests : TestBase
         var block = ((FunctionDefinition)ast.Definitions.First()).Block;
         var ret = (Return)block.Statements.First();
 
-        Assert.That(ret.Expression.InferredType, Is.Not.Null);
-        Assert.That(ret.Expression.InferredType!.Value, Is.EqualTo("int"));
+        Assert.That(ret.Expression.Type, Is.Not.Null);
+        Assert.That(ret.Expression.Type, Is.TypeOf<IntegerType>());
     }
 }

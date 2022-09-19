@@ -20,7 +20,7 @@ public class ReturnTests : TestBase
     [Test]
     public void ReturnAnInteger()
     {
-        builder.Return(new IntValue(1));
+        builder.Return(new IntegerValue(1));
         
         AssertIr(module.Emit(), @"
             define void @test () {

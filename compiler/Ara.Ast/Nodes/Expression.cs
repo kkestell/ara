@@ -1,9 +1,9 @@
-using Ara.Ast.Types;
 using Ara.Parsing;
+using Type = Ara.Ast.Semantics.Type;
 
 namespace Ara.Ast.Nodes;
 
 public abstract record Expression(Node Node) : AstNode(Node)
 {
-    public InferredType? InferredType { get; set; }
+    public Type? Type { get; set; }
 }

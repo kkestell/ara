@@ -10,12 +10,12 @@ public class BrTests : TestBase
     {
         var l1 = builder.Label("l1");
         var l2 = builder.Label("l2");
-        var pred = builder.Icmp(IcmpCondition.Equal, new IntValue(1), new IntValue(1));
+        var pred = builder.Icmp(IcmpCondition.Equal, new IntegerValue(1), new IntegerValue(1));
         builder.Br(pred, l1, l2);
         builder.Block.AddInstruction(l1);
-        builder.Add(new IntValue(1), new IntValue(2));
+        builder.Add(new IntegerValue(1), new IntegerValue(2));
         builder.Block.AddInstruction(l2);
-        builder.Add(new IntValue(3), new IntValue(4));
+        builder.Add(new IntegerValue(3), new IntegerValue(4));
 
         AssertIr(module.Emit(), @"
             define void @test () {

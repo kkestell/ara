@@ -10,6 +10,6 @@ public class BinaryExpressionTypeException : SemanticException
 
     static string BuildMessage(BinaryExpression node)
     {
-        return $"Binary expression left hand side {node.Left.InferredType!.Value} doesn't match right hand side {node.Right.InferredType!.Value}.";
+        return $"Binary expression left hand side {node.Left.Type} doesn't match right hand side {node.Right.Type}.";
     }
 }

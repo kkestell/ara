@@ -39,12 +39,9 @@ public static class Cli
             Console.WriteLine(ex.StackTrace);
         }
         
-        
         // Generate IR
         
         var ir = new CodeGenerator().Generate(ast);
-
-        Console.WriteLine(ir);
         
         #region Output
         
@@ -57,11 +54,19 @@ public static class Cli
         Copy(dir, name, ".ll");
         
         // Make binary
-        
-        Run("llc", $"-filetype=obj -opaque-pointers -O3 {name}.ll -o {name}.o", dir);
-        Run("clang", $"{name}.o -o {name}", dir);
-        Copy(dir, name);
 
+        try
+        {
+            Run("llc", $"-filetype=obj -opaque-pointers -O3 {name}.ll -o {name}.o", dir);
+            Run("clang", $"{name}.o -o {name}", dir);
+            Copy(dir, name);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.StackTrace);
+        }
+        
         // Make AST graph
         
         /*

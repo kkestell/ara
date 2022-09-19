@@ -15,7 +15,7 @@ public class SDiv : Instruction
         if (!left.Type.Equals(right.Type))
             throw new ArgumentException();
 
-        if (left.Type.GetType() != typeof(IntType))
+        if (left.Type.GetType() != typeof(IntegerType))
             throw new ArgumentException();
         
         this.left = left;

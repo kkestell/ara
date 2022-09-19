@@ -8,7 +8,7 @@ public class NamedValueTests : TestBase
     [Test]
     public void UseTheProvidedValue()
     {
-        builder.Add(new IntValue(1), new IntValue(1), "foo");
+        builder.Add(new IntegerValue(1), new IntegerValue(1), "foo");
 
         AssertIr(module.Emit(), @"
             define void @test () {
@@ -23,7 +23,7 @@ public class NamedValueTests : TestBase
     {
         for (var i = 0; i < 3; i++)
         {
-            builder.Add(new IntValue(1), new IntValue(1), "foo");
+            builder.Add(new IntegerValue(1), new IntegerValue(1), "foo");
         }
 
         AssertIr(module.Emit(), @"
@@ -41,10 +41,10 @@ public class NamedValueTests : TestBase
     {
         for (var i = 0; i < 3; i++)
         {
-            builder.Alloca(IrType.Int32, 1, "foo");
+            builder.Alloca(IrType.Integer, 1, "foo");
             var child = builder.Block.AddChild(builder.Label("bar"));
             builder = child.IrBuilder();
-            builder.Alloca(IrType.Int32, 1, "bar");
+            builder.Alloca(IrType.Integer, 1, "bar");
         }
 
         AssertIr(module.Emit(), @"

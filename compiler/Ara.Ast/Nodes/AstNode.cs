@@ -1,5 +1,5 @@
-using Ara.Ast.Types;
 using Ara.Parsing;
+using Type = Ara.Ast.Semantics.Type;
 
 namespace Ara.Ast.Nodes;
 
@@ -35,7 +35,7 @@ public abstract record AstNode(Node Node)
         return a;
     }
 
-    public InferredType? ResolveVariableReference(string name)
+    public Type? ResolveVariableReference(string name)
     {
         var blk = NearestAncestor<Block>();
         while (true)

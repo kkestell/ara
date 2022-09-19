@@ -11,8 +11,8 @@ public class FunctionTests : TestBase
     {
         module = new Module();
         
-        var type = new FunctionType(IrType.Int32,
-            new[] { new Parameter("a", IrType.Int32), new Parameter("b", IrType.Int32) });
+        var type = new FunctionType(IrType.Integer,
+            new[] { new Parameter("a", IrType.Integer), new Parameter("b", IrType.Integer) });
         var function = module.AddFunction("test", type);
         
         var block = function.AddBlock();

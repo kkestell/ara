@@ -1,6 +1,5 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
-using Ara.Ast.Types;
 
 namespace Ara.Ast.Semantics;
 
@@ -23,23 +22,20 @@ public class TypeChecker : Visitor
     void CheckReturnStatement(Return r)
     {
         var func = r.NearestAncestor<FunctionDefinition>();
-
-        if (func is null)
-            throw new Exception("This shouldn't be possible.");
-            
-        if (r.Expression.InferredType is null)
+        
+        if (r.Expression.Type is null)
             throw new SemanticException(r.Expression, "Expression type could not be inferred.");
             
-        if (!r.Expression.InferredType.Equals(func.InferredType))
+        if (!r.Expression.Type.Equals(func.Type))
             throw new ReturnTypeException(r);
     }
 
     void CheckIfStatement(If i)
     {
-        if (i.Predicate.InferredType is null)
+        if (i.Predicate.Type is null)
             throw new SemanticException(i.Predicate, "Expression type could not be inferred.");
                 
-        if (!i.Predicate.InferredType.Equals(new InferredType("bool")))
+        if (!i.Predicate.Type.Equals(new BooleanType()))
             throw new IfPredicateTypeException(i);
     }
 }

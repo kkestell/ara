@@ -1,5 +1,4 @@
 using Ara.Ast.Nodes;
-using Ara.Ast.Types;
 
 namespace Ara.Ast.Semantics;
 
@@ -23,20 +22,20 @@ public class ScopeBuilder : Visitor
     
     static void ResolveFor(For f)
     {
-        f.Block.Scope.Add(f.Counter.Value, new InferredType("int"));
+        f.Block.Scope.Add(f.Counter.Value, new IntegerType());
     }
     
     static void ResolveFunctionDefinition(FunctionDefinition f)
     {
         foreach (var p in f.Parameters)
         {
-            f.Block.Scope.Add(p.Name.Value, new InferredType(p.Type.Value));
+            f.Block.Scope.Add(p.Name.Value, Type.Parse(p.TypeRef.Value));
         }
     }
 
     static void ResolveVariableDeclaration(VariableDeclaration d)
     {
         var blk = d.NearestAncestor<Block>();
-        blk.Scope.Add(d.Name.Value, new InferredType(d.Type.Value));
+        blk.Scope.Add(d.Name.Value, Type.Parse(d.TypeRef.Value));
     }
 }

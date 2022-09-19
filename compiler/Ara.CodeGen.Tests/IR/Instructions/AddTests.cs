@@ -8,7 +8,7 @@ public class AddTests : TestBase
     [Test]
     public void AddTwoIntegers()
     {
-        builder.Add(new IntValue(1), new IntValue(1));
+        builder.Add(new IntegerValue(1), new IntegerValue(1));
 
         AssertIr(module.Emit(), @"
             define void @test () {
@@ -23,7 +23,7 @@ public class AddTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Add(new IntValue(1), new FloatValue(3.14f));
+            builder.Add(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
