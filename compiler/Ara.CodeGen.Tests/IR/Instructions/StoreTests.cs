@@ -8,8 +8,8 @@ public class StoreTests : TestBase
     [Test]
     public void StoreAnInteger()
     {
-        var ptr = builder.Alloca(IrType.Int32);
-        builder.Store(new IntValue(1), ptr);
+        var ptr = builder.Alloca(IrType.Integer);
+        builder.Store(new IntegerValue(1), ptr);
         
         AssertIr(module.Emit(), @"
             define void @test () {

@@ -8,7 +8,7 @@ public class LoadTests : TestBase
     [Test]
     public void LoadAnInteger()
     {
-        var ptr = builder.Alloca(IrType.Int32);
+        var ptr = builder.Alloca(IrType.Integer);
         var value = builder.Load(ptr);
         
         var ir = module.Emit();
@@ -22,7 +22,7 @@ public class LoadTests : TestBase
                   %""1"" = load i32, ptr %""0""
                 }
             ");
-            Assert.That(value.Type, Is.InstanceOf<IntType>());
+            Assert.That(value.Type, Is.InstanceOf<IntegerType>());
         });
     }
 
@@ -31,7 +31,7 @@ public class LoadTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            var ptr = builder.Alloca(IrType.Int32);
+            var ptr = builder.Alloca(IrType.Integer);
             var value = builder.Load(ptr);
             builder.Load(value);
         });

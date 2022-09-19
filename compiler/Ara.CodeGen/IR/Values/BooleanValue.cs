@@ -3,13 +3,13 @@ using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR.Values;
 
-public class BoolValue : ConstantValue
+public class BooleanValue : ConstantValue
 {
     readonly int value;
     
     public override IrType Type => IrType.Bool;
 
-    public BoolValue(bool value)
+    public BooleanValue(bool value)
     {
         this.value = value ? 1 : 0;
     }

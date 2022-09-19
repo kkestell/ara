@@ -1,5 +1,5 @@
 using Ara.Ast.Nodes;
-using Ara.Ast.Types;
+using Ara.Ast.Semantics;
 using Ara.Parsing;
 
 namespace Ara.Ast;
@@ -38,9 +38,10 @@ public static class AstTransformer
             "source_file"                    => SourceFile(node, children),
             "statement_list"                 => StatementList(node, children),
             "string"                         => String_(node),
-            "variable_reference"             => VariableReference(node, children),
+            "type"                           => Type(node),
             "unary_expression"               => UnaryExpression(node, children),
             "variable_declaration_statement" => VariableDeclarationStatement(node, children),
+            "variable_reference"             => VariableReference(node, children),
             
             _ => throw new NotImplementedException($"Unsupported parse tree node: {node.Type}")
         };
@@ -92,7 +93,7 @@ public static class AstTransformer
         new (n, (Identifier)c[0], ((NodeList<Argument>)c[1]).Nodes.ToList());
 
     static FunctionDefinition FunctionDefinition(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (Identifier)c[1], ((NodeList<Parameter>)c[2]).Nodes.ToList(), (Block)c[3]);
+        new (n, (TypeRef)c[0], (Identifier)c[1], ((NodeList<Parameter>)c[2]).Nodes.ToList(), (Block)c[3]);
 
     static Identifier Identifier(Node n) =>
         new (n, n.Span.ToString());
@@ -100,23 +101,38 @@ public static class AstTransformer
     static If IfStatement(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Expression)c[0], (Block)c[1]);
 
-    static Constant Bool(Node n) =>
-        new (n, n.Span.ToString(), new InferredType("bool"));
+    static Constant Bool(Node n)
+    {
+        return new Constant(n, n.Span.ToString())
+        {
+            Type = new BooleanType()
+        };
+    }
 
-    static Constant Integer(Node n) =>
-        new (n, n.Span.ToString(), new InferredType("int"));
+    static Constant Integer(Node n)    
+    {
+        return new Constant(n, n.Span.ToString())
+        {
+            Type = new IntegerType()
+        };
+    }
 
     static Constant String_(Node n) =>
-        new (n, n.Span.ToString().Trim('"'), new InferredType("string"));
+        throw new NotImplementedException();
 
-    static Constant Float(Node n) =>
-        new (n, n.Span.ToString(), new InferredType("float"));
-
+    static Constant Float(Node n)
+    {
+        return new Constant(n, n.Span.ToString())
+        {
+            Type = new FloatType()
+        };
+    }
+    
     static ModuleDeclaration ModuleDeclaration(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Identifier)c[0]);
 
     static Parameter Parameter(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (Identifier)c[1]);
+        new (n, (Identifier)c[0], (TypeRef)c[1]);
 
     static NodeList<Parameter> ParameterList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Parameter)x).ToList());
@@ -129,9 +145,11 @@ public static class AstTransformer
 
     static NodeList<Statement> StatementList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Statement)x).ToList());
-    
-    static VariableReference VariableReference(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0]);
+
+    static TypeRef Type(Node n)
+    {
+        return new TypeRef(n, n.Span.ToString());
+    }
 
     static UnaryExpression UnaryExpression(Node n, IReadOnlyList<AstNode> c)
     {
@@ -147,5 +165,8 @@ public static class AstTransformer
     }
 
     static VariableDeclaration VariableDeclarationStatement(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (Identifier)c[1], (Expression)c[2]);
+        new (n, (TypeRef)c[0], (Identifier)c[1], c.Count == 3 ? (Expression?)c[2] : null);
+    
+    static VariableReference VariableReference(Node n, IReadOnlyList<AstNode> c) =>
+        new (n, (Identifier)c[0]);
 }

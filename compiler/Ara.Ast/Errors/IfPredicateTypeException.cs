@@ -10,6 +10,6 @@ public class IfPredicateTypeException : SemanticException
 
     static string BuildMessage(If node)
     {
-        return $"Invalid predicate type {node.Predicate.InferredType!.Value} where bool was expected.";
+        return $"Invalid predicate type {node.Predicate.Type} where bool was expected.";
     }
 }

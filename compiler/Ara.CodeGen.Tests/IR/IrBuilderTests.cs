@@ -9,10 +9,10 @@ public class IrBuilderTests : TestBase
     [Test]
     public void IfThen()
     {
-        builder.IfThen(new BoolValue(true), thenBlock =>
+        builder.IfThen(new BooleanValue(true), thenBlock =>
         {
             var thenBuilder = thenBlock.IrBuilder();
-            thenBuilder.Add(new IntValue(1), new IntValue(1));
+            thenBuilder.Add(new IntegerValue(1), new IntegerValue(1));
         });
         
         AssertIr(module.Emit(), @"
@@ -30,16 +30,16 @@ public class IrBuilderTests : TestBase
     public void IfElse()
     {
         builder.IfElse(
-            new BoolValue(true),
+            new BooleanValue(true),
             thenBlock =>
             {
                 var thenBuilder = thenBlock.IrBuilder();
-                thenBuilder.Return(new IntValue(1));
+                thenBuilder.Return(new IntegerValue(1));
             },
             elseBlock =>
             {
                 var elseBuilder = elseBlock.IrBuilder();
-                elseBuilder.Return(new IntValue(1));
+                elseBuilder.Return(new IntegerValue(1));
             });
         
         AssertIr(module.Emit(), @"
@@ -62,8 +62,8 @@ public class IrBuilderTests : TestBase
     {
         builder.For(
             "c",
-            new IntValue(0),
-            new IntValue(10),
+            new IntegerValue(0),
+            new IntegerValue(10),
             (loop, counter) => {
                 var loopBuilder = loop.IrBuilder();
                 loopBuilder.Return(loopBuilder.Load(counter));
@@ -115,13 +115,13 @@ public class IrBuilderTests : TestBase
     {
         module = new Module();
 
-        var type = new FunctionType(IrType.Int32);
+        var type = new FunctionType(IrType.Integer);
         var func = module.AddFunction("main", type);
 
         var block = func.AddBlock();
 
         builder = block.IrBuilder();
-        builder.Return(new IntValue(42));
+        builder.Return(new IntegerValue(42));
 
         AssertIr(module.Emit(), @"
             define i32 @main () {

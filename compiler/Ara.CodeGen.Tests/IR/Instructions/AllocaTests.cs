@@ -7,7 +7,7 @@ public class AllocaTests : TestBase
     [Test]
     public void AllocateAnInteger()
     {
-        builder.Alloca(IrType.Int32);
+        builder.Alloca(IrType.Integer);
 
         AssertIr(module.Emit(), @"
             define void @test () {

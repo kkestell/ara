@@ -22,7 +22,7 @@ module.exports = grammar({
     ),
 
     function_definition: $ => seq(
-      field('type', $.identifier),
+      field('type', $.type),
       field('name', $.identifier),
       field('parameters', $.parameter_list),
       field('block', $.block)
@@ -37,30 +37,8 @@ module.exports = grammar({
     parameter: $ => seq(
       $.identifier,
       ':',
-      $.identifier
+      $.type
     ),
-
-    // field_definition: $ => seq(
-    //   $.identifier,
-    //   ':',
-    //   $.identifier
-    // ),
-
-    // record_definition: $ => seq(
-    //   'rec',
-    //   $.identifier,
-    //   '{',
-    //   $.field_definition_list,
-    //   '}'
-    // ),
-
-    // field_definition_list: $ => seq(
-    //   repeat1($.field_definition)
-    // ),
-
-    // list_type: $ => seq(
-    //   $.identifier
-    // ),
 
     block: $ => seq(
       '{',
@@ -94,10 +72,14 @@ module.exports = grammar({
     ),
 
     variable_declaration_statement: $ => seq(
+      $.type,
       $.identifier,
-      $.identifier,
-      '=',
-      $._expression
+      optional(
+        seq(
+          '=',
+          $._expression
+        )
+      )
     ),
 
     if_statement: $ => seq(
@@ -110,30 +92,6 @@ module.exports = grammar({
       $.identifier,
       '=',
       $._expression
-    ),
-
-    // record: $ => seq(
-    //   'new',
-    //   $.identifier,
-    //   $.field_list
-    // ),
-
-    // field_list: $ => seq(
-    //   '{',
-    //   commaSep1($.field),
-    //   '}'
-    // ),
-
-    // field: $ => seq(
-    //   $.identifier,
-    //   ':',
-    //   $._expression
-    // ),
-
-    list: $ => seq(
-      '[',
-      commaSep1($._expression),
-      ']'
     ),
 
     _expression: $ => choice(
@@ -166,9 +124,7 @@ module.exports = grammar({
       $.integer,
       $.float,
       $.bool,
-      $.string,
-      // $.record,
-      $.list
+      $.string
     ),
 
     variable_reference: $ => $.identifier,
@@ -208,6 +164,11 @@ module.exports = grammar({
         ))
       }))
     },
+
+    type: $ => seq(
+      $.identifier,
+      field('array', optional("[]"))
+    ),
 
     string: $ => seq('"', $._string_content, '"'),
 

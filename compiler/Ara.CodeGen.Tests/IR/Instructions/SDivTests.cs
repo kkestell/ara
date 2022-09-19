@@ -8,7 +8,7 @@ public class SDivTests : TestBase
     [Test]
     public void SignedDivideTwoIntegers()
     {
-        builder.SDiv(new IntValue(1), new IntValue(1));
+        builder.SDiv(new IntegerValue(1), new IntegerValue(1));
 
         AssertIr(module.Emit(), @"
             define void @test () {
@@ -23,7 +23,7 @@ public class SDivTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.SDiv(new IntValue(1), new FloatValue(3.14f));
+            builder.SDiv(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 

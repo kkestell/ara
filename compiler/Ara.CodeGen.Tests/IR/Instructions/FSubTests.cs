@@ -23,7 +23,7 @@ public class FSubTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FSub(new IntValue(1), new FloatValue(3.14f));
+            builder.FSub(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +32,7 @@ public class FSubTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FSub(new IntValue(1), new IntValue(1));
+            builder.FSub(new IntegerValue(1), new IntegerValue(1));
         });
     }
 }

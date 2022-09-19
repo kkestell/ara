@@ -10,7 +10,7 @@ public class CallTests : TestBase
     [Test]
     public void Call()
     {
-        builder.Call("test", new List<Argument> { new (IrType.Int32, new IntValue(1))});
+        builder.Call("test", new List<Argument> { new (IrType.Integer, new IntegerValue(1))});
 
         AssertIr(module.Emit(), @"
             define void @test () {

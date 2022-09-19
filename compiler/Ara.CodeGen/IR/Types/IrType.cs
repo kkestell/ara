@@ -1,26 +1,27 @@
+using Ara.Ast.Semantics;
+using Type = Ara.Ast.Semantics.Type;
+
 namespace Ara.CodeGen.IR.Types;
 
 public abstract record IrType
 {
     public abstract string ToIr();
 
-    public static IrType FromString(string type)
+    public static IrType FromType(Type type)
     {
         return type switch
         {
-            "void"  => Void,
-            "int"   => Int32,
-            "bool"  => Bool,
-            "float" => Float,
-            "string" => String,
-            
+            Ast.Semantics.VoidType    => Void,
+            Ast.Semantics.IntegerType => Integer,
+            Ast.Semantics.BooleanType => Bool,
+            Ast.Semantics.FloatType   => Float,
+            Ast.Semantics.ArrayType a => new ArrayType(FromType(a.ElementType)),
             _ => throw new NotImplementedException()
         };
     }
 
     public static readonly VoidType Void = new ();
-    public static readonly IntType Int32 = new (32);
-    public static readonly BitType Bool = new ();
+    public static readonly IntegerType Integer = new (32);
+    public static readonly BooleanType Bool = new ();
     public static readonly FloatType Float = new ();
-    public static readonly StringType String = new();
 }

@@ -23,7 +23,7 @@ public class FDivTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FDiv(new IntValue(1), new FloatValue(3.14f));
+            builder.FDiv(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +32,7 @@ public class FDivTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FDiv(new IntValue(1), new IntValue(1));
+            builder.FDiv(new IntegerValue(1), new IntegerValue(1));
         });
     }
 }

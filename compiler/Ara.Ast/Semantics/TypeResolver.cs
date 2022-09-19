@@ -1,6 +1,5 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
-using Ara.Ast.Types;
 
 namespace Ara.Ast.Semantics;
 
@@ -10,9 +9,6 @@ public class TypeResolver : Visitor
     {
         switch (node)
         {
-            case Constant c:
-                ResolveConstant(c);
-                break;
             case VariableReference v:
                 ResolveVariableReference(v);
                 break;
@@ -28,11 +24,6 @@ public class TypeResolver : Visitor
         }
     }
 
-    static void ResolveConstant(Constant c)
-    {
-        c.InferredType = new InferredType(c.Type.Value);
-    }
-
     static void ResolveVariableReference(VariableReference r)
     {
         var type = r.ResolveVariableReference(r.Name.Value);
@@ -40,30 +31,30 @@ public class TypeResolver : Visitor
         if (type is null)
             throw new ReferenceException(r);
 
-        r.InferredType = type;
+        r.Type = type;
     }
     
     static void ResolveBinaryExpression(BinaryExpression b)
     {
-        if (b.Left.InferredType is null || b.Right.InferredType is null)
+        if (b.Left.Type is null || b.Right.Type is null)
             throw new BinaryExpressionTypeException(b);
 
-        if (!b.Left.InferredType.Equals(b.Right.InferredType))
+        if (!b.Left.Type.Equals(b.Right.Type))
             throw new BinaryExpressionTypeException(b);
 
         if (b.Op is BinaryOperator.Equality or BinaryOperator.Inequality)
         {
-            b.InferredType = new InferredType("bool");
+            b.Type = new BooleanType();
         }
         else
         {
-            b.InferredType = b.Left.InferredType;
+            b.Type = b.Left.Type;
         }        
     }
 
     static void ResolveUnaryExpression(UnaryExpression u)
     {
-        u.InferredType = u.Right.InferredType;
+        u.Type = u.Right.Type;
     }
 
     static void ResolveCallExpression(Call c)
@@ -74,6 +65,6 @@ public class TypeResolver : Visitor
         if (func is not FunctionDefinition functionDefinition)
             throw new ReferenceException(c);
 
-        c.InferredType = new InferredType(functionDefinition.ReturnType.Value);
+        c.Type = Type.Parse(functionDefinition.ReturnType.Value);
     }
 }

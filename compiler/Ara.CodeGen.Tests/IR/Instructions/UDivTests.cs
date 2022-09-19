@@ -8,7 +8,7 @@ public class UDivTests : TestBase
     [Test]
     public void UnsignedDivideTwoIntegers()
     {
-        builder.UDiv(new IntValue(1), new IntValue(1));
+        builder.UDiv(new IntegerValue(1), new IntegerValue(1));
 
         AssertIr(module.Emit(), @"
             define void @test () {
@@ -23,7 +23,7 @@ public class UDivTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.UDiv(new IntValue(1), new FloatValue(3.14f));
+            builder.UDiv(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 

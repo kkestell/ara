@@ -23,7 +23,7 @@ public class FMulTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FMul(new IntValue(1), new FloatValue(3.14f));
+            builder.FMul(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +32,7 @@ public class FMulTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FMul(new IntValue(1), new IntValue(1));
+            builder.FMul(new IntegerValue(1), new IntegerValue(1));
         });
     }
 }

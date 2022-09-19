@@ -3,13 +3,13 @@ using Ara.CodeGen.IR.Types;
 
 namespace Ara.CodeGen.IR.Values;
 
-public class IntValue : ConstantValue
+public class IntegerValue : ConstantValue
 {
     readonly int value;
     
-    public override IrType Type => IrType.Int32;
+    public override IrType Type => IrType.Integer;
 
-    public IntValue(int value)
+    public IntegerValue(int value)
     {
         this.value = value;
     }
