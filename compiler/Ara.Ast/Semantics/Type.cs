@@ -22,7 +22,7 @@ public record ArrayType(Type ElementType) : Type
 {
     public override string ToString()
     {
-        return $"[]{ElementType}";
+        return $"{ElementType}[]";
     }
 }
 

@@ -17,14 +17,6 @@ public class CodeGenerator
 {
     readonly Dictionary<string, FunctionType> functionTypes = new ();
 
-    FunctionType MakeFunctionType(FunctionDefinition def)
-    {
-        return new FunctionType(
-            IrType.FromType(def.Type),
-            def.Parameters.Select(x =>
-                new Parameter(x.Name.Value, IrType.FromType(x.Type))).ToList());
-    }
-
     public string Generate(AstNode root)
     {
         if (root is not SourceFile sourceFile)
@@ -45,6 +37,14 @@ public class CodeGenerator
         }
 
         return module.Emit();
+    }
+    
+    FunctionType MakeFunctionType(FunctionDefinition def)
+    {
+        return new FunctionType(
+            IrType.FromType(def.Type),
+            def.Parameters.Select(x =>
+                new Parameter(x.Name.Value, IrType.FromType(x.Type))).ToList());
     }
     
     void CacheFunctionTypes(IEnumerable<Definition> defs)
@@ -83,7 +83,7 @@ public class CodeGenerator
                 }
                 case VariableDeclaration v:
                 {
-                    var ptr = builder.Alloca(IrType.FromType(v.Type), 1, v.Name.Value);
+                    var ptr = builder.Alloca(IrType.FromType(v.Type), v.Name.Value);
                     if (v.Expression is not null)
                     {
                         var val = EmitExpression(builder, v.Expression);
@@ -192,29 +192,27 @@ public class CodeGenerator
         
         return builder.Call(call.Name.Value, args);
     }
+
+    Value EmitConstant(IrBuilder builder, Constant constant)
+    {
+        return constant.Type switch
+        {
+            Ast.Semantics.IntegerType  => new IntegerValue(int.Parse(constant.Value)),
+            Ast.Semantics.FloatType    => new FloatValue(float.Parse(constant.Value)),
+            Ast.Semantics.BooleanType  => new BooleanValue(bool.Parse(constant.Value)),
+                
+            _ => throw new CodeGenException($"A constant of type {constant.Type} is not supported here.")
+        };
+    }
     
     Value EmitExpression(IrBuilder builder, Expression expression)
     {
-        if (expression is Constant constant)
-        {
-            if (constant.Type is null)
-                throw new NullReferenceException();
-            
-            return constant.Type! switch
-            {
-                Ast.Semantics.IntegerType  => new IntegerValue(int.Parse(constant.Value)),
-                Ast.Semantics.FloatType    => new FloatValue(float.Parse(constant.Value)),
-                Ast.Semantics.BooleanType  => new BooleanValue(bool.Parse(constant.Value)),
-                
-                _ => throw new CodeGenException($"A constant of type {constant.Type} is not supported here.")
-            };
-        }
-        
         return expression switch
         {
+            Constant          e => EmitConstant(builder, e),
             BinaryExpression  e => EmitBinaryExpression(builder, e),
-            VariableReference r => EmitVariableReference(builder, r),
-            Call              c => EmitFunctionCallExpression(builder, c),
+            VariableReference e => EmitVariableReference(builder, e),
+            Call              e => EmitFunctionCallExpression(builder, e),
             
             _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
         };

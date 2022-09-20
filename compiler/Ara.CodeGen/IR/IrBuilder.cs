@@ -66,11 +66,11 @@ public class IrBuilder
 
         // Loop direction
         var dp = Icmp(IcmpCondition.SignedGreaterThan, end, start);
-        var delta = Alloca(IrType.Integer, 1, "delta");
+        var delta = Alloca(IrType.Integer, "delta");
         IfElse(dp, up => up.IrBuilder().Store(new IntegerValue(1), delta), down => down.IrBuilder().Store(new IntegerValue(-1), delta));
 
         // Init counter
-        var c = Alloca(new IntegerType(32), 1);
+        var c = Alloca(new IntegerType(32));
         Store(start, c);
         Br(l1);
 
@@ -174,9 +174,9 @@ public class IrBuilder
         return Block.AddInstruction(new Fcmp(Block, condition, lhs, rhs, name));
     }
 
-    public Alloca Alloca(IrType type, int size = 1, string? name = null)
+    public Alloca Alloca(IrType type, string? name = null)
     {
-        return Block.AddInstruction(new Alloca(Block, type, size, name));
+        return Block.AddInstruction(new Alloca(Block, type, name));
     }
 
     public void Store(Value value, Value pointer, string? name = null)

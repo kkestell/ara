@@ -1,5 +1,3 @@
-using Ara.CodeGen.IR.Values;
-
 namespace Ara.CodeGen.IR.Types;
 
 public record ArrayType(IrType Type) : IrType
