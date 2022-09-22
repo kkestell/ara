@@ -15,7 +15,7 @@ public class CallTests : TestBase
         AssertIr(module.Emit(), @"
             define void @test () {
             entry:
-              %""0"" = call i32 @test(i32 1)
+              %""0"" = call void @test(i32 1)
             }
         ");
     }
