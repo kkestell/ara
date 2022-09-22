@@ -5,6 +5,7 @@ using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
+using ArrayType = Ara.Ast.Semantics.ArrayType;
 using Block = Ara.Ast.Nodes.Block;
 using Call = Ara.Ast.Nodes.Call;
 using FloatType = Ara.CodeGen.IR.Types.FloatType;
@@ -83,12 +84,18 @@ public class CodeGenerator
                 }
                 case VariableDeclaration v:
                 {
-                    var ptr = builder.Alloca(IrType.FromType(v.Type), v.Name.Value);
+                    Value ptr = v.Type switch
+                    {
+                        ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(128)) }),
+                        _           => builder.Alloca(IrType.FromType(v.Type), v.Name.Value),
+                    };
+                    
                     if (v.Expression is not null)
                     {
                         var val = EmitExpression(builder, v.Expression);
                         builder.Store(val, ptr);
                     }
+                    
                     break;
                 }
                 case If i:
@@ -190,7 +197,7 @@ public class CodeGenerator
             args.Add(new Argument(p.Type, v));
         }
         
-        return builder.Call(call.Name.Value, args);
+        return builder.Call(call.Name.Value, functionType.ReturnType, args);
     }
 
     Value EmitConstant(IrBuilder builder, Constant constant)

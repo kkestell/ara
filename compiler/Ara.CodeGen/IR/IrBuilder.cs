@@ -189,8 +189,8 @@ public class IrBuilder
         return Block.AddInstruction(new Load(Block, pointer, name));
     }
 
-    public Call Call(string functionName, IEnumerable<Argument> arguments, string? name = null)
+    public Call Call(string functionName, IrType returnType, IEnumerable<Argument> arguments, string? name = null)
     {
-        return Block.AddInstruction(new Call(Block, functionName, arguments, name));
+        return Block.AddInstruction(new Call(Block, functionName, returnType, arguments, name));
     }
 }

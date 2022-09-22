@@ -1,28 +1,41 @@
+using Ara.Ast.Nodes;
+
 namespace Ara.Ast.Semantics;
 
 public abstract record Type
 {
-    public static Type Parse(string type)
+    public static Type Parse(TypeRef typeRef)
     {
-        if (type.EndsWith("[]"))
+        return typeRef switch
         {
-            return new ArrayType(Parse(type[..^2]));
-        }
+            SingleValueTypeRef s => ParseSingleValueTypeRef(s),
+            ArrayTypeRef a => ParseArrayTypeRef(a),
+            _ => throw new Exception()
+        };
+    }
 
-        return type switch
+    static Type ParseArrayTypeRef(ArrayTypeRef a)
+    {
+        var size = int.Parse(a.Size.Value);
+        return new ArrayType(Parse(a.Type), size);
+    }
+    
+    static Type ParseSingleValueTypeRef(SingleValueTypeRef x)
+    {
+        return x.Name.Value switch
         {
+            "void" => new VoidType(),
             "int" => new IntegerType(),
-
-            _ => throw new NotImplementedException()
+            _ => throw new Exception()
         };
     }
 }
 
-public record ArrayType(Type ElementType) : Type
+public record ArrayType(Type Type, int Size) : Type
 {
     public override string ToString()
     {
-        return $"{ElementType}[]";
+        return $"{Type}[{Size}]";
     }
 }
 

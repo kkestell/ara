@@ -1,9 +1,6 @@
 module main
 
 int main() {
-  int[] x
-  if x == 1 {
-    return 0
-  }
+  int[5] x
   return 1
 }

@@ -8,11 +8,12 @@ public class Call : Instruction
     readonly string functionName;
     readonly IEnumerable<Argument> args;
 
-    public override IrType Type => IrType.Integer;
+    public override IrType Type { get; }
 
-    public Call(Block block, string functionName, IEnumerable<Argument> args, string? name = null) : base(block, name)
+    public Call(Block block, string functionName, IrType returnType, IEnumerable<Argument> args, string? name = null) : base(block, name)
     {
         this.functionName = functionName;
+        Type = returnType;
         this.args = args;
     }
     

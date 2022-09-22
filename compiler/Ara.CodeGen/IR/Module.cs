@@ -18,6 +18,7 @@ public class Module
     {
         var sb = new StringBuilder();
         functions.ForEach(f => f.Emit(sb));
+        sb.AppendLine("declare ptr @GC_malloc(i64 noundef)");
         return sb.ToString().Trim();
     }
 }

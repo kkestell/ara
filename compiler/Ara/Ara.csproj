@@ -15,7 +15,7 @@
     <ItemGroup>
       <Content Include="..\..\parser\bin\parser.so">
         <Link>parser.so</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
     <ItemGroup>

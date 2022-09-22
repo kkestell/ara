@@ -40,3 +40,12 @@ $ ./fib
 $ echo $?
 55
 ```
+
+## Misc.
+
+```
+$ brew install llvm@15
+$ brew install bdw-gc
+$ sudo ln -s /usr/local/Cellar/llvm/15.0.0/bin/llc /usr/local/bin/llc
+$ sudo ln -s /usr/local/Cellar/llvm/15.0.0/bin/clang /usr/local/bin/clang
+```
