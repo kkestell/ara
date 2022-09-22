@@ -65,6 +65,6 @@ public class TypeResolver : Visitor
         if (func is not FunctionDefinition functionDefinition)
             throw new ReferenceException(c);
 
-        c.Type = Type.Parse(functionDefinition.ReturnType.Value);
+        c.Type = Type.Parse(functionDefinition.ReturnType);
     }
 }

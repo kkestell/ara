@@ -38,6 +38,7 @@ public class CodeGeneratorTests
             entry:
                 ret i32 1
             }
+            declare ptr @GC_malloc(i64 noundef)
         ");
     }
     
@@ -80,6 +81,7 @@ public class CodeGeneratorTests
               %""8"" = add i32 %""5"", %""7""
               ret i32 %""8""
             }
+            declare ptr @GC_malloc(i64 noundef)
         ");
     }
     

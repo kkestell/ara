@@ -38,7 +38,8 @@ public static class AstTransformer
             "source_file"                    => SourceFile(node, children),
             "statement_list"                 => StatementList(node, children),
             "string"                         => String_(node),
-            "type"                           => Type(node),
+            "single_value_type"              => SingleValueType(node, children),
+            "array_type"                     => ArrayType(node, children),
             "unary_expression"               => UnaryExpression(node, children),
             "variable_declaration_statement" => VariableDeclarationStatement(node, children),
             "variable_reference"             => VariableReference(node, children),
@@ -146,9 +147,14 @@ public static class AstTransformer
     static NodeList<Statement> StatementList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Statement)x).ToList());
 
-    static TypeRef Type(Node n)
+    static SingleValueTypeRef SingleValueType(Node n, IReadOnlyList<AstNode> c)
     {
-        return new TypeRef(n, n.Span.ToString());
+        return new SingleValueTypeRef(n, (Identifier)c[0]);
+    }
+    
+    static ArrayTypeRef ArrayType(Node n, IReadOnlyList<AstNode> c)
+    {
+        return new ArrayTypeRef(n, (TypeRef)c[0], (Constant)c[1]);
     }
 
     static UnaryExpression UnaryExpression(Node n, IReadOnlyList<AstNode> c)
@@ -166,7 +172,7 @@ public static class AstTransformer
 
     static VariableDeclaration VariableDeclarationStatement(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (TypeRef)c[0], (Identifier)c[1], c.Count == 3 ? (Expression?)c[2] : null);
-    
+
     static VariableReference VariableReference(Node n, IReadOnlyList<AstNode> c) =>
         new (n, (Identifier)c[0]);
 }

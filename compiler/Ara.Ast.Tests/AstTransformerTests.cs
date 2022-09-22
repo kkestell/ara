@@ -20,7 +20,7 @@ public class AstTransformerTests : TestBase
         Assert.Multiple(() =>
         {
             Assert.That(func.Name.Value, Is.EqualTo("main"));
-            Assert.That(func.ReturnType.Value, Is.EqualTo("int"));
+            Assert.That(((SingleValueTypeRef)func.ReturnType).Name.Value, Is.EqualTo("int"));
             Assert.That(func.Parameters, Is.Empty);
         });
     }
@@ -41,15 +41,16 @@ public class AstTransformerTests : TestBase
         Assert.Multiple(() =>
         {
             Assert.That(func.Name.Value, Is.EqualTo("main"));
-            Assert.That(func.ReturnType.Value, Is.EqualTo("int"));
+            
+            Assert.That(func.ReturnType, Is.TypeOf<SingleValueTypeRef>());
+            Assert.That(((SingleValueTypeRef)func.ReturnType).Name.Value, Is.EqualTo("int"));
+            
             Assert.That(func.Parameters, Has.Count.EqualTo(3));
             var p = func.Parameters.ToList();
-            Assert.That(func.Parameters[0].Name.Value, Is.EqualTo("a"));
-            Assert.That(func.Parameters[0].TypeRef.Value, Is.EqualTo("int"));
-            Assert.That(func.Parameters[1].Name.Value, Is.EqualTo("b"));
-            Assert.That(func.Parameters[1].TypeRef.Value, Is.EqualTo("float"));
-            Assert.That(func.Parameters[2].Name.Value, Is.EqualTo("c"));
-            Assert.That(func.Parameters[2].TypeRef.Value, Is.EqualTo("bool"));
+
+            Assert.That(((SingleValueTypeRef)p[0].TypeRef).Name.Value, Is.EqualTo("int"));
+            Assert.That(((SingleValueTypeRef)p[1].TypeRef).Name.Value, Is.EqualTo("float"));
+            Assert.That(((SingleValueTypeRef)p[2].TypeRef).Name.Value, Is.EqualTo("bool"));
         });
     }
 }

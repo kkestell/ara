@@ -6,13 +6,11 @@ namespace Ara.CodeGen.IR.Values.Instructions;
 public class Alloca : Instruction
 {
     readonly IrType type;
-    readonly int size;
 
     public override IrType Type => new PointerType(type);
 
-    public Alloca(Block block, IrType type, int size, string? name = null) : base(block, name)
+    public Alloca(Block block, IrType type, string? name = null) : base(block, name)
     {
-        this.size = size;
         this.type = type;
     }
     
