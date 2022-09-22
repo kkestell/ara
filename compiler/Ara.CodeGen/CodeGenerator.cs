@@ -24,6 +24,12 @@ public class CodeGenerator
             throw new NotSupportedException();
 
         var module = new Module();
+        
+        module.DeclareFunction(
+            new FunctionDeclaration(
+                "GC_malloc", 
+                new PointerType(new VoidType()), 
+                new List<IrType> { new IntegerType(64) }));
 
         CacheFunctionTypes(sourceFile.Definitions);
 
@@ -86,7 +92,7 @@ public class CodeGenerator
                 {
                     Value ptr = v.Type switch
                     {
-                        ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(128)) }),
+                        ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }),
                         _           => builder.Alloca(IrType.FromType(v.Type), v.Name.Value),
                     };
                     

@@ -24,8 +24,11 @@ public abstract record Type
     {
         return x.Name.Value switch
         {
-            "void" => new VoidType(),
-            "int" => new IntegerType(),
+            "void"  => new VoidType(),
+            "int"   => new IntegerType(),
+            "float" => new FloatType(),
+            "bool"  => new BooleanType(),
+            
             _ => throw new Exception()
         };
     }
