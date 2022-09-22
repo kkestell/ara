@@ -13,39 +13,30 @@ $ git submodule init
 $ git submodule update
 ```
 
-### Build Parser
+### Docker
 
 ```sh
-$ cd parser
-$ npm install
-$ cd tree-sitter
-$ make
-$ cd ..
-$ make
-$ cd ..
+$ docker build --tag=ara .
+$ docker run -it -h=docker --rm ara /bin/bash
 ```
 
-### Build Compiler
+#### Run an Example
 
 ```sh
-$ cd compiler
-$ dotnet run
-```
+root@docker:/ara/examples# time ara fib.ara
 
-### Compile an Example
-```sh
-$ cd examples
-$ ../compiler/Ara/bin/Debug/net6.0/Ara fib.ara
-$ ./fib
-$ echo $?
+real    0m0.050s
+user    0m0.038s
+sys     0m0.023s
+root@docker:/ara/examples# ./fib 
+root@docker:/ara/examples# echo $?
 55
 ```
 
 ## Misc.
 
 ```
-$ brew install llvm@15
-$ brew install bdw-gc
+$ brew install llvm bdw-gc
 $ sudo ln -s /usr/local/Cellar/llvm/15.0.0/bin/llc /usr/local/bin/llc
 $ sudo ln -s /usr/local/Cellar/llvm/15.0.0/bin/clang /usr/local/bin/clang
 ```

@@ -55,10 +55,13 @@ public static class Cli
         
         // Make binary
 
+        var llcPath = Environment.GetEnvironmentVariable("LLC") ?? "llc";
+        var clangPath = Environment.GetEnvironmentVariable("CLANG") ?? "clang";
+
         try
         {
-            Run("/usr/local/bin/llc", $"-filetype=obj -opaque-pointers -O3 {name}.ll -o {name}.o", dir);
-            Run("/usr/bin/clang", $"{name}.o -o {name} -lgc", dir);
+            Run(llcPath, $"-filetype=obj -opaque-pointers -O0 {name}.ll -o {name}.o", dir);
+            Run(clangPath, $"{name}.o -o {name} -lgc", dir);
             Copy(dir, name);
         }
         catch (Exception e)
