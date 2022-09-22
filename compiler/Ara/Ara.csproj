@@ -2,9 +2,11 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PublishAot>false</PublishAot>
+        <AssemblyName>ara</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,7 +17,7 @@
     <ItemGroup>
       <Content Include="..\..\parser\bin\parser.so">
         <Link>parser.so</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
     <ItemGroup>

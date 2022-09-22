@@ -22,7 +22,7 @@ module.exports = grammar({
     ),
 
     function_definition: $ => seq(
-      field('type', $.type),
+      field('type', $._type),
       field('name', $.identifier),
       field('parameters', $.parameter_list),
       field('block', $.block)
@@ -37,7 +37,7 @@ module.exports = grammar({
     parameter: $ => seq(
       $.identifier,
       ':',
-      $.type
+      $._type
     ),
 
     block: $ => seq(
@@ -72,7 +72,7 @@ module.exports = grammar({
     ),
 
     variable_declaration_statement: $ => seq(
-      $.type,
+      $._type,
       $.identifier,
       optional(
         seq(
@@ -165,10 +165,31 @@ module.exports = grammar({
       }))
     },
 
-    type: $ => seq(
-      $.identifier,
-      field('array', optional("[]"))
+    _type: $ => choice(
+      $.single_value_type,
+      $.array_type
     ),
+
+    single_value_type: $ => 
+      $.identifier,
+
+    array_type: $ => seq(
+      $._type,
+      '[',
+      $.integer,
+      ']'
+    ),
+
+    // _type: $ => seq(
+    //   $.identifier,
+    //   optional(
+    //     seq(
+    //       '[',
+    //       field('size', $.integer),
+    //       ']'
+    //     )
+    //   )
+    // ),
 
     string: $ => seq('"', $._string_content, '"'),
 

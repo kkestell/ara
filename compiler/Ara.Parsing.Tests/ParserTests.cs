@@ -19,7 +19,7 @@ public class ParserTests : TestBase
               module_declaration: (module_declaration name: (identifier)) 
               definitions: (definition_list 
                 (function_definition
-                  type: (type (identifier)) 
+                  type: (single_value_type (identifier)) 
                   name: (identifier) 
                   parameters: (parameter_list) 
                   block: (block 

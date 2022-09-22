@@ -5,6 +5,7 @@ using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
+using ArrayType = Ara.Ast.Semantics.ArrayType;
 using Block = Ara.Ast.Nodes.Block;
 using Call = Ara.Ast.Nodes.Call;
 using FloatType = Ara.CodeGen.IR.Types.FloatType;
@@ -17,20 +18,18 @@ public class CodeGenerator
 {
     readonly Dictionary<string, FunctionType> functionTypes = new ();
 
-    FunctionType MakeFunctionType(FunctionDefinition def)
-    {
-        return new FunctionType(
-            IrType.FromType(def.Type),
-            def.Parameters.Select(x =>
-                new Parameter(x.Name.Value, IrType.FromType(x.Type))).ToList());
-    }
-
     public string Generate(AstNode root)
     {
         if (root is not SourceFile sourceFile)
             throw new NotSupportedException();
 
         var module = new Module();
+        
+        module.DeclareFunction(
+            new FunctionDeclaration(
+                "GC_malloc", 
+                new PointerType(new VoidType()), 
+                new List<IrType> { new IntegerType(64) }));
 
         CacheFunctionTypes(sourceFile.Definitions);
 
@@ -45,6 +44,14 @@ public class CodeGenerator
         }
 
         return module.Emit();
+    }
+    
+    FunctionType MakeFunctionType(FunctionDefinition def)
+    {
+        return new FunctionType(
+            IrType.FromType(def.Type),
+            def.Parameters.Select(x =>
+                new Parameter(x.Name.Value, IrType.FromType(x.Type))).ToList());
     }
     
     void CacheFunctionTypes(IEnumerable<Definition> defs)
@@ -83,12 +90,18 @@ public class CodeGenerator
                 }
                 case VariableDeclaration v:
                 {
-                    var ptr = builder.Alloca(IrType.FromType(v.Type), 1, v.Name.Value);
+                    Value ptr = v.Type switch
+                    {
+                        ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }),
+                        _           => builder.Alloca(IrType.FromType(v.Type), v.Name.Value),
+                    };
+                    
                     if (v.Expression is not null)
                     {
                         var val = EmitExpression(builder, v.Expression);
                         builder.Store(val, ptr);
                     }
+                    
                     break;
                 }
                 case If i:
@@ -190,31 +203,29 @@ public class CodeGenerator
             args.Add(new Argument(p.Type, v));
         }
         
-        return builder.Call(call.Name.Value, args);
+        return builder.Call(call.Name.Value, functionType.ReturnType, args);
+    }
+
+    Value EmitConstant(IrBuilder builder, Constant constant)
+    {
+        return constant.Type switch
+        {
+            Ast.Semantics.IntegerType  => new IntegerValue(int.Parse(constant.Value)),
+            Ast.Semantics.FloatType    => new FloatValue(float.Parse(constant.Value)),
+            Ast.Semantics.BooleanType  => new BooleanValue(bool.Parse(constant.Value)),
+                
+            _ => throw new CodeGenException($"A constant of type {constant.Type} is not supported here.")
+        };
     }
     
     Value EmitExpression(IrBuilder builder, Expression expression)
     {
-        if (expression is Constant constant)
-        {
-            if (constant.Type is null)
-                throw new NullReferenceException();
-            
-            return constant.Type! switch
-            {
-                Ast.Semantics.IntegerType  => new IntegerValue(int.Parse(constant.Value)),
-                Ast.Semantics.FloatType    => new FloatValue(float.Parse(constant.Value)),
-                Ast.Semantics.BooleanType  => new BooleanValue(bool.Parse(constant.Value)),
-                
-                _ => throw new CodeGenException($"A constant of type {constant.Type} is not supported here.")
-            };
-        }
-        
         return expression switch
         {
+            Constant          e => EmitConstant(builder, e),
             BinaryExpression  e => EmitBinaryExpression(builder, e),
-            VariableReference r => EmitVariableReference(builder, r),
-            Call              c => EmitFunctionCallExpression(builder, c),
+            VariableReference e => EmitVariableReference(builder, e),
+            Call              e => EmitFunctionCallExpression(builder, e),
             
             _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
         };

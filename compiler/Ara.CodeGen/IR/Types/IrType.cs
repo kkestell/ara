@@ -15,7 +15,7 @@ public abstract record IrType
             Ast.Semantics.IntegerType => Integer,
             Ast.Semantics.BooleanType => Bool,
             Ast.Semantics.FloatType   => Float,
-            Ast.Semantics.ArrayType a => new ArrayType(FromType(a.ElementType)),
+            Ast.Semantics.ArrayType a => new ArrayType(FromType(a.Type), a.Size),
             _ => throw new NotImplementedException()
         };
     }

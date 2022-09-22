@@ -3,7 +3,7 @@
 - [ ] Arrays
 - [ ] Strings
 - [ ] Structs
-- [ ] Fix up `for` code generation
+- [ ] Fix up `for` code generation using `phi`?
 - [ ] Escape analysis
 - [ ] CI/CD
 - [ ] Proper CLI w/ options

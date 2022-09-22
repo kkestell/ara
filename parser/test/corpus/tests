@@ -1,11 +1,53 @@
 =================================================
+Types
+=================================================
+
+module main
+
+void main() {
+  int[5] x
+  int[2][3] y
+}
+
+-------------------------------------------------
+
+    (source_file
+      (module_declaration
+        (identifier))
+      (definition_list
+        (function_definition
+          (type
+            (identifier))
+          (identifier)
+          (parameter_list)
+          (block
+            (statement_list
+              (variable_declaration_statement
+                (type
+                  (array_type
+                    (type
+                      (identifier))
+                    (integer)))
+                (identifier))
+              (variable_declaration_statement
+                (type
+                  (array_type
+                    (type
+                      (array_type
+                        (type
+                          (identifier))
+                        (integer)))
+                    (integer)))
+                (identifier)))))))
+
+=================================================
 Variable Declaration
 =================================================
 
 module main
 
 void main() {
-  int[] x
+  int[5] x
   int y = 1
 }
 
@@ -24,7 +66,10 @@ void main() {
         (statement_list
           (variable_declaration_statement
             (type
-              (identifier))
+              (array_type
+                (type
+                  (identifier))
+                (integer)))
             (identifier))
           (variable_declaration_statement
             (type

@@ -29,13 +29,13 @@ public class ScopeBuilder : Visitor
     {
         foreach (var p in f.Parameters)
         {
-            f.Block.Scope.Add(p.Name.Value, Type.Parse(p.TypeRef.Value));
+            f.Block.Scope.Add(p.Name.Value, Type.Parse(p.TypeRef));
         }
     }
 
     static void ResolveVariableDeclaration(VariableDeclaration d)
     {
         var blk = d.NearestAncestor<Block>();
-        blk.Scope.Add(d.Name.Value, Type.Parse(d.TypeRef.Value));
+        blk.Scope.Add(d.Name.Value, Type.Parse(d.TypeRef));
     }
 }

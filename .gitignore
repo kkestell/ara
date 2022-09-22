@@ -14,6 +14,5 @@ parser/src/parser.c
 parser/Cargo.toml
 parser/src/grammar.json
 parser/src/tree_sitter/parser.h
-examples/fib
-examples/for
-examples/adder
+examples/
+!examples/*.ara
