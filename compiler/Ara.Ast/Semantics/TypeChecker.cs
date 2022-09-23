@@ -1,5 +1,6 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
+using Ara.Ast.Semantics.Types;
 
 namespace Ara.Ast.Semantics;
 
@@ -7,9 +8,9 @@ public class TypeChecker : Visitor
 {
     readonly Dictionary<string, FunctionDefinition> functionCache = new ();
     
-    public TypeChecker(SourceFile rootNode) : base(rootNode)
+    public TypeChecker(SourceFile sourceFile) : base(sourceFile)
     {
-        foreach (var d in rootNode.Definitions)
+        foreach (var d in sourceFile.Definitions)
         {
             if (d is not FunctionDefinition f)
                 continue;
@@ -38,15 +39,13 @@ public class TypeChecker : Visitor
 
     void CheckCall(Call c)
     {
-        var root = c.NearestAncestor<SourceFile>();
-        
         if (!functionCache.ContainsKey(c.Name))
-            throw new SemanticException(c, $"No such function.");
+            throw new SemanticException(c, "No such function.");
 
         var func = functionCache[c.Name];
         
         if (c.Arguments.Count != func.Parameters.Count)
-            throw new SemanticException(c, $"Wrong number of arguments.");
+            throw new SemanticException(c, "Wrong number of arguments.");
 
         foreach (var arg in c.Arguments)
         {

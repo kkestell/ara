@@ -1,10 +1,10 @@
-using Ara.Ast.Semantics;
+using Ara.Ast.Semantics.Types;
 using Ara.Parsing;
-using Type = Ara.Ast.Semantics.Type;
+using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Nodes;
 
-public abstract record Expression(Node Node) : AstNode(Node)
+public abstract record Expression(Node Node) : TypedAstNode(Node)
 {
-    public Type Type { get; set; } = new EmptyType();
+    public override Type Type { get; set; } = new EmptyType();
 }

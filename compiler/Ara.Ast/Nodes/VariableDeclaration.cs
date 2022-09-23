@@ -1,6 +1,5 @@
-﻿using Ara.Ast.Semantics;
-using Ara.Parsing;
-using Type = Ara.Ast.Semantics.Type;
+﻿using Ara.Parsing;
+using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Nodes;
 

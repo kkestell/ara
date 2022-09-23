@@ -22,13 +22,13 @@ public sealed class Node
     public Node(TsNode handle, Tree tree)
     {
         this.handle = handle;
-        this.Tree = tree;
+        Tree = tree;
     }
 
-    public Location Location => new Location(this);
+    public Location Location => new (this);
 
     public Tuple<int, int> Offset => 
-        new Tuple<int, int>(ts_node_start_byte(handle), ts_node_end_byte(handle));
+        new (ts_node_start_byte(handle), ts_node_end_byte(handle));
 
     public ReadOnlySpan<char> Span => 
         Tree.AsSpan(ts_node_start_byte(handle), ts_node_end_byte(handle));

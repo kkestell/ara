@@ -1,5 +1,4 @@
-using Ara.Ast.Semantics;
-using Type = Ara.Ast.Semantics.Type;
+using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.CodeGen.IR.Types;
 
@@ -11,11 +10,11 @@ public abstract record IrType
     {
         return type switch
         {
-            Ast.Semantics.VoidType    => Void,
-            Ast.Semantics.IntegerType => Integer,
-            Ast.Semantics.BooleanType => Bool,
-            Ast.Semantics.FloatType   => Float,
-            Ast.Semantics.ArrayType a => new ArrayType(FromType(a.Type), a.Size),
+            Ast.Semantics.Types.VoidType    => Void,
+            Ast.Semantics.Types.IntegerType => Integer,
+            Ast.Semantics.Types.BooleanType => Bool,
+            Ast.Semantics.Types.FloatType   => Float,
+            Ast.Semantics.Types.ArrayType a => new ArrayType(FromType(a.Type), a.Size),
             _ => throw new NotImplementedException()
         };
     }

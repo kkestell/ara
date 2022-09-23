@@ -1,10 +1,13 @@
-using Ara.Ast.Semantics;
 using Ara.Parsing;
-using Type = Ara.Ast.Semantics.Type;
+using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Nodes;
 
-public record Parameter(Node Node, string Name, TypeRef TypeRef) : AstNode(Node)
+public record Parameter(Node Node, string Name, TypeRef TypeRef) : TypedAstNode(Node)
 {
-    public Type Type => Type.Parse(TypeRef);
+    public override Type Type
+    {
+        get => Type.Parse(TypeRef);
+        set => throw new NotImplementedException();
+    }
 }

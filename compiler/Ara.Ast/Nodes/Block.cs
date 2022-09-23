@@ -1,5 +1,5 @@
 using Ara.Parsing;
-using Type = Ara.Ast.Semantics.Type;
+using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Nodes;
 
