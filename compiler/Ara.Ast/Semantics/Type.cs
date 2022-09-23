@@ -22,7 +22,7 @@ public abstract record Type
     
     static Type ParseSingleValueTypeRef(SingleValueTypeRef x)
     {
-        return x.Name.Value switch
+        return x.Name switch
         {
             "void"  => new VoidType(),
             "int"   => new IntegerType(),

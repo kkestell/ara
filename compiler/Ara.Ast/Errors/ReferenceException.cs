@@ -12,8 +12,8 @@ public class ReferenceException : SemanticException
     {
         var name = node switch
         {
-            VariableReference r => r.Name.Value,
-            Call c => c.Name.Value,
+            VariableReference r => r.Name,
+            Call c => c.Name,
             _ => throw new Exception($"Unsupported node type {node.GetType()}")
         };
         

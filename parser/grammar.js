@@ -17,8 +17,7 @@ module.exports = grammar({
     definition_list: $ => repeat1($._definition),
 
     _definition: $ => choice(
-      $.function_definition,
-      // $.record_definition
+      $.function_definition
     ),
 
     function_definition: $ => seq(
@@ -179,17 +178,6 @@ module.exports = grammar({
       $.integer,
       ']'
     ),
-
-    // _type: $ => seq(
-    //   $.identifier,
-    //   optional(
-    //     seq(
-    //       '[',
-    //       field('size', $.integer),
-    //       ']'
-    //     )
-    //   )
-    // ),
 
     string: $ => seq('"', $._string_content, '"'),
 

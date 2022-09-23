@@ -2,14 +2,8 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0
 
 RUN apt-get update \
     && apt-get install -y \
-    # For Clang 11 (for .NET 7 AoT)
-    clang zlib1g-dev \
-    # For LLVM 15
-    lsb-release wget software-properties-common gnupg build-essential \
-    # For parser
-    nodejs npm \
-    # For Ara runtime
-    libgc-dev \
+    clang zlib1g-dev lsb-release wget software-properties-common gnupg \
+    build-essential nodejs npm libgc-dev graphviz \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
@@ -26,6 +20,7 @@ RUN make
 
 WORKDIR /ara/compiler
 COPY compiler/ ./
+RUN dotnet restore
 RUN dotnet test
 RUN dotnet publish Ara -c release -r linux-x64 -o /ara/bin
 

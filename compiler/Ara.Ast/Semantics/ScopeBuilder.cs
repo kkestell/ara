@@ -22,20 +22,20 @@ public class ScopeBuilder : Visitor
     
     static void ResolveFor(For f)
     {
-        f.Block.Scope.Add(f.Counter.Value, new IntegerType());
+        f.Block.Scope.Add(f.Counter, new IntegerType());
     }
     
     static void ResolveFunctionDefinition(FunctionDefinition f)
     {
         foreach (var p in f.Parameters)
         {
-            f.Block.Scope.Add(p.Name.Value, Type.Parse(p.TypeRef));
+            f.Block.Scope.Add(p.Name, Type.Parse(p.TypeRef));
         }
     }
 
     static void ResolveVariableDeclaration(VariableDeclaration d)
     {
         var blk = d.NearestAncestor<Block>();
-        blk.Scope.Add(d.Name.Value, Type.Parse(d.TypeRef));
+        blk.Scope.Add(d.Name, Type.Parse(d.TypeRef));
     }
 }
