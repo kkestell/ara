@@ -4,6 +4,18 @@ namespace Ara.Ast.Semantics;
 
 public abstract class Visitor
 {
+    private AstNode rootNode;
+    
+    protected Visitor(SourceFile rootNode)
+    {
+        this.rootNode = rootNode;
+    }
+
+    public void Visit()
+    {
+        Visit(rootNode);
+    }
+    
     public void Visit(AstNode node)
     {
         foreach (var propertyInfo in node.GetType().GetProperties())

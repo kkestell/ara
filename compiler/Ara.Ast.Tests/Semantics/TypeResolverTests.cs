@@ -17,8 +17,8 @@ public class TypeResolverTests : TestBase
         ");
         
         var ast = AstTransformer.Transform(tree);
-        new ScopeBuilder().Visit(ast);
-        new TypeResolver().Visit(ast);
+        new ScopeBuilder(ast).Visit();
+        new TypeResolver(ast).Visit();
 
         var block = ((FunctionDefinition)ast.Definitions.First()).Block;
         var ret = (Return)block.Statements.First();

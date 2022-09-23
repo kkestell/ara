@@ -2,4 +2,4 @@
 set -e
 
 docker build --tag=ara .
-docker run -it -h=docker --rm ara /bin/bash
+docker run -it --mount type=bind,source="$(pwd)/examples",target=/ara/examples -h=docker --rm ara /bin/bash

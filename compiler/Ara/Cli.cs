@@ -17,16 +17,24 @@ public static class Cli
         using var tree = parser.Parse(File.ReadAllText(filename), filename);
         
         // AST
-        
+
+        var sw1 = new Stopwatch();
+        sw1.Start();
         var ast = AstTransformer.Transform(tree);
+        sw1.Stop();
+        Console.WriteLine(Time("AST", sw1.Elapsed.TotalMilliseconds));
         
         // Semantics
 
         try
         {
-            new ScopeBuilder().Visit(ast);
-            new TypeResolver().Visit(ast);
-            new TypeChecker().Visit(ast);
+            var sw2 = new Stopwatch();
+            sw2.Start();
+            new ScopeBuilder(ast).Visit();
+            new TypeResolver(ast).Visit();
+            new TypeChecker(ast).Visit();
+            sw2.Stop();
+            Console.WriteLine(Time("Semantics", sw2.Elapsed.TotalMilliseconds));
         }
         catch (SemanticException ex)
         {
@@ -41,8 +49,12 @@ public static class Cli
         
         // Generate IR
         
+        var sw3 = new Stopwatch();
+        sw3.Start();
         var ir = new CodeGenerator().Generate(ast);
-        
+        sw3.Stop();
+        Console.WriteLine(Time("Code Gen", sw3.Elapsed.TotalMilliseconds));
+
         #region Output
         
         var dir = GetTemporaryDirectory();
@@ -60,8 +72,13 @@ public static class Cli
 
         try
         {
+            var sw4 = new Stopwatch();
+            sw4.Start();
             Run(llcPath, $"-filetype=obj -opaque-pointers -O0 {name}.ll -o {name}.o", dir);
             Run(clangPath, $"{name}.o -o {name} -lgc", dir);
+            sw4.Stop();
+            Console.WriteLine(Time("LLVM", sw4.Elapsed.TotalMilliseconds));
+            
             Copy(dir, name);
         }
         catch (Exception e)
@@ -72,9 +89,9 @@ public static class Cli
         
         // Make AST graph
         
-        new GraphGenerator().Generate(ast, Path.Combine(dir, $"{name}.dot"));
-        Run("dot", $"-Tpdf {name}.dot -o {name}.pdf", dir);
-        Copy(dir, name, ".pdf");
+        // new GraphGenerator().Generate(ast, Path.Combine(dir, $"{name}.dot"));
+        // Run("dot", $"-Tpdf {name}.dot -o {name}.pdf", dir);
+        // Copy(dir, name, ".pdf");
         
         #endregion
         
@@ -103,5 +120,11 @@ public static class Cli
         var t = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(t);
         return t;
+    }
+    
+    static string Time(string label, double elapsed)
+    {
+        var e = $"{elapsed:0.00}";
+        return $"{label,9}{e,10} ms";
     }
 }

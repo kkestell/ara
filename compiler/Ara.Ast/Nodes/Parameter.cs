@@ -6,5 +6,5 @@ namespace Ara.Ast.Nodes;
 
 public record Parameter(Node Node, string Name, TypeRef TypeRef) : AstNode(Node)
 {
-    public Type Type => new IntegerType();
+    public Type Type => Type.Parse(TypeRef);
 }

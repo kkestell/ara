@@ -74,4 +74,10 @@ public record FloatType : Type
     }
 }
 
-public record BooleanType : Type;
+public record BooleanType : Type
+{
+    public override string ToString()
+    {
+        return "bool";
+    }
+}

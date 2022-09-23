@@ -4,6 +4,10 @@ namespace Ara.Ast.Semantics;
 
 public class ScopeBuilder : Visitor
 {
+    public ScopeBuilder(SourceFile rootNode) : base(rootNode)
+    {
+    }
+    
     protected override void VisitNode(AstNode node)
     {
         switch (node)

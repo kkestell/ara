@@ -1,8 +1,0 @@
-module main
-
-int main() {
-  for i in 0..10000 {
-    int[1024] x
-  }
-  return 0
-}
