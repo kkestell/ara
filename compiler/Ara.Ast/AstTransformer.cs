@@ -56,13 +56,13 @@ public static class AstTransformer
     }
 
     static Argument Argument(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (Expression)c[1]);
+        new (n, ((Identifier)c[0]).Value, (Expression)c[1]);
 
     static NodeList<Argument> ArgumentList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Argument)x).ToList());
 
     static Assignment AssignmentStatement(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (Expression)c[1]);
+        new (n, ((Identifier)c[0]).Value, (Expression)c[1]);
 
     static BinaryExpression BinaryExpression(Node n, IReadOnlyList<AstNode> c)
     {
@@ -88,13 +88,13 @@ public static class AstTransformer
         new (n, c.Select(x => (Definition)x));
 
     static For ForStatement(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (Expression)c[1], (Expression)c[2], (Block)c[3]);
+        new (n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2], (Block)c[3]);
     
     static Call FunctionCallExpression(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], ((NodeList<Argument>)c[1]).Nodes.ToList());
+        new (n, ((Identifier)c[0]).Value, ((NodeList<Argument>)c[1]).Nodes.ToList());
 
     static FunctionDefinition FunctionDefinition(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (TypeRef)c[0], (Identifier)c[1], ((NodeList<Parameter>)c[2]).Nodes.ToList(), (Block)c[3]);
+        new (n, (TypeRef)c[0], ((Identifier)c[1]).Value, ((NodeList<Parameter>)c[2]).Nodes.ToList(), (Block)c[3]);
 
     static Identifier Identifier(Node n) =>
         new (n, n.Span.ToString());
@@ -130,10 +130,10 @@ public static class AstTransformer
     }
     
     static ModuleDeclaration ModuleDeclaration(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0]);
+        new (n, ((Identifier)c[0]).Value);
 
     static Parameter Parameter(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0], (TypeRef)c[1]);
+        new (n, ((Identifier)c[0]).Value, (TypeRef)c[1]);
 
     static NodeList<Parameter> ParameterList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Parameter)x).ToList());
@@ -149,7 +149,7 @@ public static class AstTransformer
 
     static SingleValueTypeRef SingleValueType(Node n, IReadOnlyList<AstNode> c)
     {
-        return new SingleValueTypeRef(n, (Identifier)c[0]);
+        return new SingleValueTypeRef(n, ((Identifier)c[0]).Value);
     }
     
     static ArrayTypeRef ArrayType(Node n, IReadOnlyList<AstNode> c)
@@ -171,8 +171,8 @@ public static class AstTransformer
     }
 
     static VariableDeclaration VariableDeclarationStatement(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (TypeRef)c[0], (Identifier)c[1], c.Count == 3 ? (Expression?)c[2] : null);
+        new (n, (TypeRef)c[0], ((Identifier)c[1]).Value, c.Count == 3 ? (Expression?)c[2] : null);
 
     static VariableReference VariableReference(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (Identifier)c[0]);
+        new (n, ((Identifier)c[0]).Value);
 }

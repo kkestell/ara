@@ -1,19 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <PublishAot>false</PublishAot>
-        <AssemblyName>ara</AssemblyName>
+        <RuntimeIdentifiers>linux-x64;osx.12-x64;win10-x64</RuntimeIdentifiers>
     </PropertyGroup>
-
-    <ItemGroup>
-      <None Remove="Ast\Nodes\Statements\" />
-      <None Remove="Ast\Nodes\Expressions\" />
-      <None Remove="Ast\Nodes\Expressions\Atoms\" />
-    </ItemGroup>
+    <Choose>
+        <When Condition=" '$(Configuration)'=='Debug' ">
+            <PropertyGroup>
+                <DebugSymbols>true</DebugSymbols>
+                <DebugType>full</DebugType>
+                <Optimize>false</Optimize>
+                <OutputPath>.\bin\Debug\</OutputPath>
+                <DefineConstants>DEBUG;TRACE</DefineConstants>
+            </PropertyGroup>
+        </When>
+        <When Condition=" '$(Configuration)'=='Release' ">
+            <PropertyGroup>
+                <DebugSymbols>false</DebugSymbols>
+                <Optimize>true</Optimize>
+                <OutputPath>.\bin\Release\</OutputPath>
+                <DefineConstants>TRACE</DefineConstants>
+                <PublishAot>true</PublishAot>
+                <StripSymbols>true</StripSymbols>
+                <AssemblyName>ara</AssemblyName>
+            </PropertyGroup>
+        </When>
+    </Choose>
     <ItemGroup>
       <Content Include="..\..\parser\bin\parser.so">
         <Link>parser.so</Link>

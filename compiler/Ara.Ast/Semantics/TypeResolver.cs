@@ -26,7 +26,7 @@ public class TypeResolver : Visitor
 
     static void ResolveVariableReference(VariableReference r)
     {
-        var type = r.ResolveVariableReference(r.Name.Value);
+        var type = r.ResolveVariableReference(r.Name);
 
         if (type is null)
             throw new ReferenceException(r);
@@ -60,7 +60,7 @@ public class TypeResolver : Visitor
     static void ResolveCallExpression(Call c)
     {
         var func = c.NearestAncestor<SourceFile>()!
-            .Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name.Value == c.Name.Value);
+            .Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name == c.Name);
 
         if (func is not FunctionDefinition functionDefinition)
             throw new ReferenceException(c);

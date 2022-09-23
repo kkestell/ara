@@ -23,11 +23,7 @@ $ docker run -it -h=docker --rm ara /bin/bash
 #### Run an Example
 
 ```sh
-root@docker:/ara/examples# time ara fib.ara
-
-real    0m0.050s
-user    0m0.038s
-sys     0m0.023s
+root@docker:/ara/examples# ara fib.ara
 root@docker:/ara/examples# ./fib 
 root@docker:/ara/examples# echo $?
 55
@@ -37,6 +33,6 @@ root@docker:/ara/examples# echo $?
 
 ```
 $ brew install llvm bdw-gc
-$ sudo ln -s /usr/local/Cellar/llvm/15.0.0/bin/llc /usr/local/bin/llc
-$ sudo ln -s /usr/local/Cellar/llvm/15.0.0/bin/clang /usr/local/bin/clang
+$ sudo ln -s /usr/lib/llvm-15/bin/llc /usr/local/bin/llc
+$ sudo ln -s /usr/lib/llvm-15/bin/clang /usr/local/bin/clang
 ```

@@ -51,7 +51,7 @@ public class CodeGenerator
         return new FunctionType(
             IrType.FromType(def.Type),
             def.Parameters.Select(x =>
-                new Parameter(x.Name.Value, IrType.FromType(x.Type))).ToList());
+                new Parameter(x.Name, IrType.FromType(x.Type))).ToList());
     }
     
     void CacheFunctionTypes(IEnumerable<Definition> defs)
@@ -61,14 +61,14 @@ public class CodeGenerator
             if (d is not FunctionDefinition f)
                 continue;
             
-            functionTypes.Add(f.Name.Value, MakeFunctionType(f));
+            functionTypes.Add(f.Name, MakeFunctionType(f));
         }
     }
     
     void EmitFunction(Module module, FunctionDefinition def)
     {
-        var type = functionTypes[def.Name.Value];
-        var function = module.AddFunction(def.Name.Value, type);
+        var type = functionTypes[def.Name];
+        var function = module.AddFunction(def.Name, type);
         var block = function.AddBlock();
         var builder = block.IrBuilder();
 
@@ -93,7 +93,7 @@ public class CodeGenerator
                     Value ptr = v.Type switch
                     {
                         ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }),
-                        _           => builder.Alloca(IrType.FromType(v.Type), v.Name.Value),
+                        _           => builder.Alloca(IrType.FromType(v.Type), v.Name),
                     };
                     
                     if (v.Expression is not null)
@@ -113,15 +113,15 @@ public class CodeGenerator
                 case Assignment a:
                 {
                     var val = EmitExpression(builder, a.Expression);
-                    var ptr = builder.Block.FindNamedValue<Alloca>(a.Name.Value);
-                    builder.Store(val, ptr, a.Name.Value);
+                    var ptr = builder.Block.FindNamedValue<Alloca>(a.Name);
+                    builder.Store(val, ptr, a.Name);
                     break;
                 }
                 case For f:
                 {
                     var s = EmitExpression(builder, f.Start);
                     var e = EmitExpression(builder, f.End);
-                    builder.For(f.Counter.Value, s, e, (loop, cnt) => EmitBlock(f.Block, loop.IrBuilder()));
+                    builder.For(f.Counter, s, e, (loop, cnt) => EmitBlock(f.Block, loop.IrBuilder()));
                     break;
                 }
             }
@@ -175,25 +175,25 @@ public class CodeGenerator
 
     Value EmitVariableReference(IrBuilder builder, VariableReference reference)
     {
-        return builder.Block.FindNamedValue(reference.Name.Value);
+        return builder.Block.FindNamedValue(reference.Name);
     }
 
     Value EmitFunctionCallExpression(IrBuilder builder, Call call)
     {
-        var name = call.Name.Value;
+        var name = call.Name;
 
         if (!functionTypes.ContainsKey(name))
             throw new Exception($"No such function `{name}`");
         
-        var functionType = functionTypes[call.Name.Value];
+        var functionType = functionTypes[call.Name];
 
         var args = new List<Argument>();
         foreach (var a in call.Arguments)
         {
-            var p = functionType.Parameters.SingleOrDefault(x => x.Name == a.Name.Value);
+            var p = functionType.Parameters.SingleOrDefault(x => x.Name == a.Name);
             
             if (p is null)
-                throw new CodeGenException($"Function {name} has no parameter {a.Name.Value}");
+                throw new CodeGenException($"Function {name} has no parameter {a.Name}");
 
             var v = EmitExpression(builder, a.Expression);
 
@@ -203,16 +203,16 @@ public class CodeGenerator
             args.Add(new Argument(p.Type, v));
         }
         
-        return builder.Call(call.Name.Value, functionType.ReturnType, args);
+        return builder.Call(call.Name, functionType.ReturnType, args);
     }
 
     Value EmitConstant(IrBuilder builder, Constant constant)
     {
         return constant.Type switch
         {
-            Ast.Semantics.IntegerType  => new IntegerValue(int.Parse(constant.Value)),
-            Ast.Semantics.FloatType    => new FloatValue(float.Parse(constant.Value)),
-            Ast.Semantics.BooleanType  => new BooleanValue(bool.Parse(constant.Value)),
+            Ast.Semantics.IntegerType => new IntegerValue(int.Parse(constant.Value)),
+            Ast.Semantics.FloatType   => new FloatValue(float.Parse(constant.Value)),
+            Ast.Semantics.BooleanType => new BooleanValue(bool.Parse(constant.Value)),
                 
             _ => throw new CodeGenException($"A constant of type {constant.Type} is not supported here.")
         };

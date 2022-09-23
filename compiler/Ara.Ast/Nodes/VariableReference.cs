@@ -2,4 +2,4 @@
 
 namespace Ara.Ast.Nodes;
 
-public record VariableReference(Node Node, Identifier Name) : Atom(Node);
+public record VariableReference(Node Node, string Name) : Atom(Node);
