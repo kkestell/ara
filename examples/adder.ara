@@ -1,9 +1,0 @@
-module main
-
-int add(a: int, b: int) {
-  return a + b
-}
-
-int main() {
-  return add(a: 1, b: 2.5)
-}

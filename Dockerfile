@@ -20,7 +20,6 @@ RUN make
 
 WORKDIR /ara/compiler
 COPY compiler/ ./
-RUN dotnet restore
 RUN dotnet test
 RUN dotnet publish Ara -c release -r linux-x64 -o /ara/bin
 
@@ -30,5 +29,3 @@ ENV LLC=llc-15
 ENV CLANG=clang-15
 
 WORKDIR /ara/examples
-COPY examples/ ./
-

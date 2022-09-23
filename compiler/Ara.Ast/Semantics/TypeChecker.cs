@@ -5,21 +5,62 @@ namespace Ara.Ast.Semantics;
 
 public class TypeChecker : Visitor
 {
+    readonly Dictionary<string, FunctionDefinition> functionCache = new ();
+    
+    public TypeChecker(SourceFile rootNode) : base(rootNode)
+    {
+        foreach (var d in rootNode.Definitions)
+        {
+            if (d is not FunctionDefinition f)
+                continue;
+
+            functionCache.Add(f.Name, f);
+        }
+    }
+    
     protected override void VisitNode(AstNode node)
     {
         switch (node)
         {
+            case Call c:
+                CheckCall(c);
+                break;
+                
             case Return r:
-                CheckReturnStatement(r);
+                CheckReturn(r);
                 break;
 
             case If i:
-                CheckIfStatement(i);
+                CheckIf(i);
                 break;
         }
     }
 
-    void CheckReturnStatement(Return r)
+    void CheckCall(Call c)
+    {
+        var root = c.NearestAncestor<SourceFile>();
+        
+        if (!functionCache.ContainsKey(c.Name))
+            throw new SemanticException(c, $"No such function.");
+
+        var func = functionCache[c.Name];
+        
+        if (c.Arguments.Count != func.Parameters.Count)
+            throw new SemanticException(c, $"Wrong number of arguments.");
+
+        foreach (var arg in c.Arguments)
+        {
+            var p = func.Parameters.SingleOrDefault(x => x.Name == arg.Name);
+            
+            if (p is null)
+                throw new SemanticException(arg, $"Function {func.Name} has no such argument {arg.Name}");
+            
+            if (!p.Type.Equals(arg.Expression.Type))
+                throw new SemanticException(arg, $"Argument type {arg.Expression.Type} doesn't match parameter type {p.Type}");
+        }
+    }
+
+    static void CheckReturn(Return r)
     {
         var func = r.NearestAncestor<FunctionDefinition>();
         
@@ -30,7 +71,7 @@ public class TypeChecker : Visitor
             throw new ReturnTypeException(r);
     }
 
-    void CheckIfStatement(If i)
+    static void CheckIf(If i)
     {
         if (i.Predicate.Type is null)
             throw new SemanticException(i.Predicate, "Expression type could not be inferred.");

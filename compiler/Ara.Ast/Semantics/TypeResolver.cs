@@ -5,6 +5,10 @@ namespace Ara.Ast.Semantics;
 
 public class TypeResolver : Visitor
 {
+    public TypeResolver(SourceFile rootNode) : base(rootNode)
+    {
+    }
+    
     protected override void VisitNode(AstNode node)
     {
         switch (node)
