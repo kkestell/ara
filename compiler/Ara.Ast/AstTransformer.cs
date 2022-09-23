@@ -1,5 +1,5 @@
 using Ara.Ast.Nodes;
-using Ara.Ast.Semantics;
+using Ara.Ast.Semantics.Types;
 using Ara.Parsing;
 
 namespace Ara.Ast;
@@ -37,7 +37,7 @@ public static class AstTransformer
             "return_statement"               => ReturnStatement(node, children),
             "source_file"                    => SourceFile(node, children),
             "statement_list"                 => StatementList(node, children),
-            "string"                         => String_(node),
+            "string"                         => String(node),
             "single_value_type"              => SingleValueType(node, children),
             "array_type"                     => ArrayType(node, children),
             "unary_expression"               => UnaryExpression(node, children),
@@ -118,7 +118,7 @@ public static class AstTransformer
         };
     }
 
-    static Constant String_(Node n) =>
+    static Constant String(Node n) =>
         throw new NotImplementedException();
 
     static Constant Float(Node n)

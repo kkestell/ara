@@ -1,5 +1,6 @@
 using Ara.Ast.Nodes;
 using Ara.Ast.Semantics;
+using Ara.Ast.Semantics.Types;
 
 namespace Ara.Ast.Tests.Semantics;
 

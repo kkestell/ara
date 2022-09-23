@@ -1,10 +1,12 @@
 using Ara.Ast.Nodes;
+using Ara.Ast.Semantics.Types;
+using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Semantics;
 
 public class ScopeBuilder : Visitor
 {
-    public ScopeBuilder(SourceFile rootNode) : base(rootNode)
+    public ScopeBuilder(SourceFile sourceFile) : base(sourceFile)
     {
     }
     

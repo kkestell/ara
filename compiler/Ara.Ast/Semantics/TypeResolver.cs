@@ -1,11 +1,13 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
+using Ara.Ast.Semantics.Types;
+using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Semantics;
 
 public class TypeResolver : Visitor
 {
-    public TypeResolver(SourceFile rootNode) : base(rootNode)
+    public TypeResolver(SourceFile sourceFile) : base(sourceFile)
     {
     }
     
@@ -30,7 +32,7 @@ public class TypeResolver : Visitor
 
     static void ResolveVariableReference(VariableReference r)
     {
-        var type = r.ResolveVariableReference(r.Name);
+        var type = r.ResolveType(r.Name);
 
         if (type is null)
             throw new ReferenceException(r);
@@ -46,14 +48,7 @@ public class TypeResolver : Visitor
         if (!b.Left.Type.Equals(b.Right.Type))
             throw new BinaryExpressionTypeException(b);
 
-        if (b.Op is BinaryOperator.Equality or BinaryOperator.Inequality)
-        {
-            b.Type = new BooleanType();
-        }
-        else
-        {
-            b.Type = b.Left.Type;
-        }        
+        b.Type = b.Op is BinaryOperator.Equality or BinaryOperator.Inequality ? new BooleanType() : b.Left.Type;        
     }
 
     static void ResolveUnaryExpression(UnaryExpression u)
@@ -63,7 +58,7 @@ public class TypeResolver : Visitor
 
     static void ResolveCallExpression(Call c)
     {
-        var func = c.NearestAncestor<SourceFile>()!
+        var func = c.NearestAncestor<SourceFile>()
             .Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name == c.Name);
 
         if (func is not FunctionDefinition functionDefinition)

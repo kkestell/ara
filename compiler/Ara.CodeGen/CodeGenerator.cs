@@ -5,12 +5,10 @@ using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
-using ArrayType = Ara.Ast.Semantics.ArrayType;
+using ArrayType = Ara.Ast.Semantics.Types.ArrayType;
 using Block = Ara.Ast.Nodes.Block;
+using BooleanType = Ara.Ast.Semantics.Types.BooleanType;
 using Call = Ara.Ast.Nodes.Call;
-using FloatType = Ara.CodeGen.IR.Types.FloatType;
-using IntegerType = Ara.CodeGen.IR.Types.IntegerType;
-using Parameter = Ara.CodeGen.IR.Parameter;
 
 namespace Ara.CodeGen;
 
@@ -18,11 +16,8 @@ public class CodeGenerator
 {
     readonly Dictionary<string, FunctionType> functionTypes = new ();
 
-    public string Generate(AstNode root)
+    public string Generate(SourceFile root)
     {
-        if (root is not SourceFile sourceFile)
-            throw new NotSupportedException();
-
         var module = new Module();
         
         module.DeclareFunction(
@@ -31,101 +26,125 @@ public class CodeGenerator
                 new PointerType(new VoidType()), 
                 new List<IrType> { new IntegerType(64) }));
 
-        CacheFunctionTypes(sourceFile.Definitions);
-
-        foreach (var def in sourceFile.Definitions)
+        foreach (var d in root.Definitions)
         {
-            switch (def)
+            if (d is not FunctionDefinition f)
+                continue;
+            
+            functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
+        }
+        
+        foreach (var d in root.Definitions)
+        {
+            switch (d)
             {
                 case FunctionDefinition f:
                     EmitFunction(module, f);
                     break;
             }
         }
-
+        
         return module.Emit();
     }
     
-    FunctionType MakeFunctionType(FunctionDefinition def)
+    void EmitFunction(Module module, FunctionDefinition functionDefinition)
     {
-        return new FunctionType(
-            IrType.FromType(def.Type),
-            def.Parameters.Select(x =>
-                new Parameter(x.Name, IrType.FromType(x.Type))).ToList());
-    }
-    
-    void CacheFunctionTypes(IEnumerable<Definition> defs)
-    {
-        foreach (var d in defs)
-        {
-            if (d is not FunctionDefinition f)
-                continue;
-            
-            functionTypes.Add(f.Name, MakeFunctionType(f));
-        }
-    }
-    
-    void EmitFunction(Module module, FunctionDefinition def)
-    {
-        var type = functionTypes[def.Name];
-        var function = module.AddFunction(def.Name, type);
+        var type = functionTypes[functionDefinition.Name];
+        var function = module.AddFunction(functionDefinition.Name, type);
         var block = function.AddBlock();
         var builder = block.IrBuilder();
 
-        EmitBlock(def.Block, builder);
+        EmitBlock(builder, functionDefinition.Block);
     }
     
-    void EmitBlock(Block block, IrBuilder builder)
+    void EmitBlock(IrBuilder builder, Block block)
     {
         foreach (var statement in block.Statements)
         {
             switch (statement)
             {
-                case Return r:
-                {
-                    var expr = EmitExpression(builder, r.Expression);
-                    var val = builder.ResolveValue(expr);
-                    builder.Return(val);
-                    break;
-                }
-                case VariableDeclaration v:
-                {
-                    Value ptr = v.Type switch
-                    {
-                        ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }),
-                        _           => builder.Alloca(IrType.FromType(v.Type), v.Name),
-                    };
-                    
-                    if (v.Expression is not null)
-                    {
-                        var val = EmitExpression(builder, v.Expression);
-                        builder.Store(val, ptr);
-                    }
-                    
-                    break;
-                }
-                case If i:
-                {
-                    var predicate = EmitExpression(builder, i.Predicate);
-                    builder.IfThen(predicate, then => EmitBlock(i.Then, then.IrBuilder()));
-                    break;
-                }
                 case Assignment a:
                 {
-                    var val = EmitExpression(builder, a.Expression);
-                    var ptr = builder.Block.FindNamedValue<Alloca>(a.Name);
-                    builder.Store(val, ptr, a.Name);
+                    EmitAssignment(builder, a);
                     break;
                 }
                 case For f:
                 {
-                    var s = EmitExpression(builder, f.Start);
-                    var e = EmitExpression(builder, f.End);
-                    builder.For(f.Counter, s, e, (loop, cnt) => EmitBlock(f.Block, loop.IrBuilder()));
+                    EmitFor(builder, f);
+                    break;
+                }
+                case If i:
+                {
+                    EmitIf(builder, i);
+                    break;
+                }
+                case Return r:
+                {
+                    EmitReturn(builder, r);
+                    break;
+                }
+                case VariableDeclaration v:
+                {
+                    EmitVariableDeclaration(builder, v);
                     break;
                 }
             }
         }
+    }
+
+    void EmitAssignment(IrBuilder builder, Assignment a)
+    {
+        var val = EmitExpression(builder, a.Expression);
+        var ptr = builder.Block.FindNamedValue<Alloca>(a.Name);
+        builder.Store(val, ptr, a.Name);
+    }
+    
+    void EmitFor(IrBuilder builder, For f)
+    {
+        var s = EmitExpression(builder, f.Start);
+        var e = EmitExpression(builder, f.End);
+        builder.For(f.Counter, s, e, (loop, cnt) => EmitBlock(loop.IrBuilder(), f.Block));
+    }
+    
+    void EmitIf(IrBuilder builder, If i)
+    {
+        var predicate = EmitExpression(builder, i.Predicate);
+        builder.IfThen(predicate, then => EmitBlock(then.IrBuilder(), i.Then));
+    }
+    
+    void EmitReturn(IrBuilder builder, Return r)
+    {
+        var expr = EmitExpression(builder, r.Expression);
+        var val = builder.ResolveValue(expr);
+        builder.Return(val);
+    }
+
+    void EmitVariableDeclaration(IrBuilder builder, VariableDeclaration v)
+    {
+        Value ptr = v.Type switch
+        {
+            ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }),
+            _           => builder.Alloca(IrType.FromType(v.Type), v.Name),
+        };
+
+        if (v.Expression is null)
+            return;
+        
+        var val = EmitExpression(builder, v.Expression);
+        builder.Store(val, ptr);
+    }
+    
+    Value EmitExpression(IrBuilder builder, Expression expression)
+    {
+        return expression switch
+        {
+            BinaryExpression  e => EmitBinaryExpression(builder, e),
+            Call              e => EmitCall(builder, e),
+            Constant          e => EmitConstant(builder, e),
+            VariableReference e => EmitVariableReference(builder, e),
+            
+            _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
+        };
     }
 
     Value EmitBinaryExpression(IrBuilder builder, BinaryExpression expression)
@@ -173,12 +192,7 @@ public class CodeGenerator
         throw new CodeGenException($"Unsupported binary operand type {left.Type.ToIr()}");
     }
 
-    Value EmitVariableReference(IrBuilder builder, VariableReference reference)
-    {
-        return builder.Block.FindNamedValue(reference.Name);
-    }
-
-    Value EmitFunctionCallExpression(IrBuilder builder, Call call)
+    Value EmitCall(IrBuilder builder, Call call)
     {
         var name = call.Name;
 
@@ -188,46 +202,38 @@ public class CodeGenerator
         var functionType = functionTypes[call.Name];
 
         var args = new List<Argument>();
-        foreach (var a in call.Arguments)
+        foreach (var arg in call.Arguments)
         {
-            var p = functionType.Parameters.SingleOrDefault(x => x.Name == a.Name);
+            var param = functionType.Parameters.SingleOrDefault(x => x.Name == arg.Name);
             
-            if (p is null)
-                throw new CodeGenException($"Function {name} has no parameter {a.Name}");
+            if (param is null)
+                throw new CodeGenException($"Function {name} has no parameter {arg.Name}");
 
-            var v = EmitExpression(builder, a.Expression);
+            var val = EmitExpression(builder, arg.Expression);
 
-            if (!v.Type.Equals(p.Type))
-                throw new CodeGenException($"Invalid argument type {v.Type.ToIr()} where {p.Type.ToIr()} was expected.");
+            if (!val.Type.Equals(param.Type))
+                throw new CodeGenException($"Invalid argument type {val.Type.ToIr()} where {param.Type.ToIr()} was expected.");
             
-            args.Add(new Argument(p.Type, v));
+            args.Add(new Argument(param.Type, val));
         }
         
         return builder.Call(call.Name, functionType.ReturnType, args);
     }
 
-    Value EmitConstant(IrBuilder builder, Constant constant)
+    static Value EmitConstant(IrBuilder builder, Constant constant)
     {
         return constant.Type switch
         {
-            Ast.Semantics.IntegerType => new IntegerValue(int.Parse(constant.Value)),
-            Ast.Semantics.FloatType   => new FloatValue(float.Parse(constant.Value)),
-            Ast.Semantics.BooleanType => new BooleanValue(bool.Parse(constant.Value)),
+            Ast.Semantics.Types.IntegerType => new IntegerValue(int.Parse(constant.Value)),
+            Ast.Semantics.Types.FloatType   => new FloatValue(float.Parse(constant.Value)),
+            BooleanType => new BooleanValue(bool.Parse(constant.Value)),
                 
             _ => throw new CodeGenException($"A constant of type {constant.Type} is not supported here.")
         };
     }
-    
-    Value EmitExpression(IrBuilder builder, Expression expression)
+
+    static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
     {
-        return expression switch
-        {
-            Constant          e => EmitConstant(builder, e),
-            BinaryExpression  e => EmitBinaryExpression(builder, e),
-            VariableReference e => EmitVariableReference(builder, e),
-            Call              e => EmitFunctionCallExpression(builder, e),
-            
-            _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
-        };
+        return builder.Block.FindNamedValue(reference.Name);
     }
 }
