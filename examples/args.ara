@@ -1,0 +1,9 @@
+module main
+
+int test(a: int, b: float, c: bool) {
+  return 0
+}
+
+int main() {
+  return test(a: 1, b: 3.14, c: true)
+}
