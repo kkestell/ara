@@ -26,15 +26,11 @@ $ docker run -it \
 
 ```sh
 root@docker:/ara/examples# ara fib.ara
+      AST      0.06 ms
+Semantics      0.04 ms
+ Code Gen      0.04 ms
+     LLVM     30.96 ms
 root@docker:/ara/examples# ./fib 
 root@docker:/ara/examples# echo $?
 55
-```
-
-## Misc.
-
-```
-$ brew install llvm bdw-gc
-$ sudo ln -s /usr/lib/llvm-15/bin/llc /usr/local/bin/llc
-$ sudo ln -s /usr/lib/llvm-15/bin/clang /usr/local/bin/clang
 ```
