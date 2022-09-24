@@ -4,10 +4,10 @@ namespace Ara.CodeGen.IR.Types;
 
 public class FunctionType
 {
-    public FunctionType(IrType? returnType = null, IReadOnlyList<Parameter>? parameters = null)
+    public FunctionType(IrType? returnType = null, List<Parameter>? parameters = null)
     {
         ReturnType = returnType ?? IrType.Void;
-        Parameters = parameters ?? Array.Empty<Parameter>();
+        Parameters = parameters ?? new List<Parameter>();
     }
 
     public IrType ReturnType { get; }

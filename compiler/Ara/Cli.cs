@@ -14,27 +14,22 @@ public static class Cli
         // Parse
             
         using var parser = new Parser();
-        using var tree = parser.Parse(File.ReadAllText(filename), filename);
+        using var tree = Time("Parsing", () => parser.Parse(File.ReadAllText(filename), filename));
         
         // AST
 
-        var sw1 = new Stopwatch();
-        sw1.Start();
-        var ast = AstTransformer.Transform(tree);
-        sw1.Stop();
-        Console.WriteLine(Time("AST", sw1.Elapsed.TotalMilliseconds));
+        var ast = Time("AST", () => AstTransformer.Transform(tree));
         
         // Semantics
 
         try
         {
-            var sw2 = new Stopwatch();
-            sw2.Start();
-            new ScopeBuilder(ast).Visit();
-            new TypeResolver(ast).Visit();
-            new TypeChecker(ast).Visit();
-            sw2.Stop();
-            Console.WriteLine(Time("Semantics", sw2.Elapsed.TotalMilliseconds));
+            Time("Semantics", () =>
+            {
+                new ScopeBuilder(ast).Visit();
+                new TypeResolver(ast).Visit();
+                new TypeChecker(ast).Visit();
+            });
         }
         catch (SemanticException ex)
         {
@@ -45,15 +40,12 @@ public static class Cli
         {
             Console.WriteLine(ex.ToString());
             Console.WriteLine(ex.StackTrace);
+            return 1;
         }
         
         // Generate IR
         
-        var sw3 = new Stopwatch();
-        sw3.Start();
-        var ir = new CodeGenerator().Generate(ast);
-        sw3.Stop();
-        Console.WriteLine(Time("Code Gen", sw3.Elapsed.TotalMilliseconds));
+        var ir = Time("CodeGen", () => new CodeGenerator().Generate(ast));
 
         #region Output
         
@@ -72,12 +64,12 @@ public static class Cli
 
         try
         {
-            var sw4 = new Stopwatch();
-            sw4.Start();
-            Run(llcPath, $"-filetype=obj -opaque-pointers -O0 {name}.ll -o {name}.o", dir);
-            Run(clangPath, $"{name}.o -o {name} -lgc", dir);
-            sw4.Stop();
-            Console.WriteLine(Time("LLVM", sw4.Elapsed.TotalMilliseconds));
+
+            Time("LLVM", () =>
+            {
+                Run(llcPath, $"-filetype=obj -opaque-pointers -O0 {name}.ll -o {name}.o", dir);
+                Run(clangPath, $"{name}.o -o {name} -lgc", dir);
+            });
             
             Copy(dir, name);
         }
@@ -122,9 +114,28 @@ public static class Cli
         return t;
     }
     
-    static string Time(string label, double elapsed)
+    static T Time<T>(string label, Func<T> func)
     {
-        var e = $"{elapsed:0.00}";
-        return $"{label,9}{e,10} ms";
+        var sw = new Stopwatch();
+        sw.Start();
+        var result = func.Invoke();
+        sw.Stop();
+        Elapsed(label, sw);
+        return result;
+    }
+
+    static void Time(string label, Action action)
+    {
+        var sw = new Stopwatch();
+        sw.Start();
+        action.Invoke();
+        sw.Stop();
+        Elapsed(label, sw);
+    }
+    
+    static void Elapsed(string label, Stopwatch sw)
+    {
+        var e = $"{sw.Elapsed.TotalMilliseconds:0.00}";
+        Console.WriteLine($"{label,9}{e,10} ms");
     }
 }

@@ -4,13 +4,13 @@ namespace Ara.Ast.Nodes;
 
 public abstract record AstNode(Node Node)
 {
-    public AstNode? _Parent { get; set; }
+    public AstNode? Parent { get; set; }
     
     public abstract List<AstNode> Children { get; }
     
     public T? NearestAncestorOrDefault<T>() where T : AstNode
     {
-        var n = _Parent;
+        var n = Parent;
         while (true)
         {
             switch (n)
@@ -20,7 +20,7 @@ public abstract record AstNode(Node Node)
                 case T node:
                     return node;
                 default:
-                    n = n._Parent;
+                    n = n.Parent;
                     break;
             }
         }
