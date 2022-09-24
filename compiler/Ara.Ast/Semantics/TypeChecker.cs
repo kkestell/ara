@@ -10,7 +10,7 @@ public class TypeChecker : Visitor
     
     public TypeChecker(SourceFile sourceFile) : base(sourceFile)
     {
-        foreach (var d in sourceFile.Definitions)
+        foreach (var d in sourceFile.Definitions.Nodes)
         {
             if (d is not FunctionDefinition f)
                 continue;
@@ -44,12 +44,12 @@ public class TypeChecker : Visitor
 
         var func = functionCache[c.Name];
         
-        if (c.Arguments.Count != func.Parameters.Count)
+        if (c.Arguments.Nodes.Count != func.Parameters.Nodes.Count())
             throw new SemanticException(c, "Wrong number of arguments.");
 
-        foreach (var arg in c.Arguments)
+        foreach (var arg in c.Arguments.Nodes)
         {
-            var p = func.Parameters.SingleOrDefault(x => x.Name == arg.Name);
+            var p = func.Parameters.Nodes.SingleOrDefault(x => x.Name == arg.Name);
             
             if (p is null)
                 throw new SemanticException(arg, $"Function {func.Name} has no such argument {arg.Name}");
@@ -65,7 +65,7 @@ public class TypeChecker : Visitor
         
         if (r.Expression.Type is null)
             throw new SemanticException(r.Expression, "Expression type could not be inferred.");
-            
+        
         if (!r.Expression.Type.Equals(func.Type))
             throw new ReturnTypeException(r);
     }

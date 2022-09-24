@@ -59,7 +59,7 @@ public class TypeResolver : Visitor
     static void ResolveCallExpression(Call c)
     {
         var func = c.NearestAncestor<SourceFile>()
-            .Definitions.SingleOrDefault(x => x is FunctionDefinition d && d.Name == c.Name);
+            .Definitions.Nodes.SingleOrDefault(x => x is FunctionDefinition d && d.Name == c.Name);
 
         if (func is not FunctionDefinition functionDefinition)
             throw new ReferenceException(c);

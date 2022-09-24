@@ -82,19 +82,19 @@ public static class AstTransformer
     }
 
     static Block Block(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, ((NodeList<Statement>)c[0]).Nodes);
+        new (n, (NodeList<Statement>)c[0]);
     
     static NodeList<Definition> DefinitionList(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, c.Select(x => (Definition)x));
+        new (n, c.Select(x => (Definition)x).ToList());
 
     static For ForStatement(Node n, IReadOnlyList<AstNode> c) =>
         new (n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2], (Block)c[3]);
     
     static Call FunctionCallExpression(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, ((Identifier)c[0]).Value, ((NodeList<Argument>)c[1]).Nodes.ToList());
+        new (n, ((Identifier)c[0]).Value, (NodeList<Argument>)c[1]);
 
     static FunctionDefinition FunctionDefinition(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (TypeRef)c[0], ((Identifier)c[1]).Value, ((NodeList<Parameter>)c[2]).Nodes.ToList(), (Block)c[3]);
+        new (n, (TypeRef)c[0], ((Identifier)c[1]).Value, (NodeList<Parameter>)c[2], (Block)c[3]);
 
     static Identifier Identifier(Node n) =>
         new (n, n.Span.ToString());
@@ -142,7 +142,7 @@ public static class AstTransformer
         new (n, (Expression)c[0]);
 
     static SourceFile SourceFile(Node n, IReadOnlyList<AstNode> c) =>
-        new (n, (ModuleDeclaration)c[0], ((NodeList<Definition>)c[1]).Nodes);
+        new (n, (ModuleDeclaration)c[0], (NodeList<Definition>)c[1]);
 
     static NodeList<Statement> StatementList(Node n, IReadOnlyList<AstNode> c) =>
         new (n, c.Select(x => (Statement)x).ToList());

@@ -4,7 +4,9 @@ using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Nodes;
 
-public record FunctionDefinition(Node Node, TypeRef ReturnType, string Name, List<Parameter> Parameters, Block Block) : Definition(Node)
+public record FunctionDefinition(Node Node, TypeRef ReturnType, string Name, NodeList<Parameter> Parameters, Block Block) : Definition(Node)
 {
     public readonly Type Type = new IntegerType();
+    
+    public override List<AstNode> Children { get; } = new List<AstNode> { ReturnType, Parameters, Block };
 }

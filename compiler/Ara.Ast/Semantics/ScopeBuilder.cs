@@ -33,7 +33,7 @@ public class ScopeBuilder : Visitor
     
     static void ResolveFunctionDefinition(FunctionDefinition f)
     {
-        foreach (var p in f.Parameters)
+        foreach (var p in f.Parameters.Nodes)
         {
             f.Block.Scope.Add(p.Name, Type.Parse(p.TypeRef));
         }

@@ -18,7 +18,7 @@ public class FunctionType
     {
         return new FunctionType(
             IrType.FromType(functionDefinition.Type),
-            functionDefinition.Parameters.Select(x =>
+            functionDefinition.Parameters.Nodes.Select(x =>
                 new Parameter(x.Name, IrType.FromType(x.Type))).ToList());
     }
 }
