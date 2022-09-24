@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 
@@ -12,7 +13,7 @@ public class FunctionTests : TestBase
         module = new Module();
         
         var type = new FunctionType(IrType.Integer,
-            new[] { new Parameter("a", IrType.Integer), new Parameter("b", IrType.Integer) });
+            new List<Parameter> { new ("a", IrType.Integer), new ("b", IrType.Integer) });
         var function = module.AddFunction("test", type);
         
         var block = function.AddBlock();
