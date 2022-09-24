@@ -6,7 +6,7 @@ namespace Ara.CodeGen.Tests.IR.Instructions;
 public class BrTests : TestBase
 {
     [Test]
-    public void Branch()
+    public void BranchConditionally()
     {
         var l1 = builder.Label("l1");
         var l2 = builder.Label("l2");
@@ -26,6 +26,22 @@ public class BrTests : TestBase
               %""2"" = add i32 1, 2
             l2:
               %""3"" = add i32 3, 4
+            }
+        ");
+    }
+    
+    [Test]
+    public void BranchUnconditionally()
+    {
+        var label = builder.Label("label");
+        builder.Br(label);
+        builder.Block.AddInstruction(label);
+
+        AssertIr(module.Emit(), @"
+            define void @test () {
+            entry:
+              br label %""label""
+            label:
             }
         ");
     }

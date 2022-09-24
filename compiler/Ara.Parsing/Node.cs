@@ -17,13 +17,14 @@ public sealed class Node
     const string SharedLibrary = "parser.so";
 
     readonly TsNode handle;
-    public readonly Tree Tree;
 
     public Node(TsNode handle, Tree tree)
     {
         this.handle = handle;
         Tree = tree;
     }
+
+    public Tree Tree { get; }
 
     public Location Location => new (this);
 
