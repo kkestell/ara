@@ -21,7 +21,7 @@ public class AstTransformerTests : TestBase
         {
             Assert.That(func.Name, Is.EqualTo("main"));
             Assert.That(((SingleValueTypeRef)func.ReturnType).Name, Is.EqualTo("int"));
-            Assert.That(func.Parameters, Is.Empty);
+            Assert.That(func.Parameters.Nodes, Is.Empty);
         });
     }
     
