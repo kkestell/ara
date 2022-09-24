@@ -20,7 +20,6 @@ RUN make
 
 WORKDIR /ara/compiler
 COPY compiler/ ./
-RUN dotnet test
 RUN dotnet publish Ara -c release -r linux-x64 -o /ara/bin
 
 RUN echo 'export PATH=$PATH:/ara/bin/' >> /root/.bashrc

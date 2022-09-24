@@ -6,6 +6,8 @@ public abstract record AstNode(Node Node)
 {
     public AstNode? _Parent { get; set; }
     
+    public abstract List<AstNode> Children { get; }
+    
     public T? NearestAncestorOrDefault<T>() where T : AstNode
     {
         var n = _Parent;

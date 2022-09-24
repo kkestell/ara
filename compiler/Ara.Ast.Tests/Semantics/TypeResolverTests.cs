@@ -21,8 +21,8 @@ public class TypeResolverTests : TestBase
         new ScopeBuilder(ast).Visit();
         new TypeResolver(ast).Visit();
 
-        var block = ((FunctionDefinition)ast.Definitions.First()).Block;
-        var ret = (Return)block.Statements.First();
+        var block = ((FunctionDefinition)ast.Definitions.Nodes.First()).Block;
+        var ret = (Return)block.Statements.Nodes[0];
 
         Assert.That(ret.Expression.Type, Is.Not.Null);
         Assert.That(ret.Expression.Type, Is.TypeOf<IntegerType>());

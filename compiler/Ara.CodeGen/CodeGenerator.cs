@@ -26,7 +26,7 @@ public class CodeGenerator
                 new PointerType(new VoidType()), 
                 new List<IrType> { new IntegerType(64) }));
 
-        foreach (var d in root.Definitions)
+        foreach (var d in root.Definitions.Nodes)
         {
             if (d is not FunctionDefinition f)
                 continue;
@@ -34,7 +34,7 @@ public class CodeGenerator
             functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
         }
         
-        foreach (var d in root.Definitions)
+        foreach (var d in root.Definitions.Nodes)
         {
             switch (d)
             {
@@ -59,7 +59,7 @@ public class CodeGenerator
     
     void EmitBlock(IrBuilder builder, Block block)
     {
-        foreach (var statement in block.Statements)
+        foreach (var statement in block.Statements.Nodes)
         {
             switch (statement)
             {
@@ -202,7 +202,7 @@ public class CodeGenerator
         var functionType = functionTypes[call.Name];
 
         var args = new List<Argument>();
-        foreach (var arg in call.Arguments)
+        foreach (var arg in call.Arguments.Nodes)
         {
             var param = functionType.Parameters.SingleOrDefault(x => x.Name == arg.Name);
             

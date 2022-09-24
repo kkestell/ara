@@ -16,7 +16,7 @@ public class AstTransformerTests : TestBase
         ");
         var ast = AstTransformer.Transform(tree);
         
-        var func = (FunctionDefinition)ast.Definitions.First();
+        var func = (FunctionDefinition)ast.Definitions.Nodes.First();
         Assert.Multiple(() =>
         {
             Assert.That(func.Name, Is.EqualTo("main"));
@@ -37,7 +37,7 @@ public class AstTransformerTests : TestBase
         ");
         var ast = AstTransformer.Transform(tree);
         
-        var func = (FunctionDefinition)ast.Definitions.First();
+        var func = (FunctionDefinition)ast.Definitions.Nodes.First();
         Assert.Multiple(() =>
         {
             Assert.That(func.Name, Is.EqualTo("main"));
@@ -45,8 +45,8 @@ public class AstTransformerTests : TestBase
             Assert.That(func.ReturnType, Is.TypeOf<SingleValueTypeRef>());
             Assert.That(((SingleValueTypeRef)func.ReturnType).Name, Is.EqualTo("int"));
             
-            Assert.That(func.Parameters, Has.Count.EqualTo(3));
-            var p = func.Parameters.ToList();
+            Assert.That(func.Parameters.Nodes.Count(), Is.EqualTo(3));
+            var p = func.Parameters.Nodes.ToList();
 
             Assert.That(((SingleValueTypeRef)p[0].TypeRef).Name, Is.EqualTo("int"));
             Assert.That(((SingleValueTypeRef)p[1].TypeRef).Name, Is.EqualTo("float"));
