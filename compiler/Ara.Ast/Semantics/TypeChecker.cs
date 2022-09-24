@@ -26,13 +26,13 @@ public class TypeChecker : Visitor
             case Call c:
                 CheckCall(c);
                 break;
-                
-            case Return r:
-                CheckReturn(r);
-                break;
 
             case If i:
                 CheckIf(i);
+                break;
+            
+            case Return r:
+                CheckReturn(r);
                 break;
         }
     }

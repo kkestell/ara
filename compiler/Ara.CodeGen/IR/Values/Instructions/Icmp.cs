@@ -22,7 +22,7 @@ public class Icmp : Instruction
         this.right = right;
     }
 
-    public override IrType Type => new IntegerType(1);
+    public override IrType Type => IrType.Bool;
 
     public override void Emit(StringBuilder sb)
     {

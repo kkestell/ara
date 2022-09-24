@@ -1,10 +1,4 @@
-/*
-using DotNetGraph;
-using DotNetGraph.Edge;
-using DotNetGraph.Extensions;
-using DotNetGraph.Node;
-*/
-
+using System.Collections;
 using Ara.Ast.Nodes;
 using DotNetGraph;
 using DotNetGraph.Edge;
@@ -29,51 +23,20 @@ public class GraphGenerator
         if (node is null)
             return;
         
-        var properties = node.GetType().GetProperties();
         var dotNode = AddNode(node, parent);
 
-        foreach (var p in properties)
+        foreach (var p in node.Children)
         {
-            if (p.Name.StartsWith('_'))
-                continue;
-            
-            if (typeof(AstNode).IsAssignableFrom(p.PropertyType))
+            if (p is IEnumerable e)
             {
-                var value = (AstNode?)p.GetValue(node);
-
-                if (value is null)
-                    AddEmptyNode(p.Name, dotNode);
-                else
-                    Visit(value, dotNode);
+                foreach (var c in e)
+                    Visit((AstNode)c, dotNode);
             }
-            else if (typeof(IEnumerable<AstNode>).IsAssignableFrom(p.PropertyType))
+            else
             {
-                foreach (var c in (IEnumerable<AstNode>)p.GetValue(node)!) 
-                    Visit(c, dotNode);
+                Visit(p, dotNode);
             }
         }
-    }
-
-    void AddEmptyNode(string name, DotNode? parent = null)
-    {
-        var graphNode = new DotNode(Guid.NewGuid().ToString())
-        {
-            Shape = DotNodeShape.Rectangle,
-            Label = name,
-            Style = DotNodeStyle.Dotted
-        };
-        
-        graph.Elements.Add(graphNode);
-
-        if (parent is null) 
-            return;
-        
-        var myEdge = new DotEdge(parent, graphNode)
-        {
-            ArrowHead = DotEdgeArrowType.Normal
-        };
-
-        graph.Elements.Add(myEdge);
     }
 
     DotNode AddNode(AstNode node, DotNode? parent = null)

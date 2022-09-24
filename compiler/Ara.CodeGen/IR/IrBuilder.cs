@@ -64,8 +64,7 @@ public class IrBuilder
 
         // Loop direction
         var dp = Icmp(IcmpCondition.SignedGreaterThan, end, start);
-        var delta = Alloca(IrType.Integer, "delta");
-        IfElse(dp, up => up.IrBuilder().Store(new IntegerValue(1), delta), down => down.IrBuilder().Store(new IntegerValue(-1), delta));
+        var delta = Select(dp, new IntegerValue(1), new IntegerValue(-1));
 
         // Init counter
         var c = Alloca(new IntegerType(32));
@@ -79,7 +78,7 @@ public class IrBuilder
         Block = b;
         
         // Update counter
-        Store(Add(Load(c), Load(delta)), c);
+        Store(Add(Load(c), delta), c);
 
         var foo = Load(c);
 
@@ -190,5 +189,10 @@ public class IrBuilder
     public Call Call(string functionName, IrType returnType, IEnumerable<Argument> arguments, string? name = null)
     {
         return Block.AddInstruction(new Call(Block, functionName, returnType, arguments, name));
+    }
+
+    public Select Select(Value cond, Value value1, Value value2, string? name = null)
+    {
+        return Block.AddInstruction(new Select(Block, cond, value1, value2, name));
     }
 }

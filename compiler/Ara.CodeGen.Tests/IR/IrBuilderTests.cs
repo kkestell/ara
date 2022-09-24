@@ -73,37 +73,28 @@ public class IrBuilderTests : TestBase
             define void @test () {
             entry:
               %""0"" = icmp sgt i32 10, 0
-              %""delta"" = alloca i32, align 4
-              br i1 %""0"", label %""if"", label %""else""
-            if:
-              store i32 1, ptr %""delta""
-              br label %""endif""
-            else:
-              store i32 -1, ptr %""delta""
-              br label %""endif""
-            endif:
-              %""6"" = alloca i32, align 4
-              store i32 0, ptr %""6""
+              %""1"" = select i1 %""0"", i32 1, i32 -1
+              %""2"" = alloca i32, align 4
+              store i32 0, ptr %""2""
               br label %""for""
             for:
-              %""c"" = load i32, ptr %""6""
-              %""9"" = load i32, ptr %""6""
-              ret i32 %""9""
-              %""11"" = load i32, ptr %""6""
-              %""12"" = load i32, ptr %""delta""
-              %""13"" = add i32 %""11"", %""12""
-              store i32 %""13"", ptr %""6""
-              %""15"" = load i32, ptr %""6""
-              br i1 %""0"", label %""if.0"", label %""else.0""
-            if.0:
-              %""17"" = icmp slt i32 %""15"", 10
-              br i1 %""17"", label %""for"", label %""endfor""
-              br label %""endif.0""
-            else.0:
-              %""20"" = icmp sgt i32 %""15"", 10
-              br i1 %""20"", label %""for"", label %""endfor""
-              br label %""endif.0""
-            endif.0:
+              %""c"" = load i32, ptr %""2""
+              %""5"" = load i32, ptr %""2""
+              ret i32 %""5""
+              %""7"" = load i32, ptr %""2""
+              %""8"" = add i32 %""7"", %""1""
+              store i32 %""8"", ptr %""2""
+              %""10"" = load i32, ptr %""2""
+              br i1 %""0"", label %""if"", label %""else""
+            if:
+              %""12"" = icmp slt i32 %""10"", 10
+              br i1 %""12"", label %""for"", label %""endfor""
+              br label %""endif""
+            else:
+              %""15"" = icmp sgt i32 %""10"", 10
+              br i1 %""15"", label %""for"", label %""endfor""
+              br label %""endif""
+            endif:
               br label %""endfor""
             endfor:
             }
