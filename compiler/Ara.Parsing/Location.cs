@@ -1,12 +1,7 @@
 namespace Ara.Parsing;
 
-public struct Location
+public readonly struct Location
 {
-    public Node Node;
-    public int Line;
-    public int Column;
-    public string? Filename;
-
     public Location(Node node)
     {
         var start = node.Offset.Item1;
@@ -33,6 +28,14 @@ public struct Location
         Column = columns;
         Filename = node.Tree.Filename;
     }
+    
+    public Node Node { get; }
+    
+    public int Line { get; }
+    
+    public int Column { get; }
+    
+    public string? Filename { get; }
     
     public string Context
     {

@@ -124,7 +124,7 @@ public class CodeGenerator
         Value ptr = v.Type switch
         {
             ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }),
-            _           => builder.Alloca(IrType.FromType(v.Type), v.Name),
+            _           => builder.Alloca(IrType.FromType(v.Type), v.Name)
         };
 
         if (v.Expression is null)
@@ -140,7 +140,7 @@ public class CodeGenerator
         {
             BinaryExpression  e => EmitBinaryExpression(builder, e),
             Call              e => EmitCall(builder, e),
-            Constant          e => EmitConstant(builder, e),
+            Constant          e => MakeConstant(e),
             VariableReference e => EmitVariableReference(builder, e),
             
             _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
@@ -220,7 +220,7 @@ public class CodeGenerator
         return builder.Call(call.Name, functionType.ReturnType, args);
     }
 
-    static Value EmitConstant(IrBuilder builder, Constant constant)
+    static Value MakeConstant(Constant constant)
     {
         return constant.Type switch
         {

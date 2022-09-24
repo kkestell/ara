@@ -16,9 +16,7 @@ public class Function
         this.name = name;
         this.type = type;
     }
-
-    public int NumBlocks => blocks.Count;
-
+    
     public Block AddBlock()
     {
         var block = new Block(this);
@@ -39,9 +37,9 @@ public class Function
         return block;
     }
 
-    public Value? Argument(string name)
+    public Value? Argument(string argName)
     {
-        return !arguments.ContainsKey(name) ? null : arguments[name];
+        return !arguments.ContainsKey(argName) ? null : arguments[argName];
     }
 
     public void Emit(StringBuilder sb)

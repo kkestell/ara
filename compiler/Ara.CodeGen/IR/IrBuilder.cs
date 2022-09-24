@@ -12,9 +12,7 @@ public class IrBuilder
     }
 
     public Block Block { get; private set; }
-
-    public Function Function => Block.Function;
-
+    
     public Value ResolveValue(Value value)
     {
         if (value is Alloca a)

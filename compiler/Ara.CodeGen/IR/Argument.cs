@@ -5,15 +5,14 @@ namespace Ara.CodeGen.IR;
 
 public class Argument
 {
+    readonly IrType type;
+    readonly Value value;
+
     public Argument(IrType type, Value value)
     {
-        Type = type;
-        Value = value;
+        this.type = type;
+        this.value = value;
     }
     
-    public IrType Type { get; }
-    
-    public Value Value { get; }
-
-    public string ToIr() => $"{Type.ToIr()} {Value.Resolve()}";
+    public string ToIr() => $"{type.ToIr()} {value.Resolve()}";
 }
