@@ -7,7 +7,7 @@
         <AssemblyName>ara</AssemblyName>
     </PropertyGroup>
     <Choose>
-        <When Condition=" '$(Configuration)'=='Debug' ">
+        <When Condition="'$(Configuration)'=='Debug'">
             <PropertyGroup>
                 <DebugSymbols>true</DebugSymbols>
                 <DebugType>full</DebugType>
@@ -17,27 +17,35 @@
                 <RuntimeIdentifiers>linux-x64;osx.12-x64;win10-x64</RuntimeIdentifiers>
             </PropertyGroup>
         </When>
-        <When Condition=" '$(Configuration)'=='Release' ">
+        <When Condition="'$(Configuration)'=='Release'">
             <PropertyGroup>
                 <DebugSymbols>false</DebugSymbols>
                 <Optimize>true</Optimize>
                 <OutputPath>.\bin\Release\</OutputPath>
                 <DefineConstants>TRACE</DefineConstants>
                 <PublishAot>true</PublishAot>
-                <StripSymbols>false</StripSymbols>
-                <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
+                <StripSymbols>true</StripSymbols>
+                <RuntimeIdentifiers>linux-x64,win10-x64</RuntimeIdentifiers>
             </PropertyGroup>
         </When>
     </Choose>
     <ItemGroup>
-      <Content Include="..\..\parser\bin\parser.so">
-        <Link>parser.so</Link>
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
+        <Content Include="..\..\parser\bin\Ara.Parsing.Windows-x86_64.dll" Condition=" '$(OS)' == 'Windows_NT' ">
+            <Link>Ara.Parsing.Windows-x86_64.dll</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\..\parser\bin\Ara.Parsing.Linux-x86_64.so" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
+            <Link>Ara.Parsing.Linux-x86_64.so</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\..\parser\bin\Ara.Parsing.Darwin-x86_64.dylib" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">
+            <Link>Ara.Parsing.Darwin-x86_64.dylib</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Ara.Ast\Ara.Ast.csproj" />
-      <ProjectReference Include="..\Ara.CodeGen\Ara.CodeGen.csproj" />
-      <ProjectReference Include="..\Ara.Parsing\Ara.Parsing.csproj" />
+        <ProjectReference Include="..\Ara.Ast\Ara.Ast.csproj" />
+        <ProjectReference Include="..\Ara.CodeGen\Ara.CodeGen.csproj" />
+        <ProjectReference Include="..\Ara.Parsing\Ara.Parsing.csproj" />
     </ItemGroup>
 </Project>

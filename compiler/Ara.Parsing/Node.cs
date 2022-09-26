@@ -14,7 +14,7 @@ public readonly struct TsNode
 
 public sealed class Node
 {
-    const string SharedLibrary = "parser.so";
+    const string SharedLibrary = "Ara.Parsing.Linux-x86_64.so";
 
     readonly TsNode handle;
 
