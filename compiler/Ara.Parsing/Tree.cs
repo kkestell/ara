@@ -4,6 +4,8 @@ namespace Ara.Parsing;
 
 public sealed class Tree : IDisposable
 {
+    const string SharedLibrary = "Ara.Parsing.Linux-x86_64.so";
+    
     readonly Handle<Tree> handle;
     readonly string source;
 
@@ -33,9 +35,9 @@ public sealed class Tree : IDisposable
         return source.AsSpan();
     }
 
-    [DllImport("parser.so")]
+    [DllImport(SharedLibrary)]
     static extern TsNode ts_tree_root_node(Handle<Tree> handle);
 
-    [DllImport("parser.so")]
+    [DllImport(SharedLibrary)]
     static extern void delete_tree(Handle<Tree> handle);
 }

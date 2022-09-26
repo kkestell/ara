@@ -1,12 +1,19 @@
-all: bin/parser.so
+shared_library = bin/Ara.Parsing.$(shell uname -sm | sed -E 's/[ \/]/-/g').so
 
-bin/parser.so: generate grammar.js
+all: $(shared_library)
+
+$(shared_library): generate grammar.js
 	mkdir -p bin
-	clang -O3 -fPIC -shared -I tree-sitter/lib/include -I ./src src/shim.c src/parser.c tree-sitter/libtree-sitter.a -o bin/parser.so
+	clang -O3 -fPIC -shared \
+		-I tree-sitter/lib/include \
+		src/main.c \
+		src/parser.c \
+		tree-sitter/lib/src/lib.c \
+		-o $(shared_library)
 
 .PHONY: clean test
 clean:
-	rm -rf bin/parser.so src/grammar.json src/node-types.json src/parser.c src/tree_sitter/
+	rm -rf bin src/grammar.json src/node-types.json src/parser.c src/tree_sitter
 
 test: generate
 	./node_modules/.bin/tree-sitter test
