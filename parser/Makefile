@@ -2,7 +2,7 @@ all: bin/parser.so
 
 bin/parser.so: generate grammar.js
 	mkdir -p bin
-	clang -O3 -fPIC -shared -I tree-sitter/lib/include -I ./src src/shim.c src/parser.c tree-sitter/libtree-sitter.a -o bin/parser.so
+	cc -O3 -shared -I tree-sitter/lib/include -I ./src src/shim.c src/parser.c tree-sitter/libtree-sitter.a -o bin/parser.so
 
 .PHONY: clean test
 clean:

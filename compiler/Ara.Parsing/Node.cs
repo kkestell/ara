@@ -14,7 +14,7 @@ public readonly struct TsNode
 
 public sealed class Node
 {
-    const string SharedLibrary = "parser.so";
+    const string SharedLibrary = "AraParser.dll";
 
     readonly TsNode handle;
 
@@ -35,7 +35,7 @@ public sealed class Node
         Tree.AsSpan(ts_node_start_byte(handle), ts_node_end_byte(handle));
 
     public string Type => 
-        Marshal.PtrToStringAuto(ts_node_type(handle))!;
+        Marshal.PtrToStringUTF8(ts_node_type(handle))!;
 
     public Node? Parent => 
         OptionalNode(ts_node_parent(handle));
@@ -113,9 +113,9 @@ public sealed class Node
     [DllImport(SharedLibrary)]
     static extern int ts_node_end_byte(TsNode node);
     
-    [DllImport(SharedLibrary)]
+    [DllImport(SharedLibrary, CharSet = CharSet.Ansi)]
     static extern string ts_node_string(TsNode node);
     
-    [DllImport(SharedLibrary)]
-    static extern TsNode ts_node_child_by_field_name(TsNode node, string fieldName, int fieldNameLength);
+    [DllImport(SharedLibrary, CharSet = CharSet.Ansi)]
+    static extern TsNode ts_node_child_by_field_name(TsNode node, [MarshalAs(UnmanagedType.LPStr)] string fieldName, int fieldNameLength);
 }

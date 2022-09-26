@@ -47,6 +47,8 @@ public static class Cli
         
         var ir = Time("CodeGen", () => new CodeGenerator().Generate(ast));
 
+        return 0;
+
         #region Output
         
         var dir = GetTemporaryDirectory();

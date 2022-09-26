@@ -38,3 +38,9 @@ root@docker:/ara/examples# ./fib
 root@docker:/ara/examples# echo $?
 55
 ```
+
+## Windows
+
+1. Download and install the [latest LLVM 15 release](https://github.com/llvm/llvm-project/releases/tag/llvmorg-15.0.1).
+
+2. Compile the parser using [parser/build.sh](parser/build.sh).

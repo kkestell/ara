@@ -19,11 +19,4 @@
       <ProjectReference Include="..\Ara.Parsing\Ara.Parsing.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="..\..\parser\bin\parser.so">
-        <Link>parser.so</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
 </Project>

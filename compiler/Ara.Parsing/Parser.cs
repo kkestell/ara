@@ -4,6 +4,8 @@ namespace Ara.Parsing;
 
 public sealed class Parser : IDisposable
 {
+    const string SharedLibrary = "AraParser.dll";
+
     readonly Handle<Parser> handle;
 
     public Parser()
@@ -22,12 +24,12 @@ public sealed class Parser : IDisposable
         return new Tree(tree, source, filename);
     }
 
-    [DllImport("parser.so")]
+    [DllImport(SharedLibrary)]
     static extern Handle<Parser> create_parser();
 
-    [DllImport("parser.so")]
+    [DllImport(SharedLibrary)]
     static extern void delete_parser(Handle<Parser> parser);
 
-    [DllImport("parser.so", CharSet = CharSet.Ansi)]
+    [DllImport(SharedLibrary, CharSet = CharSet.Ansi)]
     static extern Handle<Tree> parse(Handle<Parser> parser, string source);
 }

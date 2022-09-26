@@ -30,10 +30,9 @@
         </When>
     </Choose>
     <ItemGroup>
-      <Content Include="..\..\parser\bin\parser.so">
-        <Link>parser.so</Link>
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
+      <None Include="..\..\parser\bin\AraParser.dll" Link="AraParser.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Ara.Ast\Ara.Ast.csproj" />

@@ -32,7 +32,6 @@ extern TSTree *parse(TSParser *parser, const char *source_code)
         parser,
         NULL,
         source_code,
-        strlen(source_code)
-    );
+        strlen(source_code));
     return tree;
 }

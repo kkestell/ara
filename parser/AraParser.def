@@ -1,0 +1,21 @@
+LIBRARY   ARAPARSER
+EXPORTS
+   create_parser
+   delete_parser
+   delete_tree
+   parse
+   sexp
+   tree_sitter_ara
+   ts_node_child
+   ts_node_child_by_field_name
+   ts_node_end_byte
+   ts_node_first_child_for_byte
+   ts_node_is_null
+   ts_node_named_child
+   ts_node_named_child_count
+   ts_node_next_named_sibling
+   ts_node_parent
+   ts_node_start_byte
+   ts_node_string
+   ts_node_type
+   ts_tree_root_node

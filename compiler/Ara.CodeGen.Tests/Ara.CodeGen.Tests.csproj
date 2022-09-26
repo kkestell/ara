@@ -17,11 +17,4 @@
       <ProjectReference Include="..\Ara.CodeGen\Ara.CodeGen.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="..\..\parser\bin\parser.so">
-        <Link>parser.so</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
 </Project>
