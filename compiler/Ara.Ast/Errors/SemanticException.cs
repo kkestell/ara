@@ -36,6 +36,6 @@ public class SemanticException : Exception
     
     static string Indent(int col, string str)
     {
-        return $"{new string(' ', col - 1)}{str}";
+        return $"{new string(' ', col)}{str}";
     }
 }

@@ -12,10 +12,15 @@ public readonly struct TsNode
     readonly IntPtr Tree;
 }
 
+[StructLayout(LayoutKind.Sequential)]
+public readonly struct TsPoint
+{
+    public readonly Int32 Row;
+    public readonly Int32 Column;
+}
+
 public sealed class Node
 {
-    const string SharedLibrary = "Ara.Parsing.Linux-x86_64.so";
-
     readonly TsNode handle;
 
     public Node(TsNode handle, Tree tree)
@@ -31,11 +36,15 @@ public sealed class Node
     public Tuple<int, int> Offset => 
         new (ts_node_start_byte(handle), ts_node_end_byte(handle));
 
+    public TsPoint StartPoint => ts_node_start_point(handle);
+    
+    public TsPoint EndPoint => ts_node_end_point(handle);
+
     public ReadOnlySpan<char> Span => 
         Tree.AsSpan(ts_node_start_byte(handle), ts_node_end_byte(handle));
 
     public string Type => 
-        Marshal.PtrToStringAuto(ts_node_type(handle))!;
+        Marshal.PtrToStringUTF8(ts_node_type(handle))!;
 
     public Node? Parent => 
         OptionalNode(ts_node_parent(handle));
@@ -79,43 +88,49 @@ public sealed class Node
     Node? OptionalNode(TsNode node) =>
         ts_node_is_null(node) ? null : new Node(node, Tree);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern IntPtr ts_node_type(TsNode node);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern TsNode ts_node_parent(TsNode node);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern int ts_node_child_count(TsNode node);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern int ts_node_named_child_count(TsNode node);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern TsNode ts_node_child(TsNode node, int child);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern TsNode ts_node_named_child(TsNode node, int child);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     [return: MarshalAs(UnmanagedType.I1)]
     static extern bool ts_node_is_null(TsNode node);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern TsNode ts_node_next_named_sibling(TsNode node);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern TsNode ts_node_prev_named_sibling(TsNode node);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern int ts_node_start_byte(TsNode node);
 
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
     static extern int ts_node_end_byte(TsNode node);
+
+    [DllImport(Platform.SharedLibrary)]
+    static extern TsPoint ts_node_start_point(TsNode node);
     
-    [DllImport(SharedLibrary)]
+    [DllImport(Platform.SharedLibrary)]
+    static extern TsPoint ts_node_end_point(TsNode node);
+    
+    [DllImport(Platform.SharedLibrary, CharSet = CharSet.Ansi)]
     static extern string ts_node_string(TsNode node);
     
-    [DllImport(SharedLibrary)]
-    static extern TsNode ts_node_child_by_field_name(TsNode node, string fieldName, int fieldNameLength);
+    [DllImport(Platform.SharedLibrary, CharSet = CharSet.Ansi)]
+    static extern TsNode ts_node_child_by_field_name(TsNode node, [MarshalAs(UnmanagedType.LPStr)] string fieldName, int fieldNameLength);
 }
