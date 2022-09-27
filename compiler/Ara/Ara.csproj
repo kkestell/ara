@@ -25,7 +25,7 @@
                 <DefineConstants>TRACE</DefineConstants>
                 <PublishAot>true</PublishAot>
                 <StripSymbols>true</StripSymbols>
-                <RuntimeIdentifiers>linux-x64,win10-x64</RuntimeIdentifiers>
+                <RuntimeIdentifiers>linux-x64;win10-x64</RuntimeIdentifiers>
             </PropertyGroup>
         </When>
     </Choose>
