@@ -30,20 +30,6 @@
         </When>
     </Choose>
     <ItemGroup>
-        <Content Include="..\..\parser\bin\Ara.Parsing.Windows-x86_64.dll" Condition=" '$(OS)' == 'Windows_NT' ">
-            <Link>Ara.Parsing.Windows-x86_64.dll</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="..\..\parser\bin\Ara.Parsing.Linux-x86_64.so" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
-            <Link>Ara.Parsing.Linux-x86_64.so</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Include="..\..\parser\bin\Ara.Parsing.Darwin-x86_64.dylib" Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">
-            <Link>Ara.Parsing.Darwin-x86_64.dylib</Link>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\Ara.Ast\Ara.Ast.csproj" />
         <ProjectReference Include="..\Ara.CodeGen\Ara.CodeGen.csproj" />
         <ProjectReference Include="..\Ara.Parsing\Ara.Parsing.csproj" />

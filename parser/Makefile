@@ -1,4 +1,14 @@
-shared_library = bin/Ara.Parsing.$(shell uname -sm | sed -E 's/[ \/]/-/g').so
+ifeq ($(OS),Windows_NT)
+	shared_library = bin/Ara.Parsing.Windows-x86_64.dll
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+        shared_library = bin/Ara.Parsing.Linux-x86_64.so
+    endif
+    ifeq ($(UNAME_S),Darwin)
+        shared_library = bin/Ara.Parsing.Darwin-x86_64.dylib
+    endif
+endif
 
 all: $(shared_library)
 
@@ -6,6 +16,7 @@ $(shared_library): generate grammar.js
 	mkdir -p bin
 	clang -O3 -fPIC -shared \
 		-I tree-sitter/lib/include \
+		-I tree-sitter/lib/src \
 		src/main.c \
 		src/parser.c \
 		tree-sitter/lib/src/lib.c \

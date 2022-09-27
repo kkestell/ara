@@ -4,28 +4,11 @@ public readonly struct Location
 {
     public Location(Node node)
     {
-        var start = node.Offset.Item1;
-        var span = node.Tree.AsSpan(0, start);
-
-        var lines = 1;
-        for (var i = 0; i < start; i++)
-        {
-            if (span[i] == '\n')
-                lines++;
-        }
-
-        var columns = 1;
-        for (var i = span.Length - 1; i >= 0; i--)
-        {
-            if (span[i] == '\n')
-                break;
-
-            columns++;
-        }
-
+        var pt = node.StartPoint;
+        
         Node = node;
-        Line = lines;
-        Column = columns;
+        Line = pt.Row;
+        Column = pt.Column;
         Filename = node.Tree.Filename;
     }
     
