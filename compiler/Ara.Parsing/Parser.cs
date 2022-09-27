@@ -8,26 +8,26 @@ public sealed class Parser : IDisposable
 
     public Parser()
     {
-        handle = create_parser();
+        handle = CreateParser();
     }
 
     public void Dispose()
     {
-        delete_parser(handle);
+        DeleteParser(handle);
     }
 
     public Tree Parse(string source, string? filename = null)
     {
-        var tree = parse(handle, source);
+        var tree = Parse(handle, source);
         return new Tree(tree, source, filename);
     }
 
-    [DllImport(Platform.SharedLibrary)]
-    static extern Handle<Parser> create_parser();
+    [DllImport(Platform.SharedLibrary, EntryPoint = "create_parser")]
+    static extern Handle<Parser> CreateParser();
 
-    [DllImport(Platform.SharedLibrary)]
-    static extern void delete_parser(Handle<Parser> parser);
+    [DllImport(Platform.SharedLibrary, EntryPoint = "delete_parser")]
+    static extern void DeleteParser(Handle<Parser> parser);
 
-    [DllImport(Platform.SharedLibrary, CharSet = CharSet.Ansi)]
-    static extern Handle<Tree> parse(Handle<Parser> parser, string source);
+    [DllImport(Platform.SharedLibrary, EntryPoint = "parse", CharSet = CharSet.Ansi)]
+    static extern Handle<Tree> Parse(Handle<Parser> parser, string source);
 }

@@ -16,11 +16,11 @@ public sealed class Tree : IDisposable
 
     public string? Filename { get; }
 
-    public Node Root => new(ts_tree_root_node(handle), this);
+    public Node Root => new(TsTreeRootNode(handle), this);
 
     public void Dispose()
     {
-        delete_tree(handle);
+        DeleteTree(handle);
     }
 
     public ReadOnlySpan<char> AsSpan(int startByte, int endByte)
@@ -33,9 +33,9 @@ public sealed class Tree : IDisposable
         return source.AsSpan();
     }
 
-    [DllImport(Platform.SharedLibrary)]
-    static extern TsNode ts_tree_root_node(Handle<Tree> handle);
+    [DllImport(Platform.SharedLibrary, EntryPoint = "ts_tree_root_node")]
+    static extern TsNode TsTreeRootNode(Handle<Tree> handle);
 
-    [DllImport(Platform.SharedLibrary)]
-    static extern void delete_tree(Handle<Tree> handle);
+    [DllImport(Platform.SharedLibrary, EntryPoint = "delete_tree")]
+    static extern void DeleteTree(Handle<Tree> handle);
 }
