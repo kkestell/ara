@@ -6,7 +6,7 @@ else
         shared_library = bin/Ara.Parsing.Linux-x86_64.so
     endif
     ifeq ($(UNAME_S),Darwin)
-        shared_library = bin/Ara.Parsing.Darwin-x86_64.dylib
+        shared_library = bin/Ara.Parsing.OSX-x86_64.dylib
     endif
 endif
 
