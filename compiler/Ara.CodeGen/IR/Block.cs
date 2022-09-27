@@ -1,11 +1,12 @@
 using System.Text;
 using Ara.CodeGen.IR.Values;
+using Ara.CodeGen.IR.Values.Instructions;
 
 namespace Ara.CodeGen.IR;
 
 public class Block
 {
-    readonly List<Value> instructions = new();
+    readonly InstructionList instructions = new();
     readonly Block? parent;
     readonly NameScope scope;
 
@@ -26,7 +27,29 @@ public class Block
     
     public Function Function { get; }
 
+    // FIXME: Clumsy!
+    public int InstructionCount => instructions.Count;
 
+    public void PositionBefore(Value instruction)
+    {
+        instructions.PositionBefore(instruction);
+    }
+
+    public void PositionAfter(Value instruction)
+    {
+        instructions.PositionAfter(instruction);
+    }
+
+    public void PositionAtStart()
+    {
+        instructions.PositionAtStart();
+    }
+
+    public void PositionAtEnd()
+    {
+        instructions.PositionAtEnd();
+    }
+    
     public string RegisterName(string? name = null)
     {
         return scope.Register(name);
@@ -44,7 +67,7 @@ public class Block
     
     public T AddInstruction<T>(T i) where T : Value
     {
-        instructions.Add(i);
+        instructions.Insert(i);
         return i;
     }
     

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Ara.CodeGen.Errors;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
@@ -120,5 +122,30 @@ public class IrBuilderTests : TestBase
                 ret i32 42
             }
         ");
+    }
+    
+    [Test]
+    public void ThrowWhenPhiIsNotTheFirstInstruction()
+    {
+        module = new Module();
+
+        var type = new FunctionType(IrType.Integer);
+        var func = module.AddFunction("main", type);
+
+        var block = func.AddBlock();
+
+        builder = block.IrBuilder();
+        
+        var values = new Dictionary<Label, Value>
+        {
+            { new Label(builder.Block, "test1"), new IntegerValue(1) }
+        };
+
+        builder.Add(new IntegerValue(1), new IntegerValue(2));
+        
+        Assert.Throws<CodeGenException>(delegate
+        {
+            builder.Phi(values);
+        });
     }
 }

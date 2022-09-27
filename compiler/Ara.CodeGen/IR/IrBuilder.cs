@@ -1,3 +1,4 @@
+using Ara.CodeGen.Errors;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
@@ -99,6 +100,15 @@ public class IrBuilder
 
         Br(l2);
         Block = Block.AddChild(l2);
+    }
+
+    public Phi Phi(Dictionary<Label, Value> values, string? name = null)
+    {
+        // FIXME: First instruction is label. Is this goofy?
+        if (Block.InstructionCount > 1)
+            throw new CodeGenException("Phi must be the first instruction in the basic block");
+        
+        return Block.AddInstruction(new Phi(Block, values, name));
     }
 
     public void Br(Label label)
