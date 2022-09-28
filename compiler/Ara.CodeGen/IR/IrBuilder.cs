@@ -14,6 +14,19 @@ public class IrBuilder
 
     public Block Block { get; private set; }
     
+    public void GotoBlock(Block block, Action<IrBuilder> action)
+    {
+        var b = Block;
+        Block = block;
+        action.Invoke(this);
+        Block = b;
+    }
+
+    public void GotoBlock(Block block)
+    {
+        Block = block;
+    }
+    
     public Value ResolveValue(Value value)
     {
         if (value is Alloca a)
@@ -29,77 +42,87 @@ public class IrBuilder
         return new Label(Block, value);
     }
     
-    public void IfThen(Value predicate, Action<Block> then)
+    public void IfThen(Value predicate, Action<IrBuilder> thenAction)
     {
-        var l1 = new Label(Block, "if");
-        var l2 = new Label(Block, "endif");
+        var ifBlock = Block.AddChild("if");
+        var endifBlock = Block.AddChild("endif");
+
+        Br(predicate, ifBlock.Label, endifBlock.Label);
         
-        Br(predicate, l1, l2);
-        var thenBlock = Block.AddChild(l1);
-        then.Invoke(thenBlock);
-        Block = Block.AddChild(l2);
+        GotoBlock(ifBlock, builder =>
+        {
+            thenAction.Invoke(builder);
+            builder.Br(endifBlock.Label);
+        });        
+        
+        GotoBlock(endifBlock);
     }
 
-    public void IfElse(Value predicate, Action<Block> thenAction, Action<Block> elseAction)
+    public void IfElse(Value predicate, Action<IrBuilder> thenAction, Action<IrBuilder> elseAction)
     {
-        var l1 = new Label(Block, "if");
-        var l2 = new Label(Block, "else");
-        var l3 = new Label(Block, "endif");
+        var ifBlock = Block.AddChild("if");
+        var elseBlock = Block.AddChild("else");
+        var endifBlock = Block.AddChild("endif");
+
+        Br(predicate, ifBlock.Label, elseBlock.Label);
         
-        Br(predicate, l1, l2);
-        var thenBlock = Block.AddChild(l1);
-        thenAction.Invoke(thenBlock);
-        Block = thenBlock;
-        Br(l3);
-        var elseBlock = Block.AddChild(l2);
-        elseAction.Invoke(elseBlock);
-        Block = elseBlock;
-        Br(l3);
-        Block = Block.AddChild(l3);
+        GotoBlock(ifBlock, builder =>
+        {
+            thenAction.Invoke(builder);
+            builder.Br(endifBlock.Label);
+        });
+        
+        GotoBlock(elseBlock, builder =>
+        {
+            elseAction.Invoke(builder);
+            builder.Br(endifBlock.Label);
+        });
+        
+        GotoBlock(endifBlock);
     }
 
     public void For(string counter, Value start, Value end, Action<Block, NamedValue> loop)
     {
-        var l1 = new Label(Block, "for");
-        var l2 = new Label(Block, "endfor");
-
-        // Loop direction
-        var dp = Icmp(IcmpCondition.SignedGreaterThan, end, start);
-        var delta = Select(dp, new IntegerValue(1), new IntegerValue(-1));
-
-        // Init counter
-        var c = Alloca(new IntegerType(32));
-        Store(start, c);
-        Br(l1);
-
-        // Loop body
-        var b = Block.AddChild(l1);
-        b.IrBuilder().Load(c, counter);
-        loop.Invoke(b, c);
-        Block = b;
-        
-        // Update counter
-        Store(Add(Load(c), delta), c);
-
-        var foo = Load(c);
-
-        // Loop or end
-        IfElse(
-            dp,
-            up => {
-                var upBuilder = up.IrBuilder();
-                var upP = upBuilder.Icmp(IcmpCondition.SignedLessThan, foo, end);
-                upBuilder.Br(upP, l1, l2);
-            },
-            down => {
-                var downBuilder = down.IrBuilder();
-                var downP = downBuilder.Icmp(IcmpCondition.SignedGreaterThan, foo, end);
-                downBuilder.Br(downP, l1, l2);
-            }
-        );
-
-        Br(l2);
-        Block = Block.AddChild(l2);
+        // var l1 = new Label(Block, "for");
+        // var l2 = new Label(Block, "endfor");
+        //
+        // // Loop direction
+        // var dp = Icmp(IcmpCondition.SignedGreaterThan, end, start);
+        // var delta = Select(dp, new IntegerValue(1), new IntegerValue(-1));
+        //
+        // // Init counter
+        // var c = Alloca(new IntegerType(32));
+        // Store(start, c);
+        // Br(l1);
+        //
+        // // Loop body
+        // var b = Block.AddChild();
+        // b.IrBuilder().Load(c, counter);
+        // loop.Invoke(b, c);
+        // Block = b;
+        //
+        // // Update counter
+        // Store(Add(Load(c), delta), c);
+        //
+        // var foo = Load(c);
+        //
+        // // Loop or end
+        // IfElse(
+        //     dp,
+        //     up => {
+        //         var upBuilder = up.IrBuilder();
+        //         var upP = upBuilder.Icmp(IcmpCondition.SignedLessThan, foo, end);
+        //         upBuilder.Br(upP, l1, l2);
+        //     },
+        //     down => {
+        //         var downBuilder = down.IrBuilder();
+        //         var downP = downBuilder.Icmp(IcmpCondition.SignedGreaterThan, foo, end);
+        //         downBuilder.Br(downP, l1, l2);
+        //     }
+        // );
+        //
+        // Br(l2);
+        // Block = Block.AddChild();
     }
 
     public Phi Phi(Dictionary<Label, Value> values, string? name = null)
@@ -116,9 +139,9 @@ public class IrBuilder
         Block.AddInstruction(new UBr(Block, label));
     }
 
-    public void Br(Value predicate, Label l1, Label l2)
+    public Br Br(Value predicate, Label l1, Label l2)
     {
-        Block.AddInstruction(new Br(Block, predicate, l1, l2));
+        return Block.AddInstruction(new Br(Block, predicate, l1, l2));
     }
     
     public void Return(Value? value = null)

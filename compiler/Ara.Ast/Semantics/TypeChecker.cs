@@ -61,11 +61,11 @@ public class TypeChecker : Visitor
 
     static void CheckReturn(Return r)
     {
-        var func = r.NearestAncestor<FunctionDefinition>();
-        
         if (r.Expression.Type is null)
             throw new SemanticException(r.Expression, "Expression type could not be inferred.");
-        
+     
+        var func = r.NearestAncestor<FunctionDefinition>();
+
         if (!r.Expression.Type.Equals(func.Type))
             throw new ReturnTypeException(r);
     }

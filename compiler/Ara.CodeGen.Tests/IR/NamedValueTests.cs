@@ -42,11 +42,11 @@ public class NamedValueTests : TestBase
         for (var i = 0; i < 3; i++)
         {
             builder.Alloca(IrType.Integer, "foo");
-            var child = builder.Block.AddChild(builder.Label("bar"));
+            var child = builder.Block.AddChild("bar");
             builder = child.IrBuilder();
             builder.Alloca(IrType.Integer, "bar");
         }
-
+    
         AssertIr(module.Emit(), @"
             define void @test () {
             entry:
