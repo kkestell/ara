@@ -5,47 +5,47 @@ namespace Ara.CodeGen.IR;
 
 public class InstructionList : IEnumerable<Value>
 {
-    readonly List<Value> instructions = new();
+    readonly List<Value> values = new();
     
     public void Insert(Value instruction)
     {
-        instructions.Insert(Pointer, instruction);
-        Pointer++;
+        values.Insert(Index, instruction);
+        Index++;
     }
 
-    public IEnumerable<Value> Instructions => instructions.AsEnumerable();
+    public IEnumerable<Value> Values => values.AsEnumerable();
 
-    public int Pointer { get; private set; }
+    public int Index { get; private set; }
 
-    public int Count => instructions.Count;
+    public int Count => values.Count;
 
     public void PositionBefore(Value instruction)
     {
-        Pointer = instructions.IndexOf(instruction);
+        Index = values.IndexOf(instruction);
     }
 
     public void PositionAfter(Value instruction)
     {
-        Pointer = instructions.IndexOf(instruction) + 1;
+        Index = values.IndexOf(instruction) + 1;
     }
 
     public void PositionAtStart()
     {
-        Pointer = 0;
+        Index = 0;
     }
 
     public void PositionAtEnd()
     {
-        Pointer = instructions.Count;
+        Index = values.Count;
     }
 
     public IEnumerator<Value> GetEnumerator()
     {
-        return instructions.GetEnumerator();
+        return values.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)instructions).GetEnumerator();
+        return ((IEnumerable)values).GetEnumerator();
     }
 }

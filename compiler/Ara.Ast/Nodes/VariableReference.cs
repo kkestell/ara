@@ -5,7 +5,7 @@ namespace Ara.Ast.Nodes;
 
 public record VariableReference(Node Node, string Name) : Atom(Node)
 {
-    public Type? ResolveType(string name)
+    public AstNode? ResolveReference(string name)
     {
         var b = NearestAncestor<Block>();
         while (true)

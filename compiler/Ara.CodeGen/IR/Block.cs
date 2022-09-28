@@ -14,20 +14,18 @@ public class Block
     {
         Function = function;
         scope = new NameScope();
-        AddInstruction(new Label(this, "entry"));
+        //AddInstruction(new Label(this, "entry"));
     }
     
-    public Block(Function function, Label name, Block parent)
+    public Block(Function function, Block parent)
     {
         this.parent = parent;
         Function = function;
         scope = parent.scope.Clone();
-        AddInstruction(name);
     }
     
     public Function Function { get; }
 
-    // FIXME: Clumsy!
     public int InstructionCount => instructions.Count;
 
     public void PositionBefore(Value instruction)
@@ -49,15 +47,20 @@ public class Block
     {
         instructions.PositionAtEnd();
     }
+
+    public void GotoBlock(Block block, Action<Block> action)
+    {
+        
+    }
     
     public string RegisterName(string? name = null)
     {
         return scope.Register(name);
     }
 
-    public Block AddChild(Label name)
+    public Block AddChild()
     {
-        return Function.AddBlock(name, this);
+        return Function.AddBlock(this);
     }
     
     public IrBuilder IrBuilder()

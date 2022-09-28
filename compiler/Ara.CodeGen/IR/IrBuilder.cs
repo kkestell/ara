@@ -33,11 +33,15 @@ public class IrBuilder
     {
         var l1 = new Label(Block, "if");
         var l2 = new Label(Block, "endif");
-        
-        Br(predicate, l1, l2);
-        var thenBlock = Block.AddChild(l1);
+
+        Block.AddInstruction(l1);
+        Block.AddInstruction(l2);
+        Block.PositionBefore(l1);
+        var br = Br(predicate, l1, l2);
+        Block.PositionAfter(br);
+        var thenBlock = Block.AddChild();
         then.Invoke(thenBlock);
-        Block = Block.AddChild(l2);
+        Block = Block.AddChild();
     }
 
     public void IfElse(Value predicate, Action<Block> thenAction, Action<Block> elseAction)
@@ -47,15 +51,15 @@ public class IrBuilder
         var l3 = new Label(Block, "endif");
         
         Br(predicate, l1, l2);
-        var thenBlock = Block.AddChild(l1);
+        var thenBlock = Block.AddChild();
         thenAction.Invoke(thenBlock);
         Block = thenBlock;
         Br(l3);
-        var elseBlock = Block.AddChild(l2);
+        var elseBlock = Block.AddChild();
         elseAction.Invoke(elseBlock);
         Block = elseBlock;
         Br(l3);
-        Block = Block.AddChild(l3);
+        Block = Block.AddChild();
     }
 
     public void For(string counter, Value start, Value end, Action<Block, NamedValue> loop)
@@ -73,7 +77,7 @@ public class IrBuilder
         Br(l1);
 
         // Loop body
-        var b = Block.AddChild(l1);
+        var b = Block.AddChild();
         b.IrBuilder().Load(c, counter);
         loop.Invoke(b, c);
         Block = b;
@@ -99,7 +103,7 @@ public class IrBuilder
         );
 
         Br(l2);
-        Block = Block.AddChild(l2);
+        Block = Block.AddChild();
     }
 
     public Phi Phi(Dictionary<Label, Value> values, string? name = null)
@@ -116,9 +120,9 @@ public class IrBuilder
         Block.AddInstruction(new UBr(Block, label));
     }
 
-    public void Br(Value predicate, Label l1, Label l2)
+    public Br Br(Value predicate, Label l1, Label l2)
     {
-        Block.AddInstruction(new Br(Block, predicate, l1, l2));
+        return Block.AddInstruction(new Br(Block, predicate, l1, l2));
     }
     
     public void Return(Value? value = null)

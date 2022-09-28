@@ -32,10 +32,19 @@ public class TypeResolver : Visitor
 
     static void ResolveVariableReference(VariableReference r)
     {
-        var type = r.ResolveType(r.Name);
+        var node = r.ResolveReference(r.Name);
 
-        if (type is null)
+        if (node is null)
             throw new ReferenceException(r);
+
+        var type = node switch
+        {
+            VariableDeclaration d => d.Type,
+            Parameter           p => p.Type,
+            For                   => new IntegerType(),
+
+            _ => throw new Exception($"Unsupported node {node.GetType()}")
+        };
 
         r.Type = type;
     }

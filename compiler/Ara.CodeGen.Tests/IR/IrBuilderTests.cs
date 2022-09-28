@@ -16,7 +16,7 @@ public class IrBuilderTests : TestBase
             var thenBuilder = thenBlock.IrBuilder();
             thenBuilder.Add(new IntegerValue(1), new IntegerValue(1));
         });
-        
+        var x = module.Emit();
         AssertIr(module.Emit(), @"
             define void @test () {
             entry:
