@@ -1,6 +1,10 @@
+CC = clang
+CFLAGS = -O3 -shared
+
 ifeq ($(OS),Windows_NT)
 	shared_library = bin/Ara.Parsing.Windows-x86_64.dll
 else
+	CFLAGS += -fPIC
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         shared_library = bin/Ara.Parsing.Linux-x86_64.so
@@ -12,9 +16,9 @@ endif
 
 all: $(shared_library)
 
-$(shared_library): generate grammar.js
+$(shared_library): src/parser.c src/main.c tree-sitter/lib/src/lib.c
 	mkdir -p bin
-	clang -O3 -fPIC -shared \
+	$(CC) $(CFLAGS) \
 		-I tree-sitter/lib/include \
 		-I tree-sitter/lib/src \
 		src/main.c \
@@ -22,12 +26,16 @@ $(shared_library): generate grammar.js
 		tree-sitter/lib/src/lib.c \
 		-o $(shared_library)
 
+src/parser.c: grammar.js
+	./node_modules/.bin/tree-sitter generate --no-bindings
+
 .PHONY: clean test
 clean:
-	rm -rf bin src/grammar.json src/node-types.json src/parser.c src/tree_sitter
+	rm -rf bin
 
-test: generate
+clean-ts:
+	rm -rf bin src/grammar.json src/node-types.json src/tree_sitter
+
+test: src/parser.c
 	./node_modules/.bin/tree-sitter test
 
-generate:
-	./node_modules/.bin/tree-sitter generate --no-bindings
