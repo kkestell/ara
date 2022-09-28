@@ -30,9 +30,9 @@ public class Function
         return block;
     }
 
-    public Block AddBlock(Label label, Block parent)
+    public Block AddBlock(Block parent, string blockName)
     {
-        var block = new Block(this, label, parent);
+        var block = new Block(this, parent, blockName);
         blocks.Add(block);
         return block;
     }

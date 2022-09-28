@@ -28,20 +28,20 @@ public class ScopeBuilder : Visitor
     
     static void ResolveFor(For f)
     {
-        f.Block.Scope.Add(f.Counter, new IntegerType());
+        f.Block.Scope.Add(f.Counter, f);
     }
     
     static void ResolveFunctionDefinition(FunctionDefinition f)
     {
         foreach (var p in f.Parameters.Nodes)
         {
-            f.Block.Scope.Add(p.Name, Type.Parse(p.TypeRef));
+            f.Block.Scope.Add(p.Name, p);
         }
     }
 
     static void ResolveVariableDeclaration(VariableDeclaration d)
     {
         var blk = d.NearestAncestor<Block>();
-        blk.Scope.Add(d.Name, Type.Parse(d.TypeRef));
+        blk.Scope.Add(d.Name, d);
     }
 }

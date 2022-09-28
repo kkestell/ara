@@ -1,6 +1,5 @@
 using System.Text;
 using Ara.CodeGen.IR.Values;
-using Ara.CodeGen.IR.Values.Instructions;
 
 namespace Ara.CodeGen.IR;
 
@@ -14,20 +13,23 @@ public class Block
     {
         Function = function;
         scope = new NameScope();
-        AddInstruction(new Label(this, "entry"));
+        Label = new Label(this, "entry");
+        AddInstruction(Label);
     }
     
-    public Block(Function function, Label name, Block parent)
+    public Block(Function function, Block parent, string name)
     {
         this.parent = parent;
         Function = function;
-        scope = parent.scope.Clone();
-        AddInstruction(name);
+        scope = parent.scope;
+        Label = new Label(this, name);
+        AddInstruction(Label);
     }
     
     public Function Function { get; }
 
-    // FIXME: Clumsy!
+    public Label Label { get; }
+
     public int InstructionCount => instructions.Count;
 
     public void PositionBefore(Value instruction)
@@ -49,15 +51,15 @@ public class Block
     {
         instructions.PositionAtEnd();
     }
-    
+
     public string RegisterName(string? name = null)
     {
         return scope.Register(name);
     }
 
-    public Block AddChild(Label name)
+    public Block AddChild(string name)
     {
-        return Function.AddBlock(name, this);
+        return Function.AddBlock(this, name);
     }
     
     public IrBuilder IrBuilder()

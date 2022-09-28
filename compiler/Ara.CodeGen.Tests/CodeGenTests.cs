@@ -68,18 +68,20 @@ public class CodeGeneratorTests
               br i1 %""0"", label %""if"", label %""endif""
             if:
               ret i32 0
+              br label %""endif""
             endif:
-              %""2"" = icmp eq i32 %""n"", 1
-              br i1 %""2"", label %""if.0"", label %""endif.0""
+              %""4"" = icmp eq i32 %""n"", 1
+              br i1 %""4"", label %""if.0"", label %""endif.0""
             if.0:
               ret i32 1
+              br label %""endif.0""
             endif.0:
-              %""4"" = sub i32 %""n"", 2
-              %""5"" = call i32 @fib(i32 %""4"")
-              %""6"" = sub i32 %""n"", 1
-              %""7"" = call i32 @fib(i32 %""6"")
-              %""8"" = add i32 %""5"", %""7""
-              ret i32 %""8""
+              %""8"" = sub i32 %""n"", 2
+              %""9"" = call i32 @fib(i32 %""8"")
+              %""10"" = sub i32 %""n"", 1
+              %""11"" = call i32 @fib(i32 %""10"")
+              %""12"" = add i32 %""9"", %""11""
+              ret i32 %""12""
             }
             declare ptr @GC_malloc(i64 noundef)
         ");

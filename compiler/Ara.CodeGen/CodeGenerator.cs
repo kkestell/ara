@@ -109,7 +109,7 @@ public class CodeGenerator
     void EmitIf(IrBuilder builder, If i)
     {
         var predicate = EmitExpression(builder, i.Predicate);
-        builder.IfThen(predicate, then => EmitBlock(then.IrBuilder(), i.Then));
+        builder.IfThen(predicate, then => EmitBlock(then, i.Then));
     }
     
     void EmitReturn(IrBuilder builder, Return r)
