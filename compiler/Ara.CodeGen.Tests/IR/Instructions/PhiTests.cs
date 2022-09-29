@@ -42,20 +42,11 @@ public class PhiTests : TestBase
     }
     
     [Test]
-    public void ThrowWhenArgumentsHaveDifferentTypes()
+    public void ThrowWhenValuesEmpty()
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Mul(new IntegerValue(1), new FloatValue(3.14f));
-        });
-    }
-
-    [Test]
-    public void ThrowWhenArgumentsAreNotIntegers()
-    {
-        Assert.Throws<ArgumentException>(delegate
-        {
-            builder.Mul(new FloatValue(1), new FloatValue(3.14f));
+            builder.Phi(new Dictionary<Label, Value>());
         });
     }
 }
