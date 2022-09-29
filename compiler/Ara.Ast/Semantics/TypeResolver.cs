@@ -15,6 +15,9 @@ public class TypeResolver : Visitor
     {
         switch (node)
         {
+            case ArrayIndex i:
+                ResolveArrayIndex(i);
+                break;
             case VariableReference v:
                 ResolveVariableReference(v);
                 break;
@@ -30,6 +33,14 @@ public class TypeResolver : Visitor
         }
     }
 
+    static void ResolveArrayIndex(ArrayIndex i)
+    {
+        if (i.VariableReference.Type is not ArrayType a)
+            throw new SemanticException(i, $"Expected {i.VariableReference.Name} to be an array, not a {i.VariableReference.Type}");
+
+        i.Type = a.Type;
+    }
+    
     static void ResolveVariableReference(VariableReference r)
     {
         var node = r.ResolveReference(r.Name);

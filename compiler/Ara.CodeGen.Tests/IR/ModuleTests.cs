@@ -10,7 +10,6 @@ public class ModuleTests : TestBase
     public void FunctionDeclarations()
     {
         module = new Module();
-        module.DeclareFunction(new FunctionDeclaration("GC_malloc", new PointerType(new VoidType()), new List<IrType> { new IntegerType(64) }));
 
         var type = new FunctionType(IrType.Integer);
         var function = module.AddFunction("test", type);
@@ -24,7 +23,6 @@ public class ModuleTests : TestBase
             define i32 @test () {
             entry:
             }
-            declare ptr @GC_malloc(i64 noundef)
         ");
     }
 }

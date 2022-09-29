@@ -5,9 +5,9 @@ namespace Ara.CodeGen.IR.Values.Instructions;
 
 public class Load : Instruction
 {
-    readonly NamedValue pointer;
+    readonly Value pointer;
 
-    public Load(Block block, NamedValue pointer, string? name = null) : base(block, name)
+    public Load(Block block, Value pointer, string? name = null) : base(block, name)
     {
         if (pointer.Type.GetType() != typeof(PointerType))
             throw new ArgumentException("Argument is not a pointer");
@@ -21,6 +21,11 @@ public class Load : Instruction
         {
             if (pointer.Type is PointerType ptrType)
             {
+                if (ptrType.Type is ArrayType arrayType)
+                {
+                    return arrayType.Type;
+                }
+
                 return ptrType.Type;
             }
 

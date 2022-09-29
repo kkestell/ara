@@ -21,6 +21,7 @@ public static class AstTransformer
             "argument_list"                  => ArgumentList(node, children),
             "assignment_statement"           => AssignmentStatement(node, children),
             "array_assignment_statement"     => ArrayAssignmentStatement(node, children),
+            "array_index"                    => ArrayIndex(node, children),
             "binary_expression"              => BinaryExpression(node, children),
             "block"                          => Block(node, children),
             "bool"                           => Bool(node),
@@ -67,6 +68,9 @@ public static class AstTransformer
 
     static ArrayAssignment ArrayAssignmentStatement(Node n, List<AstNode> c) =>
         new (n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2]);
+    
+    static ArrayIndex ArrayIndex(Node n, List<AstNode> c) =>
+        new (n, (VariableReference)c[0], (Expression)c[1]);
 
     static BinaryExpression BinaryExpression(Node n, List<AstNode> c)
     {
