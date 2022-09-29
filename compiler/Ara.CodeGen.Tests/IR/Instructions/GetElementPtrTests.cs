@@ -25,20 +25,13 @@ public class GetElementPtrTests : TestBase
     }
 
     [Test]
-    public void ThrowWhenArgumentsHaveDifferentTypes()
+    public void ThrowWhenOperandIsNotAnArray()
     {
+        var a = builder.Alloca(IrType.Integer);
+            
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Add(new IntegerValue(1), new FloatValue(3.14f));
-        });
-    }
-
-    [Test]
-    public void ThrowWhenArgumentsAreNotIntegers()
-    {
-        Assert.Throws<ArgumentException>(delegate
-        {
-            builder.Add(new FloatValue(1), new FloatValue(3.14f));
+            builder.GetElementPtr(a, new IntegerValue(1));
         });
     }
 }
