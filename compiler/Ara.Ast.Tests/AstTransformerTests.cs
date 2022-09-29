@@ -10,7 +10,7 @@ public class AstTransformerTests : TestBase
         using var tree = Parse(@"
             module main
 
-            int main() {
+            fn main() -> int {
               return 1
             }
         ");
@@ -31,7 +31,7 @@ public class AstTransformerTests : TestBase
         using var tree = Parse(@"
             module main
 
-            int main(a: int, b: float, c: bool) {
+            fn main(a: int, b: float, c: bool) -> int {
               return 1
             }
         ");

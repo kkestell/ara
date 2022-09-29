@@ -68,6 +68,11 @@ public class CodeGenerator
                     EmitAssignment(builder, a);
                     break;
                 }
+                case ArrayAssignment a:
+                {
+                    EmitArrayAssignment(builder, a);
+                    break;
+                }
                 case For f:
                 {
                     EmitFor(builder, f);
@@ -99,6 +104,15 @@ public class CodeGenerator
         builder.Store(val, ptr, a.Name);
     }
     
+    void EmitArrayAssignment(IrBuilder builder, ArrayAssignment a)
+    {
+        var val = EmitExpression(builder, a.Expression);
+        var idx = EmitExpression(builder, a.Index);
+        var ptr = builder.Block.FindNamedValue<Ara.CodeGen.IR.Values.Instructions.Call>(a.Name);
+        var elp = builder.GetElementPtr(ptr, idx);
+        builder.Store(val, elp);
+    }
+    
     void EmitFor(IrBuilder builder, For f)
     {
         var s = EmitExpression(builder, f.Start);
@@ -123,7 +137,7 @@ public class CodeGenerator
     {
         Value ptr = v.Type switch
         {
-            ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }),
+            ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }, v.Name),
             _           => builder.Alloca(IrType.FromType(v.Type), v.Name)
         };
 

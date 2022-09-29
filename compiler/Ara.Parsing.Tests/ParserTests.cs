@@ -8,7 +8,7 @@ public class ParserTests : TestBase
         using var tree = Parser.Parse(@"
             module main
 
-            int main() {
+            fn main() -> int {
               return 0
             }
         ");
@@ -19,9 +19,9 @@ public class ParserTests : TestBase
               module_declaration: (module_declaration name: (identifier)) 
               definitions: (definition_list 
                 (function_definition
-                  type: (single_value_type (identifier)) 
                   name: (identifier) 
                   parameters: (parameter_list) 
+                  type: (single_value_type (identifier)) 
                   block: (block 
                     (statement_list 
                       (return_statement (integer)))))))");

@@ -12,7 +12,7 @@ public class TypeResolverTests : TestBase
         using var tree = Parse(@"
             module main
 
-            int sum(a: int, b: int) {
+            fn sum(a: int, b: int) -> int {
               return a + b
             }
         ");

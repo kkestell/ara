@@ -20,6 +20,7 @@ public static class AstTransformer
             "argument"                       => Argument(node, children),
             "argument_list"                  => ArgumentList(node, children),
             "assignment_statement"           => AssignmentStatement(node, children),
+            "array_assignment_statement"     => ArrayAssignmentStatement(node, children),
             "binary_expression"              => BinaryExpression(node, children),
             "block"                          => Block(node, children),
             "bool"                           => Bool(node),
@@ -64,6 +65,9 @@ public static class AstTransformer
     static Assignment AssignmentStatement(Node n, List<AstNode> c) =>
         new (n, ((Identifier)c[0]).Value, (Expression)c[1]);
 
+    static ArrayAssignment ArrayAssignmentStatement(Node n, List<AstNode> c) =>
+        new (n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2]);
+
     static BinaryExpression BinaryExpression(Node n, List<AstNode> c)
     {
         var op = n.ChildByFieldName("op")!.Span.ToString() switch
@@ -94,7 +98,7 @@ public static class AstTransformer
         new (n, ((Identifier)c[0]).Value, (NodeList<Argument>)c[1]);
 
     static FunctionDefinition FunctionDefinition(Node n, List<AstNode> c) =>
-        new (n, (TypeRef)c[0], ((Identifier)c[1]).Value, (NodeList<Parameter>)c[2], (Block)c[3]);
+        new (n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], (TypeRef)c[2], (Block)c[3]);
 
     static Identifier Identifier(Node n) =>
         new (n, n.Span.ToString());
@@ -171,7 +175,7 @@ public static class AstTransformer
     }
 
     static VariableDeclaration VariableDeclarationStatement(Node n, List<AstNode> c) =>
-        new (n, (TypeRef)c[0], ((Identifier)c[1]).Value, c.Count == 3 ? (Expression?)c[2] : null);
+        new (n, ((Identifier)c[0]).Value, (TypeRef)c[1], c.Count == 3 ? (Expression?)c[2] : null);
 
     static VariableReference VariableReference(Node n, List<AstNode> c) =>
         new (n, ((Identifier)c[0]).Value);

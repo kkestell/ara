@@ -1,6 +1,6 @@
 module main
 
-int fib(n: int) {
+fn fib(n: int) -> int {
   if n == 0 {
     return 0
   }
@@ -10,6 +10,6 @@ int fib(n: int) {
   return fib(n: n-2) + fib(n: n-1)
 }
 
-int main() {
+fn main() -> int {
   return fib(n: 10)
 }

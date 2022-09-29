@@ -21,9 +21,11 @@ module.exports = grammar({
     ),
 
     function_definition: $ => seq(
-      field('type', $._type),
+      'fn',
       field('name', $.identifier),
       field('parameters', $.parameter_list),
+      '->',
+      field('type', $._type),
       field('block', $.block)
     ),
 
@@ -52,6 +54,7 @@ module.exports = grammar({
       $.variable_declaration_statement,
       $.if_statement,
       $.assignment_statement,
+      $.array_assignment_statement,
       $.for_statement
     ),
 
@@ -71,8 +74,10 @@ module.exports = grammar({
     ),
 
     variable_declaration_statement: $ => seq(
-      $._type,
+      'var',
       $.identifier,
+      ':',
+      $._type,
       optional(
         seq(
           '=',
@@ -89,6 +94,15 @@ module.exports = grammar({
 
     assignment_statement: $ => seq(
       $.identifier,
+      '=',
+      $._expression
+    ),
+
+    array_assignment_statement: $ => seq(
+      $.identifier,
+      '[',
+      $._expression,
+      ']',
       '=',
       $._expression
     ),
