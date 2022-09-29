@@ -11,7 +11,7 @@ public class ScopeBuilderTests : TestBase
         using var tree = Parse(@"
             module main
 
-            int sum(a: int, b: int) {
+            fn sum(a: int, b: int) -> int {
               return a + b
             }
         ");
@@ -31,8 +31,8 @@ public class ScopeBuilderTests : TestBase
         using var tree = Parse(@"
             module main
 
-            int sum(a: int, b: int) {
-              int c = 0
+            fn sum(a: int, b: int) -> int {
+              var c: int = 0
               for i in 1..10 {
                 c = c + i
               }
@@ -52,8 +52,8 @@ public class ScopeBuilderTests : TestBase
         using var tree = Parse(@"
             module main
 
-            int sum() {
-              int a = 0
+            fn sum() -> int {
+              var a: int = 0
               return a
             }
         ");

@@ -1,8 +1,11 @@
 module main
 
-int main() {
-  for i in 0..10000 {
-    int[1024] x
-  }
+fn main() -> int {
+  var x: int[5]
+  x[0] = 5
+  x[1] = 4
+  x[2] = 3
+  x[3] = 2
+  x[4] = 1
   return 0
 }

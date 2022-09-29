@@ -1,10 +1,10 @@
 module main
 
-float test() {
-  int x = 3.14
+fn test() -> float {
+  var x: float = 3.14
   return x
 }
 
-int main() {
+fn main() -> int {
   return test()
 }

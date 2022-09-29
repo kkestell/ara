@@ -125,6 +125,11 @@ public class IrBuilder
         // Block = Block.AddChild();
     }
 
+    public GetElementPtr GetElementPtr(Value array, Value index, string? name = null)
+    {
+        return Block.AddInstruction(new GetElementPtr(Block, array, index, name));
+    }
+
     public Phi Phi(Dictionary<Label, Value> values, string? name = null)
     {
         // FIXME: First instruction is label. Is this goofy?

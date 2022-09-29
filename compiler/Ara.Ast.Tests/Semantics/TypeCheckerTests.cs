@@ -11,7 +11,7 @@ public class TypeCheckerTests : TestBase
         using var tree = Parse(@"
             module main
 
-            int main() {
+            fn main() -> int {
               return 1.5
             }
         ");
@@ -29,16 +29,16 @@ public class TypeCheckerTests : TestBase
     [Test]
     public void ThrowWhenTooManyArguments()
     {
-        using var tree = Parse($@"
+        using var tree = Parse(@"
             module main
 
-            void test(a: int) {{
+            fn test(a: int) -> int {
               return 0
-            }}
+            }
 
-            int main() {{
+            fn main() -> int {
               return test(a: 1, b: 2)
-            }}
+            }
         ");
         
         var ast = AstTransformer.Transform(tree);
@@ -54,16 +54,16 @@ public class TypeCheckerTests : TestBase
     [Test]
     public void ThrowWhenTooFewArguments()
     {
-        using var tree = Parse($@"
+        using var tree = Parse(@"
             module main
 
-            void test(a: int) {{
+            fn test(a: int) -> int {
               return 0
-            }}
+            }
 
-            int main() {{
+            fn main() -> int {
               return test()
-            }}
+            }
         ");
         
         var ast = AstTransformer.Transform(tree);
@@ -79,16 +79,16 @@ public class TypeCheckerTests : TestBase
     [Test]
     public void ThrowWhenArgumentNameInvalid()
     {
-        using var tree = Parse($@"
+        using var tree = Parse(@"
             module main
 
-            void test(a: int) {{
+            fn test(a: int) -> int {
               return 0
-            }}
+            }
 
-            int main() {{
+            fn main() -> int {
               return test(b: 1)
-            }}
+            }
         ");
         
         var ast = AstTransformer.Transform(tree);
@@ -104,16 +104,16 @@ public class TypeCheckerTests : TestBase
     [Test]
     public void ThrowWhenArgumentTypeInvalid()
     {
-        using var tree = Parse($@"
+        using var tree = Parse(@"
             module main
 
-            void test(a: int) {{
+            fn test(a: int) -> int {
               return 0
-            }}
+            }
 
-            int main() {{
+            fn main() -> int {
               return test(a: 1.5)
-            }}
+            }
         ");
         
         var ast = AstTransformer.Transform(tree);
@@ -129,15 +129,15 @@ public class TypeCheckerTests : TestBase
     [Test]
     public void ThrowWhenIfPredicateTypeIsInvalid()
     {
-        using var tree = Parse($@"
+        using var tree = Parse(@"
             module main
 
-            int main() {{
-              if 1 {{
+            fn main() -> int {
+              if 1 {
                 return 1
-              }}
+              }
               return 0
-            }}
+            }
         ");
         
         var ast = AstTransformer.Transform(tree);
