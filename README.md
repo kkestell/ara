@@ -1,6 +1,24 @@
 # Ara
 
-Ara is an imperative, statically typed programming language. The Ara compiler is written in C# and emits LLVM IR.
+Ara is an imperative, statically typed programming language. Ara uses Tree Sitter for parsing. The compiler is written in C# and emits LLVM IR.
+
+```
+module main
+
+fn fib(n: int) -> int {
+  if n == 0 {
+    return 0
+  }
+  if n == 1 {
+    return 1
+  }
+  return fib(n: n-2) + fib(n: n-1)
+}
+
+fn main() -> int {
+  return fib(n: 10)
+}
+```
 
 ## Getting Started
 
@@ -28,7 +46,7 @@ Or
 $ ./docker.sh
 ```
 
-#### Run an Example
+#### Example
 
 ```
 root@docker:/ara/examples# ara fib.ara
