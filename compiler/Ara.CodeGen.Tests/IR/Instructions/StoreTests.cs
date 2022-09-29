@@ -14,7 +14,7 @@ public class StoreTests : TestBase
         AssertIr(module.Emit(), @"
             define void @test () {
             entry:
-                %""0"" = alloca i32, align 4
+                %""0"" = alloca i32, i32 1, align 4
                 store i32 1, ptr %""0""
             }
         ");

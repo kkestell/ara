@@ -29,9 +29,9 @@ public class IrBuilder
     
     public Value ResolveValue(Value value)
     {
-        if (value is Alloca a)
+        if (value.Type is PointerType v)
         {
-            return Load(a);
+            return Load(value);
         }
 
         return value;
@@ -209,9 +209,9 @@ public class IrBuilder
         return Block.AddInstruction(new Fcmp(Block, condition, lhs, rhs, name));
     }
 
-    public Alloca Alloca(IrType type, string? name = null)
+    public Alloca Alloca(IrType type, int size = 1, string? name = null)
     {
-        return Block.AddInstruction(new Alloca(Block, type, name));
+        return Block.AddInstruction(new Alloca(Block, type, size, name));
     }
 
     public void Store(Value value, Value pointer, string? name = null)
@@ -219,7 +219,7 @@ public class IrBuilder
         Block.AddInstruction(new Store(Block, value, pointer, name));
     }
     
-    public Load Load(NamedValue pointer, string? name = null)
+    public Load Load(Value pointer, string? name = null)
     {
         return Block.AddInstruction(new Load(Block, pointer, name));
     }

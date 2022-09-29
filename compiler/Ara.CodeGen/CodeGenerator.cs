@@ -19,12 +19,6 @@ public class CodeGenerator
     public string Generate(SourceFile root)
     {
         var module = new Module();
-        
-        module.DeclareFunction(
-            new FunctionDeclaration(
-                "GC_malloc", 
-                new PointerType(new VoidType()), 
-                new List<IrType> { new IntegerType(64) }));
 
         foreach (var d in root.Definitions.Nodes)
         {
@@ -108,7 +102,7 @@ public class CodeGenerator
     {
         var val = EmitExpression(builder, a.Expression);
         var idx = EmitExpression(builder, a.Index);
-        var ptr = builder.Block.FindNamedValue<Ara.CodeGen.IR.Values.Instructions.Call>(a.Name);
+        var ptr = builder.Block.FindNamedValue(a.Name);
         var elp = builder.GetElementPtr(ptr, idx);
         builder.Store(val, elp);
     }
@@ -137,8 +131,8 @@ public class CodeGenerator
     {
         Value ptr = v.Type switch
         {
-            ArrayType a => builder.Call("GC_malloc", new PointerType(IrType.FromType(v.Type)), new [] { new Argument(new IntegerType(64), new IntegerValue(a.Size)) }, v.Name),
-            _           => builder.Alloca(IrType.FromType(v.Type), v.Name)
+            ArrayType a => builder.Alloca(IrType.FromType(a.Type), a.Size, v.Name),
+            _           => builder.Alloca(IrType.FromType(v.Type), 1, v.Name)
         };
 
         if (v.Expression is null)
@@ -152,6 +146,7 @@ public class CodeGenerator
     {
         return expression switch
         {
+            ArrayIndex        e => EmitArrayIndex(builder, e),
             BinaryExpression  e => EmitBinaryExpression(builder, e),
             Call              e => EmitCall(builder, e),
             Constant          e => MakeConstant(e),
@@ -159,6 +154,13 @@ public class CodeGenerator
             
             _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
         };
+    }
+
+    Value EmitArrayIndex(IrBuilder builder, ArrayIndex expression)
+    {
+        var ptr = EmitVariableReference(builder, expression.VariableReference);
+        var idx = EmitExpression(builder, expression.Index);
+        return builder.GetElementPtr(ptr, idx);
     }
 
     Value EmitBinaryExpression(IrBuilder builder, BinaryExpression expression)

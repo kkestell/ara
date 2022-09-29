@@ -1,5 +1,4 @@
 using System;
-using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 
@@ -10,17 +9,17 @@ public class GetElementPtrTests : TestBase
     [Test]
     public void GetPointerToAnArrayElement()
     {
-        var a = builder.Call("GC_malloc", new PointerType(IrType.Integer),
-            new[] { new Argument(IrType.Integer, new IntegerValue(5)) });
+        var a = builder.Alloca(IrType.Integer, 5);
         var p = builder.GetElementPtr(a, new IntegerValue(1));
         builder.Return(p);
 
-        AssertIr(module.Emit(), @"
+        var ir = module.Emit();
+        AssertIr(ir, @"
             define void @test () {
             entry:
-              %""0"" = call ptr @GC_malloc(i32 5)
-              %""1"" = getelementptr inbounds [0 x i32], ptr %""0"", i32 0, i32 1
-              ret void %""1""
+              %""0"" = alloca i32, i32 5, align 4
+              %""1"" = getelementptr inbounds [5 x i32], ptr %""0"", i32 0, i32 1
+              ret ptr %""1""
             }
         ");
     }

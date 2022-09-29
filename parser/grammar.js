@@ -133,11 +133,19 @@ module.exports = grammar({
     ),
 
     _atom: $ => choice(
+      $.array_index,
       $.variable_reference,
       $.integer,
       $.float,
       $.bool,
       $.string
+    ),
+
+    array_index: $ => seq(
+      $.variable_reference,
+      '[',
+      $._expression,
+      ']'
     ),
 
     variable_reference: $ => $.identifier,
