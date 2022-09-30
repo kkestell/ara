@@ -10,11 +10,8 @@ public class TypeChecker : Visitor
     
     public TypeChecker(SourceFile sourceFile) : base(sourceFile)
     {
-        foreach (var d in sourceFile.Definitions.Nodes)
+        foreach (var f in sourceFile.Definitions.Nodes)
         {
-            if (d is not FunctionDefinition f)
-                continue;
-
             functionCache.Add(f.Name, f);
         }
     }

@@ -30,6 +30,9 @@ public class TypeResolver : Visitor
             case Call c:
                 ResolveCallExpression(c);
                 break;
+            case VariableDeclaration v:
+                ResolveVariableDeclaration(v);
+                break;
         }
     }
 
@@ -85,5 +88,16 @@ public class TypeResolver : Visitor
             throw new ReferenceException(c);
 
         c.Type = Type.Parse(functionDefinition.ReturnType);
+    }
+    
+    static void ResolveVariableDeclaration(VariableDeclaration v)
+    {
+        if (v.TypeRef is not null)
+            return;
+
+        if (v.Expression is not Constant c)
+            throw new SemanticException(v, "Cannot infer type of non-constant values");
+
+        v.Type = c.Type;
     }
 }

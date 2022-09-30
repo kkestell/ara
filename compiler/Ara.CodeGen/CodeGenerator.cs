@@ -20,24 +20,16 @@ public class CodeGenerator
     {
         var module = new Module();
 
-        foreach (var d in root.Definitions.Nodes)
+        foreach (var f in root.Definitions.Nodes)
         {
-            if (d is not FunctionDefinition f)
-                continue;
-            
             functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
         }
-        
-        foreach (var d in root.Definitions.Nodes)
+
+        foreach (var f in root.Definitions.Nodes)
         {
-            switch (d)
-            {
-                case FunctionDefinition f:
-                    EmitFunction(module, f);
-                    break;
-            }
+            EmitFunction(module, f);
         }
-        
+
         return module.Emit();
     }
     

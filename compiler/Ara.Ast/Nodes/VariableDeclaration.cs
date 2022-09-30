@@ -3,11 +3,30 @@ using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Nodes;
 
-public record VariableDeclaration(Node Node, string Name, TypeRef TypeRef, Expression? Expression) : Statement(Node)
+public record VariableDeclaration(Node Node, string Name, TypeRef? TypeRef, Expression? Expression) : Statement(Node)
 {
     List<AstNode>? children;
+
+    Type type;
     
-    public readonly Type Type = Type.Parse(TypeRef);
+    public Type Type
+    {
+        get
+        {
+            if (TypeRef is not null)
+                throw new Exception();
+
+            return type;
+        }
+
+        set
+        {
+            if (TypeRef is not null)
+                throw new Exception();
+
+            type = value;
+        }
+    }
 
     public override List<AstNode> Children
     {
@@ -15,8 +34,11 @@ public record VariableDeclaration(Node Node, string Name, TypeRef TypeRef, Expre
         {
             if (children is not null)
                 return children;
-            
-            children = new List<AstNode> { TypeRef };
+
+            children = new List<AstNode>();
+
+            if (TypeRef is not null)
+                children.Add(TypeRef);
 
             if (Expression is not null)
                 children.Add(Expression);

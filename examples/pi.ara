@@ -1,7 +1,7 @@
 fn pi(n: int) -> float {
-  var pi: float = 4.0
-  var flag: bool = false
-  var i: float = 3.0
+  pi := 4.0
+  flag := false
+  i := 3.0
 
   for c in 3..n {
     if flag {

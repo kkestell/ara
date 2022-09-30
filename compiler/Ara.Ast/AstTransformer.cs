@@ -26,7 +26,7 @@ public static class AstTransformer
             "binary_expression"              => BinaryExpression(node, children),
             "block"                          => Block(node, children),
             "bool"                           => Bool(node),
-            "definition_list"                => DefinitionList(node, children),
+            "function_definition_list"       => FunctionDefinitionList(node, children),
             "for_statement"                  => ForStatement(node, children),
             "float"                          => Float(node),
             "function_call_expression"       => FunctionCallExpression(node, children),
@@ -93,8 +93,8 @@ public static class AstTransformer
     static Block Block(Node n, List<AstNode> c) =>
         new (n, (NodeList<Statement>)c[0]);
     
-    static NodeList<Definition> DefinitionList(Node n, List<AstNode> c) =>
-        new (n, c.Select(x => (Definition)x).ToList());
+    static NodeList<FunctionDefinition> FunctionDefinitionList(Node n, List<AstNode> c) =>
+        new (n, c.Select(x => (FunctionDefinition)x).ToList());
 
     static For ForStatement(Node n, List<AstNode> c) =>
         new (n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2], (Block)c[3]);
@@ -151,7 +151,7 @@ public static class AstTransformer
         new (n, (Expression)c[0]);
 
     static SourceFile SourceFile(Node n, List<AstNode> c) =>
-        new (n, (NodeList<Definition>)c[0]);
+        new (n, (NodeList<FunctionDefinition>)c[0]);
 
     static NodeList<Statement> StatementList(Node n, List<AstNode> c) =>
         new (n, c.Select(x => (Statement)x).ToList());
@@ -179,8 +179,29 @@ public static class AstTransformer
         return new UnaryExpression(n, (Expression)c[0], op);
     }
 
-    static VariableDeclaration VariableDeclarationStatement(Node n, List<AstNode> c) =>
-        new (n, ((Identifier)c[0]).Value, (TypeRef)c[1], c.Count == 3 ? (Expression?)c[2] : null);
+    static VariableDeclaration VariableDeclarationStatement(Node n, List<AstNode> c)
+    {
+        var name = ((Identifier)c[0]).Value;
+        
+        if (c.Count == 3)
+        {
+            var type = (TypeRef)c[1];
+            var value = (Expression?)c[2];
+            
+            return new VariableDeclaration(n, name, type, value);    
+        }
+        
+        if (c.Count == 2)
+        {
+            if (c[1] is TypeRef type)
+                return new VariableDeclaration(n, name, type, null);
+
+            if (c[1] is Expression value)
+                return new VariableDeclaration(n, name, null, value);
+        }
+
+        throw new NotSupportedException();
+    }
 
     static VariableReference VariableReference(Node n, List<AstNode> c) =>
         new (n, ((Identifier)c[0]).Value);
