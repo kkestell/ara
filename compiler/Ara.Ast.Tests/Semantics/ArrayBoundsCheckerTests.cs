@@ -10,7 +10,7 @@ public class ArrayBoundsCheckerTests : TestBase
     {
         using var tree = Parse(@"
             fn main() -> int {
-              var a: int[3]
+              a: int[3]
               return a[5]
             }
         ");
@@ -33,7 +33,7 @@ public class ArrayBoundsCheckerTests : TestBase
     {
         using var tree = Parse(@"
             fn main() -> int {
-              var a: int[3]
+              a: int[3]
               return a[true]
             }
         ");
@@ -58,7 +58,7 @@ public class ArrayBoundsCheckerTests : TestBase
             }
 
             fn main() -> int {
-              var a: int[3]
+              a: int[3]
               return a[test()]
             }
         ");

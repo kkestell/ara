@@ -20,12 +20,12 @@ public class CodeGenerator
     {
         var module = new Module();
 
-        foreach (var f in root.Definitions.Nodes)
+        foreach (var f in root.FunctionDefinitions.Nodes)
         {
             functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
         }
 
-        foreach (var f in root.Definitions.Nodes)
+        foreach (var f in root.FunctionDefinitions.Nodes)
         {
             EmitFunction(module, f);
         }
@@ -150,11 +150,13 @@ public class CodeGenerator
     {
         return expression switch
         {
-            ArrayIndex        e => EmitArrayIndex(builder, e),
-            BinaryExpression  e => EmitBinaryExpression(builder, e),
-            Call              e => EmitCall(builder, e),
-            Constant          e => MakeConstant(e),
-            VariableReference e => EmitVariableReference(builder, e),
+            ArrayIndex             e => EmitArrayIndex(builder, e),
+            BinaryExpression       e => EmitBinaryExpression(builder, e),
+            Call                   e => EmitCall(builder, e),
+            Ast.Nodes.IntegerValue e => MakeInteger(e),
+            Ast.Nodes.FloatValue   e => MakeFloat(e),
+            Ast.Nodes.BooleanValue e => MakeBoolean(e),
+            VariableReference      e => EmitVariableReference(builder, e),
             
             _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
         };
@@ -240,18 +242,12 @@ public class CodeGenerator
         return builder.Call(call.Name, functionType.ReturnType, args);
     }
 
-    static Value MakeConstant(Constant constant)
-    {
-        return constant.Type switch
-        {
-            Ast.Semantics.Types.IntegerType => new IntegerValue(int.Parse(constant.Value)),
-            Ast.Semantics.Types.FloatType   => new FloatValue(float.Parse(constant.Value)),
-            BooleanType => new BooleanValue(bool.Parse(constant.Value)),
-                
-            _ => throw new CodeGenException($"A constant of type {constant.Type} is not supported here.")
-        };
-    }
-
+    static Value MakeInteger(Ast.Nodes.IntegerValue constant) => new IR.Values.IntegerValue(constant.Value);
+    
+    static Value MakeFloat(Ast.Nodes.FloatValue constant) => new IR.Values.FloatValue(constant.Value);
+    
+    static Value MakeBoolean(Ast.Nodes.BooleanValue constant) => new IR.Values.BooleanValue(constant.Value);
+    
     static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
     {
         return builder.Block.FindNamedValue(reference.Name);

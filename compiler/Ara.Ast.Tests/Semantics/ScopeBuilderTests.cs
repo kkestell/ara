@@ -17,7 +17,7 @@ public class ScopeBuilderTests : TestBase
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
 
-        var block = (ast.Definitions.Nodes.First()).Block;
+        var block = (ast.FunctionDefinitions.Nodes.First()).Block;
 
         Assert.That(block.Scope.ContainsKey("a"), Is.True);
         Assert.That(block.Scope.ContainsKey("b"), Is.True);
@@ -28,7 +28,7 @@ public class ScopeBuilderTests : TestBase
     {
         using var tree = Parse(@"
             fn sum(a: int, b: int) -> int {
-              var c: int = 0
+              c: int = 0
               for i in 1..10 {
                 c = c + i
               }
@@ -38,7 +38,7 @@ public class ScopeBuilderTests : TestBase
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
 
-        var block = ((For)((FunctionDefinition)ast.Definitions.Nodes.First()).Block.Statements.Nodes[1]).Block;
+        var block = ((For)(ast.FunctionDefinitions.Nodes.First()).Block.Statements.Nodes[1]).Block;
         Assert.That(block.Scope.ContainsKey("i"), Is.True);
     }
     
@@ -47,7 +47,7 @@ public class ScopeBuilderTests : TestBase
     {
         using var tree = Parse(@"
             fn sum() -> int {
-              var a: int = 0
+              a: int = 0
               return a
             }
         ");
@@ -55,7 +55,7 @@ public class ScopeBuilderTests : TestBase
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
 
-        var block = ((FunctionDefinition)ast.Definitions.Nodes.First()).Block;
+        var block = ast.FunctionDefinitions.Nodes.First().Block;
         Assert.That(block.Scope.ContainsKey("a"), Is.True);
     }
 }

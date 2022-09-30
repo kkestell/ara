@@ -3,9 +3,13 @@ using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Nodes;
 
-public record Parameter(Node Node, string Name, TypeRef TypeRef) : AstNode(Node)
+public record Parameter(Node Node, string Name, TypeRef TypeRef) : AstNode(Node), ITyped
 {
-    public Type Type { get; } = Type.Parse(TypeRef);
+    public Type Type
+    {
+        get => Type. Parse(TypeRef);
+        set => throw new NotSupportedException();
+    }
 
-    public override List<AstNode> Children { get; } = new List<AstNode> { TypeRef };
+public override List<AstNode> Children { get; } = new List<AstNode> { TypeRef };
 }
