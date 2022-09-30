@@ -14,7 +14,7 @@ public class Icmp : Instruction
         if (!left.Type.Equals(right.Type))
             throw new ArgumentException();
 
-        if (left.Type.GetType() != typeof(IntegerType) && left.Type.GetType() != typeof(PointerType))
+        if (left.Type is not IntegerType and not BooleanType and not PointerType)
             throw new ArgumentException();
 
         this.condition = condition;

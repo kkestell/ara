@@ -2,9 +2,9 @@ using Ara.Ast.Nodes;
 
 namespace Ara.Ast.Errors;
 
-public class IfPredicateTypeException : SemanticException
+public class PredicateTypeException : SemanticException
 {
-    public IfPredicateTypeException(If node) : base(node, BuildMessage(node))
+    public PredicateTypeException(If node) : base(node, BuildMessage(node))
     {
     }
 

@@ -81,48 +81,30 @@ public class IrBuilder
         GotoBlock(endifBlock);
     }
 
-    public void For(string counter, Value start, Value end, Action<Block, NamedValue> loop)
+    public void For(string counter, Value start, Value end, Action<IrBuilder, NamedValue> loop)
     {
-        // var l1 = new Label(Block, "for");
-        // var l2 = new Label(Block, "endfor");
-        //
-        // // Loop direction
-        // var dp = Icmp(IcmpCondition.SignedGreaterThan, end, start);
-        // var delta = Select(dp, new IntegerValue(1), new IntegerValue(-1));
-        //
-        // // Init counter
-        // var c = Alloca(new IntegerType(32));
-        // Store(start, c);
-        // Br(l1);
-        //
-        // // Loop body
-        // var b = Block.AddChild();
-        // b.IrBuilder().Load(c, counter);
-        // loop.Invoke(b, c);
-        // Block = b;
-        //
-        // // Update counter
-        // Store(Add(Load(c), delta), c);
-        //
-        // var foo = Load(c);
-        //
-        // // Loop or end
-        // IfElse(
-        //     dp,
-        //     up => {
-        //         var upBuilder = up.IrBuilder();
-        //         var upP = upBuilder.Icmp(IcmpCondition.SignedLessThan, foo, end);
-        //         upBuilder.Br(upP, l1, l2);
-        //     },
-        //     down => {
-        //         var downBuilder = down.IrBuilder();
-        //         var downP = downBuilder.Icmp(IcmpCondition.SignedGreaterThan, foo, end);
-        //         downBuilder.Br(downP, l1, l2);
-        //     }
-        // );
-        //
-        // Br(l2);
-        // Block = Block.AddChild();
+        var forBlock = Block.AddChild("for");
+        var endforBlock = Block.AddChild("endfor");
+        
+        // Init counter
+        var cPtr = Alloca(new IntegerType(32));
+        Store(start, cPtr);
+        Br(forBlock.Label);
+        
+        // Loop body
+        GotoBlock(forBlock);
+        Load(cPtr, counter);
+        loop.Invoke(this, cPtr);
+        
+        // Increment counter
+        Store(Add(Load(cPtr), new IntegerValue(1)), cPtr);
+
+        // Loop
+        var cVal = Load(cPtr);
+        Br(Icmp(IcmpCondition.SignedLessThan, cVal, end), forBlock.Label, endforBlock.Label);
+        Br(endforBlock.Label);
+        
+        GotoBlock(endforBlock);
     }
 
     public GetElementPtr GetElementPtr(Value array, Value index, string? name = null)

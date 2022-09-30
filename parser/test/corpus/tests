@@ -1,78 +1,26 @@
 =================================================
-Types
+Pi
 =================================================
 
 module main
 
-void main() {
-  int[5] x
-  int[2][3] y
+fn main() -> float {
+  var pi: float = 4.0
+  var flag: bool = false
+  var i: float = 0.0
+  for c in 3..10000000 {
+    var f: bool = flag
+    if f == true {
+      pi = pi + 4.0 / i
+      flag = false
+    }
+    if f == false {
+      pi = pi - 4.0 / i
+      flag = true
+    }
+    i = i + 2.0
+  }
+  return pi
 }
 
 -------------------------------------------------
-
-    (source_file
-      (module_declaration
-        (identifier))
-      (definition_list
-        (function_definition
-          (type
-            (identifier))
-          (identifier)
-          (parameter_list)
-          (block
-            (statement_list
-              (variable_declaration_statement
-                (type
-                  (array_type
-                    (type
-                      (identifier))
-                    (integer)))
-                (identifier))
-              (variable_declaration_statement
-                (type
-                  (array_type
-                    (type
-                      (array_type
-                        (type
-                          (identifier))
-                        (integer)))
-                    (integer)))
-                (identifier)))))))
-
-=================================================
-Variable Declaration
-=================================================
-
-module main
-
-void main() {
-  int[5] x
-  int y = 1
-}
-
--------------------------------------------------
-
-(source_file
-  (module_declaration
-    (identifier))
-  (definition_list
-    (function_definition
-      (type
-        (identifier))
-      (identifier)
-      (parameter_list)
-      (block
-        (statement_list
-          (variable_declaration_statement
-            (type
-              (array_type
-                (type
-                  (identifier))
-                (integer)))
-            (identifier))
-          (variable_declaration_statement
-            (type
-              (identifier))
-            (identifier)
-            (integer)))))))

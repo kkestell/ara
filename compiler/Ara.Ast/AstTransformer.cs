@@ -32,6 +32,7 @@ public static class AstTransformer
             "function_definition"            => FunctionDefinition(node, children),
             "identifier"                     => Identifier(node),
             "if_statement"                   => IfStatement(node, children),
+            "if_else_statement"              => IfElseStatement(node, children),
             "integer"                        => Integer(node),
             "module_declaration"             => ModuleDeclaration(node, children),
             "parameter"                      => Parameter(node, children),
@@ -109,6 +110,9 @@ public static class AstTransformer
 
     static If IfStatement(Node n, List<AstNode> c) =>
         new (n, (Expression)c[0], (Block)c[1]);
+    
+    static IfElse IfElseStatement(Node n, List<AstNode> c) =>
+        new (n, (Expression)c[0], (Block)c[1], (Block)c[2]);
 
     static Constant Bool(Node n)
     {
