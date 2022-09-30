@@ -7,13 +7,13 @@
 ```c#
 module = new Module();
 
-var type = new FunctionType(IrType.Int32);
+var type = new FunctionType(IrType.Integer);
 var func = module.AddFunction("main", type);
 
 var block = func.AddBlock();
 
 builder = block.IrBuilder();
-builder.Return(new IntValue(42));
+builder.Return(new IntegerValue(42));
 
 Console.WriteLine(module.Emit());
 ```

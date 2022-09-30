@@ -24,8 +24,6 @@ public class CodeGeneratorTests
     public void EmitFunction()
     {
         using var tree = parser.Parse(@"
-            module main
-
             fn main() -> int {
               return 1
             }
@@ -45,8 +43,6 @@ public class CodeGeneratorTests
     public void Fib()
     {
         using var tree = parser.Parse(@"
-            module main
-
             fn fib(n: int) -> int {
               if n == 0 {
                 return 0

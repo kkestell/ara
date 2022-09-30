@@ -3,8 +3,6 @@
 Ara is an imperative, statically typed programming language. Ara uses Tree Sitter for parsing. The compiler is written in C# and emits LLVM IR.
 
 ```
-module main
-
 fn fib(n: int) -> int {
   if n == 0 {
     return 0

@@ -9,8 +9,6 @@ public class ScopeBuilderTests : TestBase
     public void BuildsScopeForFunctionParameters()
     {
         using var tree = Parse(@"
-            module main
-
             fn sum(a: int, b: int) -> int {
               return a + b
             }
@@ -29,8 +27,6 @@ public class ScopeBuilderTests : TestBase
     public void BuildsScopeForLoopCounters()
     {
         using var tree = Parse(@"
-            module main
-
             fn sum(a: int, b: int) -> int {
               var c: int = 0
               for i in 1..10 {
@@ -50,8 +46,6 @@ public class ScopeBuilderTests : TestBase
     public void BuildsScopeForVariableDeclarations()
     {
         using var tree = Parse(@"
-            module main
-
             fn sum() -> int {
               var a: int = 0
               return a

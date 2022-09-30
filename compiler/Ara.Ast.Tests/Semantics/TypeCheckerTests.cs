@@ -9,8 +9,6 @@ public class TypeCheckerTests : TestBase
     public void ThrowWhenReturnTypeIsInvalid()
     {
         using var tree = Parse(@"
-            module main
-
             fn main() -> int {
               return 1.5
             }
@@ -30,8 +28,6 @@ public class TypeCheckerTests : TestBase
     public void ThrowWhenTooManyArguments()
     {
         using var tree = Parse(@"
-            module main
-
             fn test(a: int) -> int {
               return 0
             }
@@ -55,8 +51,6 @@ public class TypeCheckerTests : TestBase
     public void ThrowWhenTooFewArguments()
     {
         using var tree = Parse(@"
-            module main
-
             fn test(a: int) -> int {
               return 0
             }
@@ -80,8 +74,6 @@ public class TypeCheckerTests : TestBase
     public void ThrowWhenArgumentNameInvalid()
     {
         using var tree = Parse(@"
-            module main
-
             fn test(a: int) -> int {
               return 0
             }
@@ -105,8 +97,6 @@ public class TypeCheckerTests : TestBase
     public void ThrowWhenArgumentTypeInvalid()
     {
         using var tree = Parse(@"
-            module main
-
             fn test(a: int) -> int {
               return 0
             }
@@ -130,8 +120,6 @@ public class TypeCheckerTests : TestBase
     public void ThrowWhenIfPredicateTypeIsInvalid()
     {
         using var tree = Parse(@"
-            module main
-
             fn main() -> int {
               if 1 {
                 return 1

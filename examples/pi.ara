@@ -1,5 +1,3 @@
-module main
-
 fn pi(n: int) -> float {
   var pi: float = 4.0
   var flag: bool = false

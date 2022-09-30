@@ -9,8 +9,6 @@ public class ArrayBoundsCheckerTests : TestBase
     public void ThrowWhenArrayIsOutOfBounds()
     {
         using var tree = Parse(@"
-            module main
-
             fn main() -> int {
               var a: int[3]
               return a[5]
@@ -34,8 +32,6 @@ public class ArrayBoundsCheckerTests : TestBase
     public void ThrowWhenIndexIsNotAnInteger()
     {
         using var tree = Parse(@"
-            module main
-
             fn main() -> int {
               var a: int[3]
               return a[true]
@@ -57,8 +53,6 @@ public class ArrayBoundsCheckerTests : TestBase
     public void ThrowWhenIndexIsNotAConstantValue()
     {
         using var tree = Parse(@"
-            module main
-
             fn test() -> int {
               return 1
             }
