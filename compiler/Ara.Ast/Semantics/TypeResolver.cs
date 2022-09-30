@@ -15,18 +15,15 @@ public class TypeResolver : Visitor
     {
         switch (node)
         {
-            case ArrayIndex i:
-                ResolveArrayIndex(i);
-                break;
-            case VariableReference v:
-                ResolveVariableReference(v);
-                break;
-            case BinaryExpression b:
-                ResolveBinaryExpression(b);
-                break;
-            case UnaryExpression u:
-                ResolveUnaryExpression(u);
-                break;
+            //case VariableReference v:
+            //    ResolveVariableReference(v);
+            //    break;
+            //case BinaryExpression b:
+            //    ResolveBinaryExpression(b);
+            //    break;
+            //case UnaryExpression u:
+            //    ResolveUnaryExpression(u);
+            //    break;
             case Call c:
                 ResolveCallExpression(c);
                 break;
@@ -36,14 +33,7 @@ public class TypeResolver : Visitor
         }
     }
 
-    static void ResolveArrayIndex(ArrayIndex i)
-    {
-        if (i.VariableReference.Type is not ArrayType a)
-            throw new SemanticException(i, $"Expected {i.VariableReference.Name} to be an array, not a {i.VariableReference.Type}");
-
-        i.Type = a.Type;
-    }
-    
+    /*
     static void ResolveVariableReference(VariableReference r)
     {
         var node = r.ResolveReference(r.Name);
@@ -62,6 +52,7 @@ public class TypeResolver : Visitor
 
         r.Type = type;
     }
+    */
     
     static void ResolveBinaryExpression(BinaryExpression b)
     {
@@ -81,23 +72,25 @@ public class TypeResolver : Visitor
 
     static void ResolveCallExpression(Call c)
     {
-        var func = c.NearestAncestor<SourceFile>()
-            .Definitions.Nodes.SingleOrDefault(x => x is FunctionDefinition d && d.Name == c.Name);
+        var func = c.NearestAncestor<SourceFile>().FunctionDefinitions.Nodes.SingleOrDefault(x => x.Name == c.Name);
 
-        if (func is not FunctionDefinition functionDefinition)
+        if (func is null)
             throw new ReferenceException(c);
 
-        c.Type = Type.Parse(functionDefinition.ReturnType);
+        c.Type = Type.Parse(func.ReturnType);
     }
     
     static void ResolveVariableDeclaration(VariableDeclaration v)
     {
         if (v.TypeRef is not null)
+        {
+            v.Type = Type.Parse(v.TypeRef);
             return;
+        }
 
-        if (v.Expression is not Constant c)
+        if (v.Expression is not ITyped i)
             throw new SemanticException(v, "Cannot infer type of non-constant values");
 
-        v.Type = c.Type;
+        v.Type = i.Type;
     }
 }

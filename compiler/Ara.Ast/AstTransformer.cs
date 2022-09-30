@@ -40,7 +40,6 @@ public static class AstTransformer
             "return_statement"               => ReturnStatement(node, children),
             "source_file"                    => SourceFile(node, children),
             "statement_list"                 => StatementList(node, children),
-            "string"                         => String(node),
             "single_value_type"              => SingleValueType(node, children),
             "array_type"                     => ArrayType(node, children),
             "unary_expression"               => UnaryExpression(node, children),
@@ -114,32 +113,14 @@ public static class AstTransformer
     static IfElse IfElseStatement(Node n, List<AstNode> c) =>
         new (n, (Expression)c[0], (Block)c[1], (Block)c[2]);
 
-    static Constant Bool(Node n)
-    {
-        return new Constant(n, n.Span.ToString())
-        {
-            Type = new BooleanType()
-        };
-    }
+    static BooleanValue Bool(Node n) =>
+        new BooleanValue(n, bool.Parse(n.Span.ToString()));
 
-    static Constant Integer(Node n)    
-    {
-        return new Constant(n, n.Span.ToString())
-        {
-            Type = new IntegerType()
-        };
-    }
+    static IntegerValue Integer(Node n) =>
+        new IntegerValue(n, int.Parse(n.Span.ToString()));
 
-    static Constant String(Node n) =>
-        throw new NotImplementedException();
-
-    static Constant Float(Node n)
-    {
-        return new Constant(n, n.Span.ToString())
-        {
-            Type = new FloatType()
-        };
-    }
+    static FloatValue Float(Node n) =>
+        new FloatValue(n, float.Parse(n.Span.ToString()));
 
     static Parameter Parameter(Node n, List<AstNode> c) =>
         new (n, ((Identifier)c[0]).Value, (TypeRef)c[1]);
@@ -163,7 +144,7 @@ public static class AstTransformer
     
     static ArrayTypeRef ArrayType(Node n, List<AstNode> c)
     {
-        return new ArrayTypeRef(n, (TypeRef)c[0], (Constant)c[1]);
+        return new ArrayTypeRef(n, (TypeRef)c[0], (IntegerValue)c[1]);
     }
 
     static UnaryExpression UnaryExpression(Node n, List<AstNode> c)

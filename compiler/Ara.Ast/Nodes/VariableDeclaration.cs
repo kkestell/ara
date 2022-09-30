@@ -3,30 +3,11 @@ using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Nodes;
 
-public record VariableDeclaration(Node Node, string Name, TypeRef? TypeRef, Expression? Expression) : Statement(Node)
+public record VariableDeclaration(Node Node, string Name, TypeRef? TypeRef, Expression? Expression) : Statement(Node), ITyped
 {
     List<AstNode>? children;
-
-    Type type;
     
-    public Type Type
-    {
-        get
-        {
-            if (TypeRef is not null)
-                throw new Exception();
-
-            return type;
-        }
-
-        set
-        {
-            if (TypeRef is not null)
-                throw new Exception();
-
-            type = value;
-        }
-    }
+    public Type Type { get; set; }
 
     public override List<AstNode> Children
     {

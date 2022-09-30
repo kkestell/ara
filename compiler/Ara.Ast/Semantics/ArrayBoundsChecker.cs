@@ -20,20 +20,15 @@ public class ArrayBoundsChecker : Visitor
         }
     }
 
-    void CheckBounds(ArrayIndex i)
+    void CheckBounds(ArrayIndex arrayIndex)
     {
-        if (i.VariableReference.Type is not ArrayType t)
-            throw new SemanticException(i, $"Attempting to index something that isn't an array!");
+        if (arrayIndex.VariableReference.Type is not ArrayType t)
+            throw new SemanticException(arrayIndex, "Attempting to index something that isn't an array!");
 
-        if (i.Index.Type is not IntegerType)
-            throw new SemanticException(i, $"Array index must be an integer, not {i.Index.Type}");
+        if (arrayIndex.Index is not IntegerValue integer)
+            throw new SemanticException(arrayIndex, "Array index must be an integer");
 
-        if (i.Index is not Constant c)
-            throw new SemanticException(i, $"Array index must be a constant value");
-
-        var idx = int.Parse(c.Value);
-
-        if (idx > t.Size - 1)
-            throw new ArrayIndexOutOfBoundsException(i);
+        if (integer.Value > t.Size - 1)
+            throw new ArrayIndexOutOfBoundsException(arrayIndex);
     }
 }

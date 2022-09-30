@@ -10,7 +10,7 @@ public class TypeChecker : Visitor
     
     public TypeChecker(SourceFile sourceFile) : base(sourceFile)
     {
-        foreach (var f in sourceFile.Definitions.Nodes)
+        foreach (var f in sourceFile.FunctionDefinitions.Nodes)
         {
             functionCache.Add(f.Name, f);
         }

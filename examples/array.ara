@@ -1,5 +1,5 @@
 fn main() -> int {
-  var x: int[3]
+  x: int[3]
   x[0] = 1
   x[1] = x[0] + 2
   x[2] = x[1] + 3

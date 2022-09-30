@@ -17,8 +17,7 @@ public abstract record Type
 
     static Type ParseArrayTypeRef(ArrayTypeRef typeRef)
     {
-        var size = int.Parse(typeRef.Size.Value);
-        return new ArrayType(Parse(typeRef.Type), size);
+        return new ArrayType(Parse(typeRef.Type), typeRef.Size.Value);
     }
     
     static Type ParseSingleValueTypeRef(SingleValueTypeRef typeRef)
