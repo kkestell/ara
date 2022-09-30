@@ -17,7 +17,7 @@ public class ScopeBuilderTests : TestBase
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
 
-        var block = ((FunctionDefinition)ast.Definitions.Nodes.First()).Block;
+        var block = (ast.Definitions.Nodes.First()).Block;
 
         Assert.That(block.Scope.ContainsKey("a"), Is.True);
         Assert.That(block.Scope.ContainsKey("b"), Is.True);

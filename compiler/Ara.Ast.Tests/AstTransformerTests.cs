@@ -33,7 +33,7 @@ public class AstTransformerTests : TestBase
         ");
         var ast = AstTransformer.Transform(tree);
         
-        var func = (FunctionDefinition)ast.Definitions.Nodes.First();
+        var func = ast.Definitions.Nodes.First();
         Assert.Multiple(() =>
         {
             Assert.That(func.Name, Is.EqualTo("main"));

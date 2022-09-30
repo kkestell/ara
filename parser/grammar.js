@@ -4,13 +4,9 @@ module.exports = grammar({
   word: $ => $.identifier,
 
   rules: {
-    source_file: $ => $.definition_list,
+    source_file: $ => $.function_definition_list,
 
-    definition_list: $ => repeat1($._definition),
-
-    _definition: $ => choice(
-      $.function_definition
-    ),
+    function_definition_list: $ => repeat1($.function_definition),
 
     function_definition: $ => seq(
       'fn',
@@ -67,16 +63,21 @@ module.exports = grammar({
     ),
 
     variable_declaration_statement: $ => seq(
-      'var',
       $.identifier,
       ':',
-      $._type,
-      optional(
+      choice(
+        $._type,
+        $._variable_declaration_value,
         seq(
-          '=',
-          $._expression
+          $._type,
+          $._variable_declaration_value
         )
       )
+    ),
+
+    _variable_declaration_value: $ => seq(
+      '=',
+      $._expression
     ),
 
     if_statement: $ => seq(
