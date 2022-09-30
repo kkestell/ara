@@ -77,6 +77,11 @@ public class CodeGenerator
                     EmitIf(builder, i);
                     break;
                 }
+                case IfElse i:
+                {
+                    EmitIfElse(builder, i);
+                    break;
+                }
                 case Return r:
                 {
                     EmitReturn(builder, r);
@@ -111,13 +116,20 @@ public class CodeGenerator
     {
         var s = EmitExpression(builder, f.Start);
         var e = EmitExpression(builder, f.End);
-        builder.For(f.Counter, s, e, (loop, cnt) => EmitBlock(loop.IrBuilder(), f.Block));
+        builder.For(f.Counter, s, e, (loop, cnt) => EmitBlock(loop, f.Block));
     }
     
     void EmitIf(IrBuilder builder, If i)
     {
         var predicate = EmitExpression(builder, i.Predicate);
         builder.IfThen(predicate, then => EmitBlock(then, i.Then));
+    }
+    
+    void EmitIfElse(IrBuilder builder, IfElse i)
+    {
+        var predicate = EmitExpression(builder, i.Predicate);
+        var val = builder.ResolveValue(predicate);
+        builder.IfElse(val, thenBuilder => EmitBlock(thenBuilder, i.Then), elseBuilder => EmitBlock(elseBuilder, i.Else));
     }
     
     void EmitReturn(IrBuilder builder, Return r)
@@ -171,7 +183,7 @@ public class CodeGenerator
         if (!left.Type.Equals(right.Type))
             throw new CodeGenException($"Binary expression types {left.Type.ToIr()} and {right.Type.ToIr()} don't match.");
 
-        if (left.Type.GetType() == typeof(IntegerType))
+        if (left.Type is IntegerType or IR.Types.BooleanType)
         {
             return expression.Op switch
             {

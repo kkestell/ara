@@ -57,49 +57,38 @@ public class IrBuilderTests : TestBase
         ");
     }
 
-    // [Test]
-    // public void For()
-    // {
-    //     builder.For(
-    //         "c",
-    //         new IntegerValue(0),
-    //         new IntegerValue(10),
-    //         (loop, counter) => {
-    //             var loopBuilder = loop.IrBuilder();
-    //             loopBuilder.Return(loopBuilder.Load(counter));
-    //         });
-    //
-    //     AssertIr(module.Emit(), @"
-    //         define void @test () {
-    //         entry:
-    //           %""0"" = icmp sgt i32 10, 0
-    //           %""1"" = select i1 %""0"", i32 1, i32 -1
-    //           %""2"" = alloca i32, align 4
-    //           store i32 0, ptr %""2""
-    //           br label %""for""
-    //         for:
-    //           %""c"" = load i32, ptr %""2""
-    //           %""5"" = load i32, ptr %""2""
-    //           ret i32 %""5""
-    //           %""7"" = load i32, ptr %""2""
-    //           %""8"" = add i32 %""7"", %""1""
-    //           store i32 %""8"", ptr %""2""
-    //           %""10"" = load i32, ptr %""2""
-    //           br i1 %""0"", label %""if"", label %""else""
-    //         if:
-    //           %""12"" = icmp slt i32 %""10"", 10
-    //           br i1 %""12"", label %""for"", label %""endfor""
-    //           br label %""endif""
-    //         else:
-    //           %""15"" = icmp sgt i32 %""10"", 10
-    //           br i1 %""15"", label %""for"", label %""endfor""
-    //           br label %""endif""
-    //         endif:
-    //           br label %""endfor""
-    //         endfor:
-    //         }
-    //     ");
-    // }
+    [Test]
+    public void For()
+    {
+        builder.For(
+            "c",
+            new IntegerValue(0),
+            new IntegerValue(10),
+            (loop, counter) => {
+                loop.Return(loop.Load(counter));
+            });
+
+        var ir = module.Emit();
+        AssertIr(ir, @"
+            define void @test () {
+            entry:
+              %""0"" = alloca i32, i32 1, align 4
+              store i32 0, ptr %""0""
+              br label %""for""
+            for:
+              %""c"" = load i32, ptr %""0""
+              %""3"" = load i32, ptr %""0""
+              ret i32 %""3""
+              %""5"" = load i32, ptr %""0""
+              %""6"" = add i32 %""5"", 1
+              store i32 %""6"", ptr %""0""
+              %""8"" = load i32, ptr %""0""
+              %""9"" = icmp slt i32 %""8"", 10
+              br i1 %""9"", label %""for"", label %""endfor""
+              br label %""endfor""
+            endfor:
+            }");
+    }
     
     [Test]
     public void SimplestFunction()

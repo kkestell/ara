@@ -31,6 +31,10 @@ public class TypeChecker : Visitor
                 CheckIf(i);
                 break;
             
+            case IfElse i:
+                CheckIfElse(i);
+                break;
+            
             case Return r:
                 CheckReturn(r);
                 break;
@@ -76,6 +80,16 @@ public class TypeChecker : Visitor
             throw new SemanticException(i.Predicate, "Expression type could not be inferred.");
                 
         if (!i.Predicate.Type.Equals(new BooleanType()))
-            throw new IfPredicateTypeException(i);
+            throw new PredicateTypeException(i);
+    }
+    
+    static void CheckIfElse(IfElse i)
+    {
+        if (i.Predicate.Type is null)
+            throw new SemanticException(i.Predicate, "Expression type could not be inferred.");
+         
+        // FIXME
+        //if (!i.Predicate.Type.Equals(new BooleanType()))
+        //    throw new PredicateTypeException(i);
     }
 }

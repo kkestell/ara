@@ -27,6 +27,6 @@ public class GetElementPtr : Instruction
         if (array.Type is not ArrayType a)
             throw new CodeGenException("Pointee is not an array");
 
-        sb.AppendLine($"{Resolve()} = getelementptr inbounds [{a.Size} x {a.Type.ToIr()}], ptr {array.Resolve()}, i32 0, i32 {index.Resolve()}");
+        sb.AppendLine($"{Resolve()} = getelementptr [{a.Size} x {a.Type.ToIr()}], ptr {array.Resolve()}, i32 0, i32 {index.Resolve()}");
     }
 }

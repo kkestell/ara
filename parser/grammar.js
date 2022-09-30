@@ -53,6 +53,7 @@ module.exports = grammar({
       $.return_statement,
       $.variable_declaration_statement,
       $.if_statement,
+      $.if_else_statement,
       $.assignment_statement,
       $.array_assignment_statement,
       $.for_statement
@@ -89,6 +90,14 @@ module.exports = grammar({
     if_statement: $ => seq(
       'if',
       $._expression,
+      $.block
+    ),
+
+    if_else_statement: $ => seq(
+      'if',
+      $._expression,
+      $.block,
+      'else',
       $.block
     ),
 

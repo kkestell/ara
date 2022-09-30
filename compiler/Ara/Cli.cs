@@ -12,14 +12,14 @@ public static class Cli
     public static int Run(string filename)
     {
         // Parse
-            
+
         using var parser = new Parser();
         using var tree = Time("Parsing", () => parser.Parse(File.ReadAllText(filename), filename));
-        
+
         // AST
 
         var ast = Time("AST", () => AstTransformer.Transform(tree));
-        
+
         // Semantics
 
         try
@@ -29,6 +29,7 @@ public static class Cli
                 new ScopeBuilder(ast).Visit();
                 new TypeResolver(ast).Visit();
                 new TypeChecker(ast).Visit();
+                new ArrayBoundsChecker(ast).Visit();
             });
         }
         catch (SemanticException ex)
@@ -42,21 +43,21 @@ public static class Cli
             Console.WriteLine(ex.StackTrace);
             return 1;
         }
-        
+
         // Generate IR
-        
+
         var ir = Time("CodeGen", () => new CodeGenerator().Generate(ast));
 
         #region Output
-        
+
         var dir = GetTemporaryDirectory();
         var name = Path.GetFileNameWithoutExtension(filename);
 
         // IR
-        
+
         File.WriteAllText(Path.Combine(dir, $"{name}.ll"), ir);
         Copy(dir, name, ".ll");
-        
+
         // Make binary
 
         var llcPath = Environment.GetEnvironmentVariable("LLC") ?? "llc";
@@ -64,13 +65,12 @@ public static class Cli
 
         try
         {
-
             Time("LLVM", () =>
             {
                 Run(llcPath, $"-filetype=obj -opaque-pointers -O0 {name}.ll -o {name}.o", dir);
-                Run(clangPath, $"{name}.o -o {name} -lgc", dir);
+                Run(clangPath, $"{name}.o -o {name}", dir);
             });
-            
+
             Copy(dir, name);
         }
         catch (Exception e)
@@ -78,15 +78,15 @@ public static class Cli
             Console.WriteLine(e.Message);
             Console.WriteLine(e.StackTrace);
         }
-        
+
         // Make AST graph
-        
+
         new GraphGenerator().Generate(ast, Path.Combine(dir, $"{name}.dot"));
         Run("dot", $"-Tpdf {name}.dot -o {name}.pdf", dir);
         Copy(dir, name, ".pdf");
-        
+
         #endregion
-        
+
         return 0;
     }
 
@@ -113,7 +113,7 @@ public static class Cli
         Directory.CreateDirectory(t);
         return t;
     }
-    
+
     static T Time<T>(string label, Func<T> func)
     {
         var sw = new Stopwatch();
@@ -132,7 +132,7 @@ public static class Cli
         sw.Stop();
         Elapsed(label, sw);
     }
-    
+
     static void Elapsed(string label, Stopwatch sw)
     {
         var e = $"{sw.Elapsed.TotalMilliseconds:0.00}";

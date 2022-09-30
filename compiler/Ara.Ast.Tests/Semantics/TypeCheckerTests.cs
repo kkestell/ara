@@ -144,7 +144,7 @@ public class TypeCheckerTests : TestBase
         new ScopeBuilder(ast).Visit();
         new TypeResolver(ast).Visit();
         
-        Assert.Throws<IfPredicateTypeException>(delegate
+        Assert.Throws<PredicateTypeException>(delegate
         {
             new TypeChecker(ast).Visit();
         });

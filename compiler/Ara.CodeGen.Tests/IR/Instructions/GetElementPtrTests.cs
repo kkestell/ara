@@ -18,7 +18,7 @@ public class GetElementPtrTests : TestBase
             define void @test () {
             entry:
               %""0"" = alloca i32, i32 5, align 4
-              %""1"" = getelementptr inbounds [5 x i32], ptr %""0"", i32 0, i32 1
+              %""1"" = getelementptr [5 x i32], ptr %""0"", i32 0, i32 1
               ret ptr %""1""
             }
         ");
