@@ -1,26 +1,186 @@
 =================================================
+Fib
+=================================================
+
+fn fib(n: int) -> int {
+  if n == 0 {
+    return 0
+  }
+  if n == 1 {
+    return 1
+  }
+  return fib(n: n-2) + fib(n: n-1)
+}
+
+fn main() -> int {
+  return fib(n: 10)
+}
+
+-------------------------------------------------
+
+(source_file
+  (definition_list
+    (function_definition
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (single_value_type
+            (identifier))))
+      (single_value_type
+        (identifier))
+      (block
+        (statement_list
+          (if_statement
+            (binary_expression
+              (variable_reference
+                (identifier))
+              (integer))
+            (block
+              (statement_list
+                (return_statement
+                  (integer)))))
+          (if_statement
+            (binary_expression
+              (variable_reference
+                (identifier))
+              (integer))
+            (block
+              (statement_list
+                (return_statement
+                  (integer)))))
+          (return_statement
+            (binary_expression
+              (function_call_expression
+                (identifier)
+                (argument_list
+                  (argument
+                    (identifier)
+                    (binary_expression
+                      (variable_reference
+                        (identifier))
+                      (integer)))))
+              (function_call_expression
+                (identifier)
+                (argument_list
+                  (argument
+                    (identifier)
+                    (binary_expression
+                      (variable_reference
+                        (identifier))
+                      (integer))))))))))
+    (function_definition
+      (identifier)
+      (parameter_list)
+      (single_value_type
+        (identifier))
+      (block
+        (statement_list
+          (return_statement
+            (function_call_expression
+              (identifier)
+              (argument_list
+                (argument
+                  (identifier)
+                  (integer))))))))))
+
+=================================================
 Pi
 =================================================
 
-module main
-
-fn main() -> float {
+fn pi(n: int) -> float {
   var pi: float = 4.0
   var flag: bool = false
-  var i: float = 0.0
-  for c in 3..10000000 {
-    var f: bool = flag
-    if f == true {
+  var i: float = 3.0
+
+  for c in 3..n {
+    if flag {
       pi = pi + 4.0 / i
       flag = false
-    }
-    if f == false {
+    } else {
       pi = pi - 4.0 / i
       flag = true
     }
     i = i + 2.0
   }
+
   return pi
 }
 
 -------------------------------------------------
+
+(source_file
+  (definition_list
+    (function_definition
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (single_value_type
+            (identifier))))
+      (single_value_type
+        (identifier))
+      (block
+        (statement_list
+          (variable_declaration_statement
+            (identifier)
+            (single_value_type
+              (identifier))
+            (float))
+          (variable_declaration_statement
+            (identifier)
+            (single_value_type
+              (identifier))
+            (bool))
+          (variable_declaration_statement
+            (identifier)
+            (single_value_type
+              (identifier))
+            (float))
+          (for_statement
+            (identifier)
+            (integer)
+            (variable_reference
+              (identifier))
+            (block
+              (statement_list
+                (if_else_statement
+                  (variable_reference
+                    (identifier))
+                  (block
+                    (statement_list
+                      (assignment_statement
+                        (identifier)
+                        (binary_expression
+                          (variable_reference
+                            (identifier))
+                          (binary_expression
+                            (float)
+                            (variable_reference
+                              (identifier)))))
+                      (assignment_statement
+                        (identifier)
+                        (bool))))
+                  (block
+                    (statement_list
+                      (assignment_statement
+                        (identifier)
+                        (binary_expression
+                          (variable_reference
+                            (identifier))
+                          (binary_expression
+                            (float)
+                            (variable_reference
+                              (identifier)))))
+                      (assignment_statement
+                        (identifier)
+                        (bool)))))
+                (assignment_statement
+                  (identifier)
+                  (binary_expression
+                    (variable_reference
+                      (identifier))
+                    (float))))))
+          (return_statement
+            (variable_reference
+              (identifier))))))))

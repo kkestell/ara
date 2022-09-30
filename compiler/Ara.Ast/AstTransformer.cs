@@ -1,3 +1,4 @@
+using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
 using Ara.Ast.Semantics.Types;
 using Ara.Parsing;
@@ -34,7 +35,6 @@ public static class AstTransformer
             "if_statement"                   => IfStatement(node, children),
             "if_else_statement"              => IfElseStatement(node, children),
             "integer"                        => Integer(node),
-            "module_declaration"             => ModuleDeclaration(node, children),
             "parameter"                      => Parameter(node, children),
             "parameter_list"                 => ParameterList(node, children),
             "return_statement"               => ReturnStatement(node, children),
@@ -47,7 +47,7 @@ public static class AstTransformer
             "variable_declaration_statement" => VariableDeclarationStatement(node, children),
             "variable_reference"             => VariableReference(node, children),
             
-            _ => throw new NotImplementedException($"Unsupported parse tree node: {node.Type}")
+            _ => throw new SyntaxException(node)
         };
 
         foreach (var child in children)
@@ -140,9 +140,6 @@ public static class AstTransformer
             Type = new FloatType()
         };
     }
-    
-    static ModuleDeclaration ModuleDeclaration(Node n, List<AstNode> c) =>
-        new (n, ((Identifier)c[0]).Value);
 
     static Parameter Parameter(Node n, List<AstNode> c) =>
         new (n, ((Identifier)c[0]).Value, (TypeRef)c[1]);
@@ -154,7 +151,7 @@ public static class AstTransformer
         new (n, (Expression)c[0]);
 
     static SourceFile SourceFile(Node n, List<AstNode> c) =>
-        new (n, (ModuleDeclaration)c[0], (NodeList<Definition>)c[1]);
+        new (n, (NodeList<Definition>)c[0]);
 
     static NodeList<Statement> StatementList(Node n, List<AstNode> c) =>
         new (n, c.Select(x => (Statement)x).ToList());

@@ -10,8 +10,6 @@ public class TypeResolverTests : TestBase
     public void InfersTypeOfExpressions()
     {
         using var tree = Parse(@"
-            module main
-
             fn sum(a: int, b: int) -> int {
               return a + b
             }

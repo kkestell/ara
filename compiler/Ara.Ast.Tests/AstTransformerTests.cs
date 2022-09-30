@@ -8,8 +8,6 @@ public class AstTransformerTests : TestBase
     public void TransformSimpleFunction()
     {
         using var tree = Parse(@"
-            module main
-
             fn main() -> int {
               return 1
             }
@@ -29,8 +27,6 @@ public class AstTransformerTests : TestBase
     public void TransformFunctionWithParameters()
     {
         using var tree = Parse(@"
-            module main
-
             fn main(a: int, b: float, c: bool) -> int {
               return 1
             }

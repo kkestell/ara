@@ -6,8 +6,6 @@ public class ParserTests : TestBase
     public void ParsesValidInput()
     {
         using var tree = Parser.Parse(@"
-            module main
-
             fn main() -> int {
               return 0
             }
@@ -16,14 +14,13 @@ public class ParserTests : TestBase
         var sexp = tree.Root.Sexp();
         AssertSexp(sexp, @"
             (source_file 
-              module_declaration: (module_declaration name: (identifier)) 
-              definitions: (definition_list 
-                (function_definition
-                  name: (identifier) 
-                  parameters: (parameter_list) 
-                  type: (single_value_type (identifier)) 
-                  block: (block 
-                    (statement_list 
-                      (return_statement (integer)))))))");
+              (definition_list 
+                (function_definition 
+                  (identifier) 
+                  (parameter_list) 
+                  (single_value_type (identifier))
+                  (block 
+                    (statement_list
+                       (return_statement (integer)))))))");
     }
 }

@@ -4,15 +4,7 @@ module.exports = grammar({
   word: $ => $.identifier,
 
   rules: {
-    source_file: $ => seq(
-      field('module_declaration', $.module_declaration),
-      field('definitions', $.definition_list)
-    ),
-
-    module_declaration: $ => seq(
-      'module',
-      field('name', $.identifier)
-    ),
+    source_file: $ => $.definition_list,
 
     definition_list: $ => repeat1($._definition),
 
@@ -22,11 +14,11 @@ module.exports = grammar({
 
     function_definition: $ => seq(
       'fn',
-      field('name', $.identifier),
-      field('parameters', $.parameter_list),
+      $.identifier, // name
+      $.parameter_list,
       '->',
-      field('type', $._type),
-      field('block', $.block)
+      $._type,
+      $.block
     ),
 
     parameter_list: $ => seq(
@@ -41,13 +33,13 @@ module.exports = grammar({
       $._type
     ),
 
-    block: $ => seq(
+    block: $ => $.statement_list,
+
+    statement_list: $ => seq(
       '{',
-      optional($.statement_list),
+      repeat($._statement),
       '}'
     ),
-
-    statement_list: $ => repeat1($._statement),
 
     _statement: $ => choice(
       $.return_statement,
