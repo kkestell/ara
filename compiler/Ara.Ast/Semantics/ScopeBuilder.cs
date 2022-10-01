@@ -13,23 +13,23 @@ public class ScopeBuilder : Visitor
         switch (node)
         {
             case For f:
-                ResolveFor(f);
+                For(f);
                 break;
             case FunctionDefinition f:
-                ResolveFunctionDefinition(f);
+                FunctionDefinition(f);
                 break;
             case VariableDeclaration v:
-                ResolveVariableDeclaration(v);
+                VariableDeclaration(v);
                 break;
         }
     }
     
-    static void ResolveFor(For f)
+    static void For(For f)
     {
         f.Block.Scope.Add(f.Counter, f);
     }
     
-    static void ResolveFunctionDefinition(FunctionDefinition f)
+    static void FunctionDefinition(FunctionDefinition f)
     {
         foreach (var p in f.Parameters.Nodes)
         {
@@ -37,7 +37,7 @@ public class ScopeBuilder : Visitor
         }
     }
 
-    static void ResolveVariableDeclaration(VariableDeclaration d)
+    static void VariableDeclaration(VariableDeclaration d)
     {
         var blk = d.NearestAncestor<Block>();
         blk.Scope.Add(d.Name, d);

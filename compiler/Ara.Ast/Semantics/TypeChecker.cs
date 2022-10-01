@@ -22,24 +22,24 @@ public class TypeChecker : Visitor
         switch (node)
         {
             case Call c:
-                CheckCall(c);
+                Call(c);
                 break;
 
             case If i:
-                CheckIf(i);
+                If(i);
                 break;
             
             case IfElse i:
-                CheckIfElse(i);
+                IfElse(i);
                 break;
             
             case Return r:
-                CheckReturn(r);
+                Return(r);
                 break;
         }
     }
 
-    void CheckCall(Call c)
+    void Call(Call c)
     {
         if (!functionCache.ContainsKey(c.Name))
             throw new SemanticException(c, "No such function.");
@@ -61,7 +61,7 @@ public class TypeChecker : Visitor
         }
     }
 
-    static void CheckReturn(Return r)
+    static void Return(Return r)
     {
         if (r.Expression.Type is null)
             throw new SemanticException(r.Expression, "Expression type could not be inferred.");
@@ -72,22 +72,21 @@ public class TypeChecker : Visitor
             throw new ReturnTypeException(r);
     }
 
-    static void CheckIf(If i)
+    static void If(If i)
     {
         if (i.Predicate.Type is null)
             throw new SemanticException(i.Predicate, "Expression type could not be inferred.");
                 
         if (!i.Predicate.Type.Equals(new BooleanType()))
-            throw new PredicateTypeException(i);
+            throw new PredicateTypeException(i.Predicate);
     }
     
-    static void CheckIfElse(IfElse i)
+    static void IfElse(IfElse i)
     {
         if (i.Predicate.Type is null)
             throw new SemanticException(i.Predicate, "Expression type could not be inferred.");
          
-        // FIXME
-        //if (!i.Predicate.Type.Equals(new BooleanType()))
-        //    throw new PredicateTypeException(i);
+        if (!i.Predicate.Type.Equals(new BooleanType()))
+            throw new PredicateTypeException(i.Predicate);
     }
 }

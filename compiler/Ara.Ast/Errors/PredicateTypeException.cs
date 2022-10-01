@@ -1,15 +1,15 @@
-using Ara.Ast.Nodes;
+using Ara.Ast.Nodes.Expressions;
 
 namespace Ara.Ast.Errors;
 
 public class PredicateTypeException : SemanticException
 {
-    public PredicateTypeException(If node) : base(node, BuildMessage(node))
+    public PredicateTypeException(Expression node) : base(node, BuildMessage(node))
     {
     }
 
-    static string BuildMessage(If node)
+    static string BuildMessage(Expression node)
     {
-        return $"Invalid predicate type {node.Predicate.Type} where bool was expected.";
+        return $"Invalid predicate type {node.Type} where bool was expected.";
     }
 }
