@@ -1,4 +1,4 @@
-namespace Ara.Ast.Types;
+namespace Ara.Ast.Types.Abstract;
 
 public abstract record Type
 {

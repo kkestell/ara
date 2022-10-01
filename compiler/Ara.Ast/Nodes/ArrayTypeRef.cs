@@ -1,7 +1,8 @@
+using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions.Values;
 using Ara.Ast.Types;
 using Ara.Parsing;
-using Type = Ara.Ast.Types.Type;
+using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes;
 

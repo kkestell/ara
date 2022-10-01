@@ -1,6 +1,6 @@
 using Ara.Parsing;
 
-namespace Ara.Ast.Nodes;
+namespace Ara.Ast.Nodes.Abstract;
 
 public abstract record AstNode(Node Node)
 {
