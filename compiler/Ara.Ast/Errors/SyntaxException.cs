@@ -1,3 +1,4 @@
+using Ara.Ast.Errors.Abstract;
 using Ara.Parsing;
 
 namespace Ara.Ast.Errors;

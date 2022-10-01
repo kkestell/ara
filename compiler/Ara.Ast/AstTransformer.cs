@@ -1,7 +1,11 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
+using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions;
+using Ara.Ast.Nodes.Expressions.Abstract;
 using Ara.Ast.Nodes.Expressions.Values;
+using Ara.Ast.Nodes.Statements;
+using Ara.Ast.Nodes.Statements.Abstract;
 using Ara.Parsing;
 
 namespace Ara.Ast;
