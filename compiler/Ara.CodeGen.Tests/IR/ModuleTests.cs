@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 

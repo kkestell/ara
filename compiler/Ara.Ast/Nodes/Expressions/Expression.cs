@@ -1,8 +1,7 @@
-using Ara.Ast.Semantics.Types;
 using Ara.Parsing;
-using Type = Ara.Ast.Semantics.Types.Type;
+using Type = Ara.Ast.Types.Type;
 
-namespace Ara.Ast.Nodes;
+namespace Ara.Ast.Nodes.Expressions;
 
 public abstract record Expression(Node Node) : AstNode(Node), ITyped
 {

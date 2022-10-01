@@ -15,7 +15,7 @@ public class Phi : Instruction
         this.values = values;
     }
 
-    public override IrType Type { get; }
+    public override IrType Type => values.Values.First().Type;
     
     public override void Emit(StringBuilder sb)
     {

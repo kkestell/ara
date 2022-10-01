@@ -10,7 +10,7 @@ public class ReturnTypeException : SemanticException
 
     static string BuildMessage(Return node)
     {
-        var func = node.NearestAncestor<FunctionDefinition>()!;
+        var func = node.NearestAncestor<FunctionDefinition>();
         return $"Invalid return type {node.Expression.Type} where {func.Type} was expected.";
     }
 }

@@ -80,8 +80,8 @@ public class CodeGeneratorTests
             }
         ");
     }
-    
-    protected static void AssertIr(string actual, string expected)
+
+    static void AssertIr(string actual, string expected)
     {
         var a = Trim(actual);
         var e = Trim(expected);

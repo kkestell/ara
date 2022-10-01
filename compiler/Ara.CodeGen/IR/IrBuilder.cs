@@ -29,12 +29,7 @@ public class IrBuilder
     
     public Value ResolveValue(Value value)
     {
-        if (value.Type is PointerType v)
-        {
-            return Load(value);
-        }
-
-        return value;
+        return value.Type is PointerType ? Load(value) : value;
     }
 
     public Label Label(string value)

@@ -1,19 +1,18 @@
 using System.Text;
-using Ara.Ast.Nodes;
 using Ara.Parsing;
 
 namespace Ara.Ast.Errors;
 
 public class CompilerException : Exception
 {
-    public CompilerException(Node node, string message) : base(message)
+    protected CompilerException(Node node, string message) : base(message)
     {
         Node = node;
     }
 
-    public Node Node { get; }
+    Node Node { get; }
 
-    public Location Location => Node.Location;
+    Location Location => Node.Location;
 
     public override string ToString()
     {

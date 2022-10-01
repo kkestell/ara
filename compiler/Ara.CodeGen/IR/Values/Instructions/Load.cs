@@ -19,17 +19,14 @@ public class Load : Instruction
     {
         get
         {
-            if (pointer.Type is PointerType ptrType)
-            {
-                if (ptrType.Type is ArrayType arrayType)
-                {
-                    return arrayType.Type;
-                }
+            if (pointer.Type is not PointerType ptrType) 
+                throw new NotSupportedException("Not a pointer!");
+            
+            if (ptrType.Type is ArrayType arrayType)
+                return arrayType.Type;
 
-                return ptrType.Type;
-            }
+            return ptrType.Type;
 
-            throw new NotSupportedException("Not a pointer!");
         }
     }
     
