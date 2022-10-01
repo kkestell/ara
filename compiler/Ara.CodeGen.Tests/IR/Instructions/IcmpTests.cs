@@ -57,7 +57,7 @@ public class IcmpTests : TestBase
         builder.Icmp(IcmpCondition.NotEqual, ptr1, ptr2);
 
         var ir = module.Emit();
-        AssertIr(module.Emit(), @"
+        AssertIr(ir, @"
             define void @test () {
             entry:
               %""0"" = alloca i32, i32 1, align 4

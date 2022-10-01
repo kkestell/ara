@@ -14,11 +14,11 @@ public class AstTransformerTests : TestBase
         ");
         var ast = AstTransformer.Transform(tree);
         
-        var func = (FunctionDefinition)ast.FunctionDefinitions.Nodes.First();
+        var func = ast.FunctionDefinitions.Nodes.First();
         Assert.Multiple(() =>
         {
             Assert.That(func.Name, Is.EqualTo("main"));
-            Assert.That(((SingleValueTypeRef)func.ReturnType).Name, Is.EqualTo("int"));
+            Assert.That(((SingleValueTypeRef)func.ReturnTypeRef).Name, Is.EqualTo("int"));
             Assert.That(func.Parameters.Nodes, Is.Empty);
         });
     }
@@ -38,10 +38,10 @@ public class AstTransformerTests : TestBase
         {
             Assert.That(func.Name, Is.EqualTo("main"));
             
-            Assert.That(func.ReturnType, Is.TypeOf<SingleValueTypeRef>());
-            Assert.That(((SingleValueTypeRef)func.ReturnType).Name, Is.EqualTo("int"));
+            Assert.That(func.ReturnTypeRef, Is.TypeOf<SingleValueTypeRef>());
+            Assert.That(((SingleValueTypeRef)func.ReturnTypeRef).Name, Is.EqualTo("int"));
             
-            Assert.That(func.Parameters.Nodes.Count(), Is.EqualTo(3));
+            Assert.That(func.Parameters.Nodes.Count, Is.EqualTo(3));
             var p = func.Parameters.Nodes.ToList();
 
             Assert.That(((SingleValueTypeRef)p[0].TypeRef).Name, Is.EqualTo("int"));

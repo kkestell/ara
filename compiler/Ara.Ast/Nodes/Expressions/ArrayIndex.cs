@@ -1,11 +1,11 @@
 using Ara.Ast.Errors;
-using Ara.Ast.Semantics.Types;
+using Ara.Ast.Types;
 using Ara.Parsing;
-using Type = Ara.Ast.Semantics.Types.Type;
+using Type = Ara.Ast.Types.Type;
 
-namespace Ara.Ast.Nodes;
+namespace Ara.Ast.Nodes.Expressions;
 
-public record ArrayIndex(Node Node, VariableReference VariableReference, Expression Index) : Atom(Node)
+public record ArrayIndex(Node Node, VariableReference VariableReference, Expression Index) : Expression(Node)
 {
     public override List<AstNode> Children { get; } = new() { VariableReference, Index };
 

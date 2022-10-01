@@ -6,8 +6,5 @@ public class SemanticException : CompilerException
 {
     public SemanticException(AstNode astNode, string message) : base(astNode.Node, message)
     {
-        AstNode = astNode;
     }
-    
-    public AstNode AstNode { get; }
 }

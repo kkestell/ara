@@ -1,4 +1,4 @@
-namespace Ara.Ast.Semantics.Types;
+namespace Ara.Ast.Types;
 
 public record BooleanType : Type
 {

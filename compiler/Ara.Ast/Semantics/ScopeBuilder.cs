@@ -1,6 +1,4 @@
 using Ara.Ast.Nodes;
-using Ara.Ast.Semantics.Types;
-using Type = Ara.Ast.Semantics.Types.Type;
 
 namespace Ara.Ast.Semantics;
 

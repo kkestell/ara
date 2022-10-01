@@ -1,4 +1,5 @@
 using Ara.Ast.Nodes;
+using Ara.Ast.Nodes.Expressions;
 
 namespace Ara.Ast.Errors;
 

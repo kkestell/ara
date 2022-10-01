@@ -1,11 +1,11 @@
 using Ara.Parsing;
-using Type = Ara.Ast.Semantics.Types.Type;
+using Type = Ara.Ast.Types.Type;
 
-namespace Ara.Ast.Nodes;
+namespace Ara.Ast.Nodes.Expressions;
 
 public record UnaryExpression(Node Node, Expression Right, UnaryOperator Op) : Expression(Node)
 {
-    public override List<AstNode> Children { get; } = new List<AstNode> { Right };
+    public override List<AstNode> Children { get; } = new() { Right };
 
     public override Type Type
     {

@@ -1,5 +1,6 @@
-using Ara.Ast.Nodes;
-using Ara.Ast.Semantics.Types;
+using Ara.Ast.Nodes.Expressions;
+using Ara.Ast.Nodes.Expressions.Values;
+using Ara.Ast.Types;
 
 namespace Ara.Ast.Errors;
 

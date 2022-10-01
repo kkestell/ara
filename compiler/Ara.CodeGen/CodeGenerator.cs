@@ -1,14 +1,17 @@
 using Ara.Ast.Nodes;
+using Ara.Ast.Nodes.Expressions;
 using Ara.CodeGen.Errors;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
-using ArrayType = Ara.Ast.Semantics.Types.ArrayType;
+using ArrayType = Ara.Ast.Types.ArrayType;
 using Block = Ara.Ast.Nodes.Block;
-using BooleanType = Ara.Ast.Semantics.Types.BooleanType;
-using Call = Ara.Ast.Nodes.Call;
+using BooleanValue = Ara.Ast.Nodes.Expressions.Values.BooleanValue;
+using Call = Ara.Ast.Nodes.Expressions.Call;
+using FloatValue = Ara.Ast.Nodes.Expressions.Values.FloatValue;
+using IntegerValue = Ara.Ast.Nodes.Expressions.Values.IntegerValue;
 
 namespace Ara.CodeGen;
 
@@ -108,7 +111,7 @@ public class CodeGenerator
     {
         var s = EmitExpression(builder, f.Start);
         var e = EmitExpression(builder, f.End);
-        builder.For(f.Counter, s, e, (loop, cnt) => EmitBlock(loop, f.Block));
+        builder.For(f.Counter, s, e, (loop, _) => EmitBlock(loop, f.Block));
     }
     
     void EmitIf(IrBuilder builder, If i)
@@ -153,9 +156,9 @@ public class CodeGenerator
             ArrayIndex             e => EmitArrayIndex(builder, e),
             BinaryExpression       e => EmitBinaryExpression(builder, e),
             Call                   e => EmitCall(builder, e),
-            Ast.Nodes.IntegerValue e => MakeInteger(e),
-            Ast.Nodes.FloatValue   e => MakeFloat(e),
-            Ast.Nodes.BooleanValue e => MakeBoolean(e),
+            IntegerValue e => MakeInteger(e),
+            FloatValue   e => MakeFloat(e),
+            BooleanValue e => MakeBoolean(e),
             VariableReference      e => EmitVariableReference(builder, e),
             
             _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
@@ -242,11 +245,11 @@ public class CodeGenerator
         return builder.Call(call.Name, functionType.ReturnType, args);
     }
 
-    static Value MakeInteger(Ast.Nodes.IntegerValue constant) => new IR.Values.IntegerValue(constant.Value);
+    static Value MakeInteger(IntegerValue constant) => new IR.Values.IntegerValue(constant.Value);
     
-    static Value MakeFloat(Ast.Nodes.FloatValue constant) => new IR.Values.FloatValue(constant.Value);
+    static Value MakeFloat(FloatValue constant) => new IR.Values.FloatValue(constant.Value);
     
-    static Value MakeBoolean(Ast.Nodes.BooleanValue constant) => new IR.Values.BooleanValue(constant.Value);
+    static Value MakeBoolean(BooleanValue constant) => new IR.Values.BooleanValue(constant.Value);
     
     static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
     {

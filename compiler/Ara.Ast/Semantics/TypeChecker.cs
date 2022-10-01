@@ -1,6 +1,7 @@
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
-using Ara.Ast.Semantics.Types;
+using Ara.Ast.Nodes.Expressions;
+using Ara.Ast.Types;
 
 namespace Ara.Ast.Semantics;
 
@@ -45,7 +46,7 @@ public class TypeChecker : Visitor
 
         var func = functionCache[c.Name];
         
-        if (c.Arguments.Nodes.Count != func.Parameters.Nodes.Count())
+        if (c.Arguments.Nodes.Count != func.Parameters.Nodes.Count)
             throw new SemanticException(c, "Wrong number of arguments.");
 
         foreach (var arg in c.Arguments.Nodes)

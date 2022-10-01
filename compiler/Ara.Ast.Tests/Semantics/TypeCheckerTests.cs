@@ -16,7 +16,6 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
         
         Assert.Throws<ReturnTypeException>(delegate
         {
@@ -39,7 +38,6 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
         
         Assert.Throws<SemanticException>(delegate
         {
@@ -62,7 +60,6 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
         
         Assert.Throws<SemanticException>(delegate
         {
@@ -85,7 +82,6 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
         
         Assert.Throws<SemanticException>(delegate
         {
@@ -108,7 +104,6 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
         
         Assert.Throws<SemanticException>(delegate
         {
@@ -130,7 +125,6 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
         
         Assert.Throws<PredicateTypeException>(delegate
         {
