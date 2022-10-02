@@ -1,3 +1,7 @@
+
+const WHITE_SPACE = choice(" ", "\t", "\v", "\f");
+const NEWLINE = /\r?\n/;
+
 module.exports = grammar({
   name: 'ara',
 
@@ -217,12 +221,23 @@ module.exports = grammar({
 
     bool: $ => choice('true', 'false'),
 
-    identifier: $ => /[a-z]+/,
+    identifier: $ => /[a-z]+[a-z0-9_]*/,
     
     integer: $ => /\d+/,
     
-    float: $ => /[0-9]*\.?[0-9]+/
-  }
+    float: $ => /[0-9]*\.?[0-9]+/,
+
+    __comment: $ => token(seq('#', /.*/)),
+
+    __newline: $ => NEWLINE,
+    __whitespace: $ => token(WHITE_SPACE),
+  },
+
+  extras: $ => [
+    $.__comment,
+    $.__newline,
+    $.__whitespace,
+  ]
 });
 
 function commaSep (rule) {

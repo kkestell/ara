@@ -1,0 +1,30 @@
+=================================================
+Identifiers
+=================================================
+
+fn main() -> void {
+  a := 1
+  a_b := 2
+  a2b_c := 3
+}
+
+-------------------------------------------------
+
+(source_file
+  (function_definition_list
+    (function_definition
+      (identifier)
+      (parameter_list)
+      (single_value_type
+        (identifier))
+      (block
+        (statement_list
+          (variable_declaration_statement
+            (identifier)
+            (integer))
+          (variable_declaration_statement
+            (identifier)
+            (integer))
+          (variable_declaration_statement
+            (identifier)
+            (integer)))))))
