@@ -1,9 +1,12 @@
+using Ara.Ast.Nodes.Abstract;
 using Ara.Parsing;
+using Ara.Parsing.Abstract;
 
 namespace Ara.Ast.Nodes;
 
-public record SourceFile
-    (Node Node, NodeList<FunctionDefinition> FunctionDefinitions) : AstNode(Node)
+public record SourceFile(IParseNode Node, NodeList<FunctionDefinition> FunctionDefinitions) : AstNode(Node)
 {
-    public override List<AstNode> Children { get; } = new() { FunctionDefinitions };
+    readonly AstNode[] children = { FunctionDefinitions };
+
+    public override IEnumerable<AstNode> Children => children;
 }

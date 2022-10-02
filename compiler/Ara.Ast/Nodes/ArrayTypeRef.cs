@@ -1,13 +1,17 @@
+using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions.Values;
 using Ara.Ast.Types;
 using Ara.Parsing;
-using Type = Ara.Ast.Types.Type;
+using Ara.Parsing.Abstract;
+using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes;
 
-public record ArrayTypeRef(Node Node, TypeRef ElementTypeRef, IntegerValue Size) : TypeRef(Node)
+public record ArrayTypeRef(IParseNode Node, TypeRef ElementTypeRef, IntegerValue Size) : TypeRef(Node)
 {
-    public override List<AstNode> Children { get; } = new() { ElementTypeRef, Size };
+    readonly AstNode[] children = { ElementTypeRef, Size };
+
+    public override IEnumerable<AstNode> Children => children;
     
     public override Type ToType()
     {

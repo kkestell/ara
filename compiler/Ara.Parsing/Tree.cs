@@ -16,7 +16,7 @@ public sealed class Tree : IDisposable
 
     public string? Filename { get; }
 
-    public Node Root => new(TsTreeRootNode(handle), this);
+    public ParseNode Root => new(TsTreeRootNode(handle), this);
 
     public void Dispose()
     {

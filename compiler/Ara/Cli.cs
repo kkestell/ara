@@ -80,9 +80,9 @@ public static class Cli
 
         // Make AST graph
 
-        new GraphGenerator().Generate(ast, Path.Combine(dir, $"{name}.dot"));
-        Run("dot", $"-Tpdf {name}.dot -o {name}.pdf", dir);
-        Copy(dir, name, ".pdf");
+        // new GraphGenerator().Generate(ast, Path.Combine(dir, $"{name}.dot"));
+        // Run("dot", $"-Tpdf {name}.dot -o {name}.pdf", dir);
+        // Copy(dir, name, ".pdf");
 
         #endregion
 

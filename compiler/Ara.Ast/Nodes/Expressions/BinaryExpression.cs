@@ -1,13 +1,17 @@
 using Ara.Ast.Errors;
+using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Types;
 using Ara.Parsing;
-using Type = Ara.Ast.Types.Type;
+using Ara.Parsing.Abstract;
+using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record BinaryExpression(Node Node, Expression Left, Expression Right, BinaryOperator Op) : Expression(Node)
+public record BinaryExpression(IParseNode Node, Expression Left, Expression Right, BinaryOperator Op) : Expression(Node)
 {
-    public override List<AstNode> Children { get; } = new() { Left, Right };
+    readonly AstNode[] children = {  Left, Right  };
+
+    public override IEnumerable<AstNode> Children => children;
 
     public override Type Type
     {

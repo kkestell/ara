@@ -1,4 +1,5 @@
 using Ara.Ast.Nodes;
+using Ara.Ast.Nodes.Abstract;
 
 namespace Ara.Ast.Semantics;
 

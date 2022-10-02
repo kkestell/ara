@@ -4,7 +4,7 @@ namespace Ara.Ast.Errors;
 
 public class SyntaxException : CompilerException
 {
-    public SyntaxException(Node node) : base(node, "Syntax error.")
+    public SyntaxException(ParseNode parseNode) : base(parseNode, "Syntax error.")
     {
     }
 }

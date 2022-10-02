@@ -1,12 +1,16 @@
 ﻿using Ara.Ast.Errors;
+using Ara.Ast.Nodes.Abstract;
 using Ara.Parsing;
-using Type = Ara.Ast.Types.Type;
+using Ara.Parsing.Abstract;
+using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record Call(Node Node, string Name, NodeList<Argument> Arguments) : Expression(Node)
+public record Call(IParseNode Node, string Name, NodeList<Argument> Arguments) : Expression(Node)
 {
-    public override List<AstNode> Children { get; } = new() { Arguments };
+    readonly AstNode[] children = {  Arguments  };
+
+    public override IEnumerable<AstNode> Children => children;
 
     public override Type Type
     {

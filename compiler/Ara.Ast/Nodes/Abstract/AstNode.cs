@@ -1,12 +1,13 @@
 using Ara.Parsing;
+using Ara.Parsing.Abstract;
 
-namespace Ara.Ast.Nodes;
+namespace Ara.Ast.Nodes.Abstract;
 
-public abstract record AstNode(Node Node)
+public abstract record AstNode(IParseNode Node)
 {
     public AstNode? Parent { get; set; }
     
-    public abstract List<AstNode> Children { get; }
+    public abstract IEnumerable<AstNode> Children { get; }
     
     public T? NearestAncestorOrDefault<T>() where T : AstNode
     {
@@ -28,11 +29,6 @@ public abstract record AstNode(Node Node)
 
     public T NearestAncestor<T>() where T : AstNode
     {
-        var a = NearestAncestorOrDefault<T>();
-
-        if (a is null)
-            throw new Exception();
-
-        return a;
+        return NearestAncestorOrDefault<T>() ?? throw new Exception();
     }
 }
