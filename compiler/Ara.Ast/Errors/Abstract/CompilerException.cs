@@ -2,9 +2,9 @@ using System.Text;
 using Ara.Parsing;
 using Ara.Parsing.Abstract;
 
-namespace Ara.Ast.Errors;
+namespace Ara.Ast.Errors.Abstract;
 
-public class CompilerException : Exception
+public abstract class CompilerException : Exception
 {
     protected CompilerException(IParseNode parseNode, string message) : base(message)
     {
