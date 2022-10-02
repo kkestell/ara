@@ -1,12 +1,13 @@
 using System.Runtime.InteropServices;
+using Ara.Parsing.Abstract;
 
 namespace Ara.Parsing;
 
-public sealed class Node
+public sealed class ParseNode : IParseNode
 {
     readonly TsNode handle;
 
-    public Node(TsNode handle, Tree tree)
+    public ParseNode(TsNode handle, Tree tree)
     {
         this.handle = handle;
         Tree = tree;
@@ -29,13 +30,13 @@ public sealed class Node
     public string Type => 
         Marshal.PtrToStringUTF8(TsNodeType(handle))!;
 
-    public Node? Parent => 
+    public ParseNode? Parent => 
         OptionalNode(TsNodeParent(handle));
 
-    public Node? NextNamedSibling => 
+    public ParseNode? NextNamedSibling => 
         OptionalNode(TsNodeNextNamedSibling(handle));
 
-    public Node? PreviousNamedSibling => 
+    public ParseNode? PreviousNamedSibling => 
         OptionalNode(TsNodePrevNamedSibling(handle));
 
     public int ChildCount => 
@@ -44,32 +45,32 @@ public sealed class Node
     public int NamedChildCount => 
         TsNodeNamedChildCount(handle);
 
-    public Node? ChildByFieldName(string fieldName) =>
+    public ParseNode? ChildByFieldName(string fieldName) =>
         OptionalNode(TsNodeChildByFieldName(handle, fieldName, fieldName.Length));
 
     public string Sexp() => 
         TsNodeString(handle);
 
-    public IEnumerable<Node> Children
+    public IEnumerable<ParseNode> Children
     {
         get
         {
             for (var i = 0; i < ChildCount; i++)
-                yield return new Node(TsNodeChild(handle, i), Tree);
+                yield return new ParseNode(TsNodeChild(handle, i), Tree);
         }
     }
 
-    public IEnumerable<Node> NamedChildren
+    public IEnumerable<ParseNode> NamedChildren
     {
         get
         {
             for (var i = 0; i < NamedChildCount; i++)
-                yield return new Node(TsNodeNamedChild(handle, i), Tree);
+                yield return new ParseNode(TsNodeNamedChild(handle, i), Tree);
         }
     }
 
-    Node? OptionalNode(TsNode node) =>
-        TsNodeIsNull(node) ? null : new Node(node, Tree);
+    ParseNode? OptionalNode(TsNode node) =>
+        TsNodeIsNull(node) ? null : new ParseNode(node, Tree);
 
     [DllImport(Platform.SharedLibrary, EntryPoint = "ts_node_type")]
     static extern IntPtr TsNodeType(TsNode node);

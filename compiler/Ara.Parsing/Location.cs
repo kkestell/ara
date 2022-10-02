@@ -2,17 +2,17 @@ namespace Ara.Parsing;
 
 public readonly struct Location
 {
-    public Location(Node node)
+    public Location(ParseNode parseNode)
     {
-        var pt = node.StartPoint;
+        var pt = parseNode.StartPoint;
         
-        Node = node;
+        ParseNode = parseNode;
         Line = pt.Row;
         Column = pt.Column;
-        Filename = node.Tree.Filename;
+        Filename = parseNode.Tree.Filename;
     }
     
-    public Node Node { get; }
+    public ParseNode ParseNode { get; }
     
     public int Line { get; }
     
@@ -24,13 +24,13 @@ public readonly struct Location
     {
         get
         {
-            var offset = Node.Offset.Item1;
-            var span = Node.Tree.AsSpan();
+            var offset = ParseNode.Offset.Item1;
+            var span = ParseNode.Tree.AsSpan();
 
             var start = StartOfLine(span, offset);
             var end = EndOfLine(span, offset);
 
-            return Node.Tree.AsSpan(start, end).ToString();
+            return ParseNode.Tree.AsSpan(start, end).ToString();
         }
     }
 

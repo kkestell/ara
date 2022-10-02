@@ -1,10 +1,12 @@
 ﻿using Ara.Ast.Errors;
+using Ara.Ast.Nodes.Abstract;
 using Ara.Parsing;
-using Type = Ara.Ast.Types.Type;
+using Ara.Parsing.Abstract;
+using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record VariableReference(Node Node, string Name) : Expression(Node)
+public record VariableReference(IParseNode Node, string Name) : Expression(Node)
 {
     public override List<AstNode> Children => new();
 

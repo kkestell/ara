@@ -1,11 +1,15 @@
+using Ara.Ast.Nodes.Abstract;
 using Ara.Parsing;
-using Type = Ara.Ast.Types.Type;
+using Ara.Parsing.Abstract;
+using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record UnaryExpression(Node Node, Expression Right, UnaryOperator Op) : Expression(Node)
+public record UnaryExpression(IParseNode Node, Expression Right, UnaryOperator Op) : Expression(Node)
 {
-    public override List<AstNode> Children { get; } = new() { Right };
+    readonly AstNode[] children = {  Right  };
+
+public override IEnumerable<AstNode> Children => children;
 
     public override Type Type
     {

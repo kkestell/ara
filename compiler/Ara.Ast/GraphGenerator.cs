@@ -1,5 +1,6 @@
 using System.Collections;
 using Ara.Ast.Nodes;
+using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions;
 using DotNetGraph;
 using DotNetGraph.Edge;
@@ -8,6 +9,7 @@ using DotNetGraph.Node;
 
 namespace Ara.Ast;
 
+/*
 public class GraphGenerator
 {
     readonly DotGraph graph = new("Ara", true);
@@ -79,3 +81,4 @@ public class GraphGenerator
         return graphNode;
     }
 }
+*/

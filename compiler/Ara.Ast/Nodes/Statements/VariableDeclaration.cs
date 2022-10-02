@@ -1,11 +1,14 @@
 ﻿using Ara.Ast.Errors;
+using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions;
+using Ara.Ast.Nodes.Statements.Abstract;
 using Ara.Parsing;
-using Type = Ara.Ast.Types.Type;
+using Ara.Parsing.Abstract;
+using Type = Ara.Ast.Types.Abstract.Type;
 
-namespace Ara.Ast.Nodes;
+namespace Ara.Ast.Nodes.Statements;
 
-public record VariableDeclaration(Node Node, string Name, TypeRef? TypeRef, Expression? Expression) : Statement(Node), ITyped
+public record VariableDeclaration(IParseNode Node, string Name, TypeRef? TypeRef, Expression? Expression) : Statement(Node), ITyped
 {
     List<AstNode>? children;
 
@@ -27,7 +30,7 @@ public record VariableDeclaration(Node Node, string Name, TypeRef? TypeRef, Expr
         set => throw new NotSupportedException();
     }
 
-    public override List<AstNode> Children
+    public override IEnumerable<AstNode> Children
     {
         get
         {
