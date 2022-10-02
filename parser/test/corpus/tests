@@ -1,0 +1,20 @@
+=================================================
+Comments
+=================================================
+
+# hello world
+fn main() -> void {
+  # foo
+}
+
+-------------------------------------------------
+
+(source_file
+  (function_definition_list
+    (function_definition
+      (identifier)
+      (parameter_list)
+      (single_value_type
+        (identifier))
+      (block
+        (statement_list)))))
