@@ -1,7 +1,6 @@
 using Ara.Ast.Nodes.Abstract;
 using Ara.Parsing;
-using Ara.Parsing.Abstract;
 
 namespace Ara.Ast.Nodes.Statements.Abstract;
 
-public abstract record Statement(IParseNode Node) : AstNode(Node);
+public abstract record Statement(Node Node) : AstNode(Node);
