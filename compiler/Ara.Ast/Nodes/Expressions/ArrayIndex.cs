@@ -3,11 +3,12 @@ using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions.Abstract;
 using Ara.Ast.Types;
 using Ara.Parsing;
+using Ara.Parsing.Abstract;
 using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record ArrayIndex(Node Node, VariableReference VariableReference, Expression Index) : Expression(Node)
+public record ArrayIndex(IParseNode Node, VariableReference VariableReference, Expression Index) : Expression(Node)
 {
     public override List<AstNode> Children { get; } = new() { VariableReference, Index };
 
