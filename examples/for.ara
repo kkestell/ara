@@ -1,4 +1,4 @@
-fn sum(n: int) -> int {
+sum : int = (n: int) {
   sum := 0
   for i in 0..n+1 {
     sum = sum + i
@@ -6,7 +6,7 @@ fn sum(n: int) -> int {
   return sum
 }
 
-fn main() -> int {
+main : int = () {
   s := sum(n: 100)
   if s == 5050 {
     return 1

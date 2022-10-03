@@ -27,6 +27,7 @@ public static class Cli
             Time("Semantics", () =>
             {
                 new ScopeBuilder(ast).Visit();
+                new TypeResolver(ast).Visit();
                 new TypeChecker(ast).Visit();
                 new ArrayBoundsChecker(ast).Visit();
             });

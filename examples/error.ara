@@ -1,8 +1,8 @@
-fn test() -> float {
+test : float = () {
   x := 3.14
   return x
 }
 
-fn main() -> int {
+main : int = () {
   return test()
 }

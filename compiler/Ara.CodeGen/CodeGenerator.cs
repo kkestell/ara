@@ -9,7 +9,7 @@ using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
 using ArrayType = Ara.Ast.Types.ArrayType;
-using Block = Ara.Ast.Nodes.Block;
+using Block = Ara.Ast.Nodes.Statements.Block;
 using BooleanValue = Ara.Ast.Nodes.Expressions.Values.BooleanValue;
 using Call = Ara.Ast.Nodes.Expressions.Call;
 using FloatValue = Ara.Ast.Nodes.Expressions.Values.FloatValue;

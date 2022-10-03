@@ -10,7 +10,9 @@ namespace Ara.Ast.Nodes.Expressions;
 
 public record BinaryExpression(IParseNode Node, Expression Left, Expression Right, BinaryOperator Op) : Expression(Node)
 {
-    public override List<AstNode> Children { get; } = new() { Left, Right };
+    readonly AstNode[] children = { Left, Right };
+
+    public override IEnumerable<AstNode> Children => children;
 
     public override Type Type
     {

@@ -10,7 +10,9 @@ namespace Ara.Ast.Nodes.Statements;
 
 public record For(IParseNode Node, string Counter, Expression Start, Expression End, Block Block) : Statement(Node), ITyped
 {
-    public override List<AstNode> Children { get; } = new() { Start, End, Block };
+    readonly AstNode[] children = { Start, End, Block };
+
+    public override IEnumerable<AstNode> Children => children;
 
     public Type Type
     {

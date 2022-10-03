@@ -2,7 +2,7 @@
 Variable Declaration
 =================================================
 
-fn main() -> void {
+main : void = () {
   x: int = 1
   y: int
   z := 10 
@@ -14,9 +14,9 @@ fn main() -> void {
   (function_definition_list
     (function_definition
       (identifier)
-      (parameter_list)
       (single_value_type
         (identifier))
+      (parameter_list)
       (block
         (statement_list
           (variable_declaration_statement

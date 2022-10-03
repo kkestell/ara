@@ -106,9 +106,13 @@ public static class AstTransformer
     static Call Call(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (NodeList<Argument>)c[1]);
 
-    static FunctionDefinition FunctionDefinition(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], (TypeRef)c[2], (Block)c[3]);
-
+    static FunctionDefinition FunctionDefinition(ParseNode n, IReadOnlyList<AstNode> c)
+    {
+        return c[1] is TypeRef 
+            ? new FunctionDefinition(n, ((Identifier)c[0]).Value, (TypeRef)c[1], (NodeList<Parameter>)c[2], (Block)c[3]) 
+            : new FunctionDefinition(n, ((Identifier)c[0]).Value, null, (NodeList<Parameter>)c[1], (Block)c[2]);
+    }
+    
     static Identifier Identifier(ParseNode n) =>
         new(n, n.Span.ToString());
 

@@ -8,7 +8,9 @@ namespace Ara.Ast.Nodes.Expressions;
 
 public record UnaryExpression(IParseNode Node, Expression Right, UnaryOperator Op) : Expression(Node)
 {
-    public override List<AstNode> Children { get; } = new() { Right };
+    readonly AstNode[] children = { Right };
+
+    public override IEnumerable<AstNode> Children => children;
 
     public override Type Type
     {

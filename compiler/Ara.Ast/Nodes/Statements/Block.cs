@@ -1,11 +1,10 @@
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Statements.Abstract;
-using Ara.Parsing;
 using Ara.Parsing.Abstract;
 
-namespace Ara.Ast.Nodes;
+namespace Ara.Ast.Nodes.Statements;
 
-public record Block(IParseNode Node, NodeList<Statement> Statements) : AstNode(Node)
+public record Block(IParseNode Node, NodeList<Statement> Statements) : Statement(Node)
 {
     readonly AstNode[] children = { Statements };
 

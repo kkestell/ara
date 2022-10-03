@@ -13,11 +13,11 @@ module.exports = grammar({
     function_definition_list: $ => repeat1($.function_definition),
 
     function_definition: $ => seq(
-      'fn',
       $.identifier, // name
+      ':',
+      optional($._type),
+      '=',
       $.parameter_list,
-      '->',
-      $._type,
       $.block
     ),
 
@@ -42,6 +42,7 @@ module.exports = grammar({
     ),
 
     _statement: $ => choice(
+      $.block,
       $.return_statement,
       $.variable_declaration_statement,
       $.if_statement,

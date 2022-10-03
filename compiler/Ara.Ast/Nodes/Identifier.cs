@@ -6,5 +6,7 @@ namespace Ara.Ast.Nodes;
 
 public record Identifier(IParseNode Node, string Value) : AstNode(Node)
 {
-    public override List<AstNode> Children { get; } = new ();
+    readonly AstNode[] children = {};
+
+    public override IEnumerable<AstNode> Children => children;
 }

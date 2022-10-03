@@ -1,10 +1,9 @@
 =================================================
-Comments
+Functions
 =================================================
 
-# hello world
-fn main() -> void {
-  # foo
+main := () {
+  return 1
 }
 
 -------------------------------------------------
@@ -14,7 +13,28 @@ fn main() -> void {
     (function_definition
       (identifier)
       (parameter_list)
+      (block
+        (statement_list
+          (return_statement
+            (integer)))))))
+
+=================================================
+Comments
+=================================================
+
+# hello world
+main : void = () {
+  # foo
+}
+
+-------------------------------------------------
+
+(source_file
+  (function_definition_list
+    (function_definition
+      (identifier)
       (single_value_type
         (identifier))
-      (block
+      (parameter_list)
+        (block
         (statement_list)))))

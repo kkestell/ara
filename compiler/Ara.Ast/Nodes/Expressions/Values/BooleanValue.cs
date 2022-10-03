@@ -8,7 +8,9 @@ namespace Ara.Ast.Nodes.Expressions.Values;
 
 public record BooleanValue(IParseNode Node, bool Value) : Expression(Node)
 {
-    public override List<AstNode> Children => new();
+    readonly AstNode[] children = {};
+
+    public override IEnumerable<AstNode> Children => children;
 
     public override Type Type
     {
