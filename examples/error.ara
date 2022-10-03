@@ -1,8 +1,3 @@
-test : float = () {
-  x := 3.14
-  return x
-}
-
-main : int = () {
-  return test()
+fn main() {
+  x: int = 3.14
 }

@@ -31,7 +31,7 @@ Line comments start with `#` and end at the end of the line:
 ### Reserved Words
 
 ```
-false for if return true
+false for fn if return true
 ```
 
 ### Identifiers

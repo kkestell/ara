@@ -17,6 +17,7 @@ public class ArrayBoundsCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
+        new TypeResolver(ast).Visit();
         new TypeChecker(ast).Visit();
 
         Assert.Throws<ArrayIndexOutOfBoundsException>(delegate
@@ -39,6 +40,7 @@ public class ArrayBoundsCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
+        new TypeResolver(ast).Visit();
         new TypeChecker(ast).Visit();
 
         Assert.Throws<SemanticException>(delegate
@@ -63,6 +65,7 @@ public class ArrayBoundsCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
+        new TypeResolver(ast).Visit();
         new TypeChecker(ast).Visit();
 
         Assert.Throws<SemanticException>(delegate

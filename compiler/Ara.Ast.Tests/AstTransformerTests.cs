@@ -8,7 +8,7 @@ public class AstTransformerTests : TestBase
     public void TransformSimpleFunction()
     {
         using var tree = Parse(@"
-            fn main() -> int {
+            fn main() {
               return 1
             }
         ");
@@ -18,7 +18,6 @@ public class AstTransformerTests : TestBase
         Assert.Multiple(() =>
         {
             Assert.That(func.Name, Is.EqualTo("main"));
-            Assert.That(((SingleValueTypeRef)func.ReturnTypeRef).Name, Is.EqualTo("int"));
             Assert.That(func.Parameters.Nodes, Is.Empty);
         });
     }
@@ -37,10 +36,7 @@ public class AstTransformerTests : TestBase
         Assert.Multiple(() =>
         {
             Assert.That(func.Name, Is.EqualTo("main"));
-            
-            Assert.That(func.ReturnTypeRef, Is.TypeOf<SingleValueTypeRef>());
-            Assert.That(((SingleValueTypeRef)func.ReturnTypeRef).Name, Is.EqualTo("int"));
-            
+
             Assert.That(func.Parameters.Nodes.Count, Is.EqualTo(3));
             var p = func.Parameters.Nodes.ToList();
 

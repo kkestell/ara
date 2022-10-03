@@ -1,5 +1,6 @@
 using System.Linq;
 using Ara.Ast;
+using Ara.Ast.Semantics;
 using Ara.Parsing;
 
 namespace Ara.CodeGen.Tests;
@@ -29,6 +30,9 @@ public class CodeGeneratorTests
             }
         ");
         var ast = AstTransformer.Transform(tree);
+        new ScopeBuilder(ast).Visit();
+        new TypeResolver(ast).Visit();
+        new TypeChecker(ast).Visit();
         var ir = new CodeGenerator().Generate(ast);
 
         AssertIr(ir, @"
@@ -54,6 +58,9 @@ public class CodeGeneratorTests
             }
         ");
         var ast = AstTransformer.Transform(tree);
+        new ScopeBuilder(ast).Visit();
+        new TypeResolver(ast).Visit();
+        new TypeChecker(ast).Visit();
         var ir = new CodeGenerator().Generate(ast);
 
         AssertIr(ir, @"
