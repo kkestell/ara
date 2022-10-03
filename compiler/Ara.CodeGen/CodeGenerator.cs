@@ -182,7 +182,7 @@ public class CodeGenerator
         if (!left.Type.Equals(right.Type))
             throw new CodeGenException($"Binary expression types {left.Type.ToIr()} and {right.Type.ToIr()} don't match.");
 
-        if (left.Type is IntegerType or IR.Types.BooleanType)
+        if (left.Type is IntegerType or BooleanType)
         {
             return expression.Op switch
             {

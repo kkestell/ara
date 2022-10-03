@@ -1,4 +1,4 @@
-fib := (n: int) {
+fn fib(n: int) {
   if n == 0 {
     return 0
   }
@@ -8,6 +8,6 @@ fib := (n: int) {
   return fib(n: n-2) + fib(n: n-1)
 }
 
-main := () {
+fn main() {
   return fib(n: 10)
 }

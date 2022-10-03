@@ -2,7 +2,7 @@
 Identifiers
 =================================================
 
-main : void = () {
+fn main() {
   a := 1
   a_b := 2
   a2b_c := 3
@@ -14,8 +14,6 @@ main : void = () {
   (function_definition_list
     (function_definition
       (identifier)
-      (single_value_type
-        (identifier))
       (parameter_list)
       (block
         (statement_list

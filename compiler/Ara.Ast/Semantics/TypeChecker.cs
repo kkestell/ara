@@ -65,9 +65,6 @@ public class TypeChecker : Visitor
 
     static void Return(Return r)
     {
-        if (r.Expression.Type is null)
-            throw new SemanticException(r.Expression, "Expression type could not be inferred.");
-     
         var func = r.NearestAncestor<FunctionDefinition>();
 
         if (!r.Expression.Type.Equals(func.Type))
@@ -76,18 +73,12 @@ public class TypeChecker : Visitor
 
     static void If(If i)
     {
-        if (i.Predicate.Type is null)
-            throw new SemanticException(i.Predicate, "Expression type could not be inferred.");
-                
         if (!i.Predicate.Type.Equals(new BooleanType()))
             throw new PredicateTypeException(i.Predicate);
     }
     
     static void IfElse(IfElse i)
     {
-        if (i.Predicate.Type is null)
-            throw new SemanticException(i.Predicate, "Expression type could not be inferred.");
-         
         if (!i.Predicate.Type.Equals(new BooleanType()))
             throw new PredicateTypeException(i.Predicate);
     }

@@ -1,3 +1,4 @@
+using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Statements;
@@ -32,6 +33,12 @@ public class TypeResolver : Visitor
 
     static void ResolveFunctionDefinition(FunctionDefinition f)
     {
+        if (f.ReturnTypeRef is not null)
+        {
+            f.Type = f.ReturnTypeRef.ToType();
+            return;
+        }
+        
         if (f.Returns.Count == 0)
         {
             f.Type = Type.Void;
@@ -41,7 +48,7 @@ public class TypeResolver : Visitor
         var returnTypes = f.Returns.Select(x => x.Expression.Type).Where(x => x is not UnknownType).ToList();
 
         if (returnTypes.Distinct().Count() > 1)
-            throw new Exception("Function returns more than one type");
+            throw new SemanticException(f, "Function returns more than one type");
 
         f.Type = returnTypes.First();
     }

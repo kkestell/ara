@@ -1,7 +1,7 @@
-add : int = (a: int, b: int) {
+fn add(a: int, b: int) {
   return a + b
 }
 
-main : int = () {
+fn main() {
   return add(a: 1, b: 2)
 }

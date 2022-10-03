@@ -1,7 +1,6 @@
 ﻿using Ara.Ast.Errors;
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions.Abstract;
-using Ara.Parsing;
 using Ara.Parsing.Abstract;
 using Type = Ara.Ast.Types.Abstract.Type;
 
