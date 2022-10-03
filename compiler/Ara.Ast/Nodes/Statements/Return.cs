@@ -8,5 +8,7 @@ namespace Ara.Ast.Nodes.Statements;
 
 public record Return(IParseNode Node, Expression Expression) : Statement(Node)
 {
-    public override List<AstNode> Children { get; } = new() { Expression };
+    readonly AstNode[] children = { Expression };
+
+    public override IEnumerable<AstNode> Children => children;
 }

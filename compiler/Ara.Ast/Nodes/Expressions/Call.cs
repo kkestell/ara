@@ -9,7 +9,9 @@ namespace Ara.Ast.Nodes.Expressions;
 
 public record Call(IParseNode Node, string Name, NodeList<Argument> Arguments) : Expression(Node)
 {
-    public override List<AstNode> Children { get; } = new() { Arguments };
+    readonly AstNode[] children = { Arguments };
+
+    public override IEnumerable<AstNode> Children => children;
 
     public override Type Type
     {
@@ -20,7 +22,7 @@ public record Call(IParseNode Node, string Name, NodeList<Argument> Arguments) :
             if (func is null)
                 throw new ReferenceException(this);
 
-            return func.ReturnTypeRef.ToType();
+            return func.Type;
         }
 
         set => throw new NotSupportedException();

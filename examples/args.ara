@@ -1,7 +1,7 @@
-fn test(a: int, b: float, c: bool) -> int {
+test : int = (a: int, b: float, c: bool) {
   return 0
 }
 
-fn main() -> int {
+main : int = () {
   return test(a: 1, b: 3.14, c: true)
 }

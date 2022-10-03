@@ -13,5 +13,7 @@ public record Parameter(IParseNode Node, string Name, TypeRef TypeRef) : AstNode
         set => throw new NotSupportedException();
     }
 
-public override List<AstNode> Children { get; } = new() { TypeRef };
+readonly AstNode[] children = { TypeRef };
+
+    public override IEnumerable<AstNode> Children => children;
 }

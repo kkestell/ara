@@ -30,7 +30,7 @@ public record VariableDeclaration(IParseNode Node, string Name, TypeRef? TypeRef
         set => throw new NotSupportedException();
     }
 
-    public override List<AstNode> Children
+    public override IEnumerable<AstNode> Children
     {
         get
         {

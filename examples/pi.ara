@@ -1,4 +1,4 @@
-fn pi(n: int) -> float {
+pi : float = (n: int) {
   pi := 4.0
   flag := false
   i := 3.0

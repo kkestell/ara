@@ -37,3 +37,17 @@ false for if return true
 ### Identifiers
 
 Identifiers begin with a letter and may contain letters, numbers, and underscores.
+
+### Blocks
+
+Ara uses curly braces to define blocks. You can use a block anywhere a statement is allowed, like in control flow statements. Function bodies are also blocks.
+
+## Values
+
+### Booleans
+
+A boolean value represents truth or falsehood. There are two boolean literals, `true` and `false`.
+
+### Numbers
+
+Ara has an integer type, `int`, and a floating point type, `float`.

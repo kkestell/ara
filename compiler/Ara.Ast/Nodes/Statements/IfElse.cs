@@ -8,5 +8,7 @@ namespace Ara.Ast.Nodes.Statements;
 
 public record IfElse(IParseNode Node, Expression Predicate, Block Then, Block Else) : Statement(Node)
 {
-    public override List<AstNode> Children { get; } = new() { Predicate, Then, Else };
+    readonly AstNode[] children = { Predicate, Then, Else };
+
+    public override IEnumerable<AstNode> Children => children;
 }

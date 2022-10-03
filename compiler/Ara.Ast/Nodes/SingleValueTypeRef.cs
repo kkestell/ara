@@ -7,7 +7,9 @@ namespace Ara.Ast.Nodes;
 
 public record SingleValueTypeRef(IParseNode Node, string Name) : TypeRef(Node)
 {
-    public override List<AstNode> Children { get; } = new();
+    readonly AstNode[] children = {};
+
+    public override IEnumerable<AstNode> Children => children;
     
     public override Type ToType()
     {

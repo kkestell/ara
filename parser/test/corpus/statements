@@ -1,11 +1,12 @@
 =================================================
-Identifiers
+Variable Declaration
 =================================================
 
 main : void = () {
-  a := 1
-  a_b := 2
-  a2b_c := 3
+  x := 1
+  {
+    x := 1
+  }
 }
 
 -------------------------------------------------
@@ -22,9 +23,8 @@ main : void = () {
           (variable_declaration_statement
             (identifier)
             (integer))
-          (variable_declaration_statement
-            (identifier)
-            (integer))
-          (variable_declaration_statement
-            (identifier)
-            (integer)))))))
+          (block
+            (statement_list
+              (variable_declaration_statement
+                (identifier)
+                (integer)))))))))

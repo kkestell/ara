@@ -14,5 +14,7 @@ public record IntegerValue(IParseNode Node, int Value) : Expression(Node)
         set => throw new NotImplementedException();
     }
     
-    public override List<AstNode> Children => new();
+    readonly AstNode[] children = {};
+
+    public override IEnumerable<AstNode> Children => children;
 }
