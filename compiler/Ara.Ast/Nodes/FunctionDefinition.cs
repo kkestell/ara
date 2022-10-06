@@ -5,7 +5,7 @@ using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes;
 
-public record FunctionDefinition(IParseNode Node, string Name, NodeList<Parameter> Parameters, TypeRef? ReturnTypeRef, Block Block) : AstNode(Node), ITyped
+public record FunctionDefinition(IParseNode Node, string Name, NodeList<Parameter> Parameters, TypeRef? ReturnTypeRef, Block Block) : AstNode(Node)
 {
     List<AstNode>? children;
 

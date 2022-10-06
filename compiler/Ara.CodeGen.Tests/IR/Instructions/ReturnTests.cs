@@ -12,7 +12,7 @@ public class ReturnTests : TestBase
         AssertIr(module.Emit(), @"
             define void @test () {
             entry:
-              ret
+              ret void
             }
         ");
     }

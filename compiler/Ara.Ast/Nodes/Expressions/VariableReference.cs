@@ -9,9 +9,7 @@ namespace Ara.Ast.Nodes.Expressions;
 
 public record VariableReference(IParseNode Node, string Name) : Expression(Node)
 {
-    readonly AstNode[] children = {};
-
-    public override IEnumerable<AstNode> Children => children;
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode>();
 
     public override Type Type
     {
@@ -25,16 +23,11 @@ public record VariableReference(IParseNode Node, string Name) : Expression(Node)
 
                 if (b.Scope.ContainsKey(Name))
                 {
-                    if (b.Scope[Name] is not ITyped i)
-                        throw new Exception();
-
-                    return i.Type;
+                    return b.Scope[Name].Type;
                 }
 
                 b = b.NearestAncestorOrDefault<Block>();
             }
         }
-        
-        set => throw new NotImplementedException();
     }
 }

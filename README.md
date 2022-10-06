@@ -51,3 +51,63 @@ A boolean value represents truth or falsehood. There are two boolean literals, `
 ### Numbers
 
 Ara has an integer type, `int`, and a floating point type, `float`.
+
+## Variables
+
+Variables are declared by specifying their name, an optional type, and an optional initialization value.
+
+```
+foo: int
+```
+
+This creates a new integer, `foo`, in the current scope.
+
+Variables can also be initialized when they're created. In this case, their type can be inferred:
+
+```
+foo := 1
+```
+
+## Arrays
+
+Stack allocated, static arrays can be declared by appending the array's size to a known type:
+
+```
+foos: int[10]
+```
+
+## Functions
+
+Functions are declared using the `fn` keyword.
+
+```
+fn sum(a: int, b: int) -> int {
+  return a + b
+}
+```
+
+A function's return type can also be inferred.
+
+```
+fn product(a: int, b: int) {
+  return a + b
+}
+```
+
+### Calling Functions
+
+When calling a function, argument names must be provided.
+
+```
+p := product(a: 1, b: 2)
+```
+
+## Control Flow
+
+### If Statements
+
+```
+if x == 0 {
+  # ...
+}
+```

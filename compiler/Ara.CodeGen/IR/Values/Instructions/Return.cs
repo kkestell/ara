@@ -17,7 +17,7 @@ public class ReturnInstruction : Instruction
     public override void Emit(StringBuilder sb)
     {
         if (value is null)
-            sb.AppendLine("ret");
+            sb.AppendLine("ret void");
         else
             sb.AppendLine($"ret {value.Type.ToIr()} {value.Resolve()}");
     }

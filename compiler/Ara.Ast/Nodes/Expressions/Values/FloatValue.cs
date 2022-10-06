@@ -7,13 +7,7 @@ namespace Ara.Ast.Nodes.Expressions.Values;
 
 public record FloatValue(IParseNode Node, float Value) : Expression(Node)
 {
-    public override Type Type
-    {
-        get => Type.Float;
-        set => throw new NotImplementedException();
-    }
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode>();
 
-    readonly AstNode[] children = {};
-
-    public override IEnumerable<AstNode> Children => children;
+    public override Type Type => Type.Float;
 }

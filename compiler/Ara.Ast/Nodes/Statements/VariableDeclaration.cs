@@ -11,24 +11,6 @@ public record VariableDeclaration(IParseNode Node, string Name, TypeRef? TypeRef
 {
     List<AstNode>? children;
 
-    public Type Type
-    {
-        get
-        {
-            if (TypeRef is not null)
-            {
-                return TypeRef.ToType();
-            }
-
-            if (Expression is not ITyped i)
-                throw new SemanticException(this, "Cannot infer type of non-constant values");
-
-            return i.Type;
-        }
-
-        set => throw new NotSupportedException();
-    }
-
     public override IEnumerable<AstNode> Children
     {
         get
@@ -45,6 +27,20 @@ public record VariableDeclaration(IParseNode Node, string Name, TypeRef? TypeRef
                 children.Add(Expression);
 
             return children;
+        }
+    }
+    
+    public Type Type
+    {
+        get
+        {
+            if (TypeRef is not null)
+                return TypeRef.ToType();
+
+            if (Expression is not ITyped i)
+                throw new SemanticException(this, "Cannot infer type of non-constant values");
+
+            return i.Type;
         }
     }
 }

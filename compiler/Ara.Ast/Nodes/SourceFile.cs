@@ -5,7 +5,5 @@ namespace Ara.Ast.Nodes;
 
 public record SourceFile(IParseNode Node, NodeList<FunctionDefinition> FunctionDefinitions) : AstNode(Node)
 {
-    readonly AstNode[] children = { FunctionDefinitions };
-
-    public override IEnumerable<AstNode> Children => children;
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { FunctionDefinitions };
 }

@@ -16,14 +16,15 @@ public class IrBuilderTests : TestBase
             then.Add(new IntegerValue(1), new IntegerValue(1));
         });
 
-        AssertIr(module.Emit(), @"
+        var ir = module.Emit();
+        AssertIr(ir, @"
             define void @test () {
             entry:
-                br i1 1, label %""if"", label %""endif""
-            if:
-                %""1"" = add i32 1, 1
-                br label %""endif""
-            endif:
+              br i1 1, label %""if.0"", label %""endif.0""
+            if.0:
+              %""1"" = add i32 1, 1
+              br label %""endif.0""
+            endif.0:
             }
         ");
     }
@@ -42,17 +43,18 @@ public class IrBuilderTests : TestBase
                 elseBuilder.Return(new IntegerValue(2));
             });
 
-        AssertIr(module.Emit(), @"
+        var ir = module.Emit();
+        AssertIr(ir, @"
             define void @test () {
             entry:
-                br i1 1, label %""if"", label %""else""
-            if:
-                ret i32 1
-                br label %""endif""
-            else:
-                ret i32 2
-                br label %""endif""
-            endif:
+              br i1 1, label %""if.0"", label %""else.0""
+            if.0:
+              ret i32 1
+              br label %""endif.0""
+            else.0:
+              ret i32 2
+              br label %""endif.0""
+            endif.0:
             }
         ");
     }
@@ -74,8 +76,8 @@ public class IrBuilderTests : TestBase
             entry:
               %""0"" = alloca i32, i32 1, align 4
               store i32 0, ptr %""0""
-              br label %""for""
-            for:
+              br label %""for.0""
+            for.0:
               %""c"" = load i32, ptr %""0""
               %""3"" = load i32, ptr %""0""
               ret i32 %""3""
@@ -84,10 +86,11 @@ public class IrBuilderTests : TestBase
               store i32 %""6"", ptr %""0""
               %""8"" = load i32, ptr %""0""
               %""9"" = icmp slt i32 %""8"", 10
-              br i1 %""9"", label %""for"", label %""endfor""
-              br label %""endfor""
-            endfor:
-            }");
+              br i1 %""9"", label %""for.0"", label %""endfor.0""
+              br label %""endfor.0""
+            endfor.0:
+            }
+        ");
     }
     
     [Test]

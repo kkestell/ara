@@ -8,8 +8,5 @@ public record NodeList<T>(IParseNode Node, List<T> Nodes) : AstNode(Node), IEnum
 {
     public override IEnumerable<AstNode> Children { get; } = Nodes.Select(x => x as AstNode).ToList();
     
-    public IEnumerator GetEnumerator()
-    {
-        return Children.GetEnumerator();
-    }
+    public IEnumerator GetEnumerator() => Children.GetEnumerator();
 }

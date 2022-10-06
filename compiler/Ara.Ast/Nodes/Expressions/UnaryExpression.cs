@@ -7,13 +7,7 @@ namespace Ara.Ast.Nodes.Expressions;
 
 public record UnaryExpression(IParseNode Node, Expression Right, UnaryOperator Op) : Expression(Node)
 {
-    readonly AstNode[] children = { Right };
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { Right };
 
-    public override IEnumerable<AstNode> Children => children;
-
-    public override Type Type
-    {
-        get => Right.Type;
-        set => throw new NotImplementedException();
-    }
+    public override Type Type => Right.Type;
 }
