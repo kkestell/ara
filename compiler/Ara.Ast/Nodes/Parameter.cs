@@ -6,13 +6,7 @@ namespace Ara.Ast.Nodes;
 
 public record Parameter(IParseNode Node, string Name, TypeRef TypeRef) : AstNode(Node), ITyped
 {
-    public Type Type
-    {
-        get => TypeRef.ToType();
-        set => throw new NotSupportedException();
-    }
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { TypeRef };
 
-readonly AstNode[] children = { TypeRef };
-
-    public override IEnumerable<AstNode> Children => children;
+    public Type Type => TypeRef.ToType();
 }

@@ -6,8 +6,6 @@ using Ara.Parsing.Abstract;
 namespace Ara.Ast.Nodes.Statements;
 
 public record Assignment(IParseNode Node, string Name, Expression Expression) : Statement(Node)
-{
-    readonly AstNode[] children = { Expression };
-
-    public override IEnumerable<AstNode> Children => children;
+{ 
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { Expression };
 }

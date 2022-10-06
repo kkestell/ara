@@ -4,5 +4,5 @@ namespace Ara.Ast.Nodes.Abstract;
 
 public interface ITyped
 {
-    public Type Type { get; set; }
+    public Type Type { get; }
 }

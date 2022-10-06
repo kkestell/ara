@@ -9,9 +9,7 @@ namespace Ara.Ast.Nodes.Expressions;
 
 public record BinaryExpression(IParseNode Node, Expression Left, Expression Right, BinaryOperator Op) : Expression(Node)
 {
-    readonly AstNode[] children = { Left, Right };
-
-    public override IEnumerable<AstNode> Children => children;
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { Left, Right };
 
     public override Type Type
     {
@@ -25,8 +23,6 @@ public record BinaryExpression(IParseNode Node, Expression Left, Expression Righ
 
             return Op is BinaryOperator.Equality or BinaryOperator.Inequality ? new BooleanType() : Left.Type;   
         }
-        
-        set => throw new NotImplementedException();
     }
 }
 

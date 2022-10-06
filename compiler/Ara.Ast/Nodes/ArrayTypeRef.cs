@@ -8,9 +8,7 @@ namespace Ara.Ast.Nodes;
 
 public record ArrayTypeRef(IParseNode Node, TypeRef ElementTypeRef, IntegerValue Size) : TypeRef(Node)
 {
-    readonly AstNode[] children = { ElementTypeRef, Size };
-
-    public override IEnumerable<AstNode> Children => children;
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { ElementTypeRef, Size };
     
     public override Type ToType()
     {

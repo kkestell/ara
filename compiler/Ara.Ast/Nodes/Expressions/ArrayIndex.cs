@@ -9,9 +9,7 @@ namespace Ara.Ast.Nodes.Expressions;
 
 public record ArrayIndex(IParseNode Node, VariableReference VariableReference, Expression Index) : Expression(Node)
 {
-    readonly AstNode[] children = { VariableReference, Index };
-
-    public override IEnumerable<AstNode> Children => children;
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { VariableReference, Index };
 
     public override Type Type
     {
@@ -22,7 +20,5 @@ public record ArrayIndex(IParseNode Node, VariableReference VariableReference, E
 
             return a.Type;
         }
-        
-        set => throw new NotImplementedException();
     }
 }

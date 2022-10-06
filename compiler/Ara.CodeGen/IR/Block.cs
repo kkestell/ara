@@ -1,5 +1,6 @@
 using System.Text;
 using Ara.CodeGen.IR.Values;
+using Ara.CodeGen.IR.Values.Instructions;
 
 namespace Ara.CodeGen.IR;
 
@@ -32,6 +33,8 @@ public class Block
 
     public int InstructionCount => instructions.Count;
 
+    public IEnumerable<Value> Instructions => instructions.Values;
+
     public void PositionBefore(Value instruction)
     {
         instructions.PositionBefore(instruction);
@@ -57,9 +60,10 @@ public class Block
         return scope.Register(name);
     }
 
-    public Block AddChild(string name)
+    public Block AddChild(string? name = null)
     {
-        return Function.AddBlock(this, name);
+        var n = scope.Register(name);
+        return Function.AddBlock(this, n);
     }
     
     public IrBuilder IrBuilder()

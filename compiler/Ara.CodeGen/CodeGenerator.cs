@@ -64,6 +64,13 @@ public class CodeGenerator
                     EmitArrayAssignment(builder, a);
                     break;
                 }
+                case Block b:
+                {
+                    var newBlock = builder.Block.AddChild();
+                    builder.Br(newBlock.Label);
+                    builder.GotoBlock(newBlock, blockBuilder => EmitBlock(blockBuilder, b));
+                    break;
+                }
                 case For f:
                 {
                     EmitFor(builder, f);
@@ -155,13 +162,13 @@ public class CodeGenerator
     {
         return expression switch
         {
-            ArrayIndex             e => EmitArrayIndex(builder, e),
-            BinaryExpression       e => EmitBinaryExpression(builder, e),
-            Call                   e => EmitCall(builder, e),
-            IntegerValue e => MakeInteger(e),
-            FloatValue   e => MakeFloat(e),
-            BooleanValue e => MakeBoolean(e),
-            VariableReference      e => EmitVariableReference(builder, e),
+            ArrayIndex        e => EmitArrayIndex(builder, e),
+            BinaryExpression  e => EmitBinaryExpression(builder, e),
+            Call              e => EmitCall(builder, e),
+            IntegerValue      e => MakeInteger(e),
+            FloatValue        e => MakeFloat(e),
+            BooleanValue      e => MakeBoolean(e),
+            VariableReference e => EmitVariableReference(builder, e),
             
             _ => throw new CodeGenException($"Unsupported expression type {expression.GetType()}.")
         };

@@ -6,9 +6,7 @@ namespace Ara.Ast.Nodes.Statements;
 
 public record Block(IParseNode Node, NodeList<Statement> Statements) : Statement(Node)
 {
-    readonly AstNode[] children = { Statements };
-
-    public override IEnumerable<AstNode> Children => children;
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { Statements };
 
     public Dictionary<string, ITyped> Scope { get; } = new();
 }

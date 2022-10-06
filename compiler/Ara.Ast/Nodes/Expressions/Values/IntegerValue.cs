@@ -7,13 +7,7 @@ namespace Ara.Ast.Nodes.Expressions.Values;
 
 public record IntegerValue(IParseNode Node, int Value) : Expression(Node)
 {
-    public override Type Type
-    {
-        get => Type.Integer;
-        set => throw new NotImplementedException();
-    }
-    
-    readonly AstNode[] children = {};
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode>();
 
-    public override IEnumerable<AstNode> Children => children;
+    public override Type Type => Type.Integer;
 }
