@@ -3,6 +3,7 @@ CFLAGS = -O3 -shared
 
 ifeq ($(OS),Windows_NT)
 	shared_library = bin/Ara.Parsing.Windows-x86_64.dll
+	CFLAGS += -Wl,"/DEF:exports.def"
 else
 	CFLAGS += -fPIC
     UNAME_S := $(shell uname -s)
