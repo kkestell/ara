@@ -6,5 +6,5 @@ namespace Ara.Ast.Nodes.Expressions.Abstract;
 
 public abstract record Expression(IParseNode Node) : AstNode(Node), ITyped
 {
-    public abstract Type Type { get; set; }
+    public abstract Type Type { get; }
 }

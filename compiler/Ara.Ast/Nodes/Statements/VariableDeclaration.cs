@@ -9,42 +9,20 @@ namespace Ara.Ast.Nodes.Statements;
 
 public record VariableDeclaration(IParseNode Node, string Name, TypeRef? TypeRef, Expression? Expression) : Statement(Node), ITyped
 {
-    List<AstNode>? children;
-
+    public override IEnumerable<AstNode> Children { get; } = new List<AstNode?> { TypeRef, Expression }
+        .Where(x => x is not null).Select(x => x as AstNode)!;
+    
     public Type Type
     {
         get
         {
             if (TypeRef is not null)
-            {
                 return TypeRef.ToType();
-            }
 
             if (Expression is not ITyped i)
                 throw new SemanticException(this, "Cannot infer type of non-constant values");
 
             return i.Type;
-        }
-
-        set => throw new NotSupportedException();
-    }
-
-    public override IEnumerable<AstNode> Children
-    {
-        get
-        {
-            if (children is not null)
-                return children;
-
-            children = new List<AstNode>();
-
-            if (TypeRef is not null)
-                children.Add(TypeRef);
-
-            if (Expression is not null)
-                children.Add(Expression);
-
-            return children;
         }
     }
 }

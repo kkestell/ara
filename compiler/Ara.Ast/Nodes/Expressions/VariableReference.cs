@@ -9,14 +9,13 @@ namespace Ara.Ast.Nodes.Expressions;
 
 public record VariableReference(IParseNode Node, string Name) : Expression(Node)
 {
-    readonly AstNode[] children = {};
-
-    public override IEnumerable<AstNode> Children => children;
+    public override IEnumerable<AstNode> Children { get; } = new AstNode[] { };
 
     public override Type Type
     {
         get
         {
+            // FIXME: Why is b nullable
             var b = NearestAncestor<Block>();
             while (true)
             {
@@ -34,7 +33,5 @@ public record VariableReference(IParseNode Node, string Name) : Expression(Node)
                 b = b.NearestAncestorOrDefault<Block>();
             }
         }
-        
-        set => throw new NotImplementedException();
     }
 }

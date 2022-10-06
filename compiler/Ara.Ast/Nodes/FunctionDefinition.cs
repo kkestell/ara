@@ -1,5 +1,7 @@
+using Ara.Ast.Errors;
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Statements;
+using Ara.Ast.Types;
 using Ara.Parsing.Abstract;
 using Type = Ara.Ast.Types.Abstract.Type;
 
@@ -24,8 +26,28 @@ public record FunctionDefinition(IParseNode Node, string Name, NodeList<Paramete
             return children;
         }
     }
+    
+    public Type Type
+    {
+        get
+        {
+            if (ReturnTypeRef is not null)
+                return ReturnTypeRef.ToType();
 
-    public Type Type { get; set; } = Type.Unknown;
+            var returns = Descendants<Return>().ToList();
 
-    public List<Return> Returns { get; } = new();
+            if (returns.Count == 0)
+                return Type.Void;
+
+            var returnTypes = returns
+                .Select(x => x.Expression.Type)
+                .Where(x => x is not UnknownType)
+                .ToList();
+
+            if (returnTypes.Distinct().Count() > 1)
+                throw new SemanticException(this, "Function returns more than one type");
+
+            return returnTypes.First();
+        }
+    }
 }

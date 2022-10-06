@@ -30,4 +30,18 @@ public abstract record AstNode(IParseNode Node)
     {
         return NearestAncestorOrDefault<T>() ?? throw new Exception();
     }
+
+    public IEnumerable<T> Descendants<T>() where T : AstNode
+    {
+        var nodes = new List<T>();
+
+        foreach (var c in Children)
+        {
+            nodes.AddRange(c.Descendants<T>());
+        }
+        
+        nodes.AddRange(Children.OfType<T>());
+
+        return nodes;
+    }
 }
