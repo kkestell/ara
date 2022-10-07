@@ -117,10 +117,10 @@ public static class AstTransformer
         new(n, n.Span.ToString());
 
     static If If(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, (Expression)c[0], (Block)c[1]);
+        new(n, (Expression)c[0], (Statement)c[1]);
     
     static IfElse IfElse(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, (Expression)c[0], (Block)c[1], (Block)c[2]);
+        new(n, (Expression)c[0], (Statement)c[1], (Statement)c[2]);
 
     static BooleanValue Bool(ParseNode n) => 
         new(n, bool.Parse(n.Span.ToString()));

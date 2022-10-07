@@ -1,6 +1,6 @@
-# Ara
+# Ix
 
-Ara is an imperative, statically typed programming language. Ara uses Tree Sitter for parsing. The compiler is written in C# and emits LLVM IR.
+Ix is an imperative, statically typed programming language. Ix uses Tree Sitter for parsing. The compiler is written in C# and emits LLVM IR.
 
 ```
 fn fib(n: int) -> int {
@@ -40,7 +40,7 @@ Identifiers begin with a letter and may contain letters, numbers, and underscore
 
 ### Blocks
 
-Ara uses curly braces to define blocks. You can use a block anywhere a statement is allowed, like in control flow statements. Function bodies are also blocks.
+Ix uses curly braces to define blocks. You can use a block anywhere a statement is allowed, like in control flow statements. Function bodies are also blocks.
 
 ## Values
 
@@ -57,15 +57,21 @@ Ara has an integer type, `int`, and a floating point type, `float`.
 Variables are declared by specifying their name, an optional type, and an optional initialization value.
 
 ```
-foo: int
+foo : int = 1
 ```
 
-This creates a new integer, `foo`, in the current scope.
+This creates a new integer, `foo`, in the current scope, and initializes it to `1`.
 
-Variables can also be initialized when they're created. In this case, their type can be inferred:
+Type inference is also supported:
 
 ```
 foo := 1
+```
+
+Or, to declare a variable with its default initialization value:
+
+```
+foo : int
 ```
 
 ## Arrays
@@ -74,6 +80,23 @@ Stack allocated, static arrays can be declared by appending the array's size to 
 
 ```
 foos: int[10]
+```
+
+Static arrays are bounds checked at compile time.
+
+```
+a : int[2]
+b := a[10]
+```
+
+```
+Error in test.ara:2:7
+
+  a : int[2]
+  b := a[10]
+       ^~~~
+
+Array index 10 out of bounds (0..1).
 ```
 
 ## Functions

@@ -1,6 +1,5 @@
 using System.Text;
 using Ara.CodeGen.IR.Values;
-using Ara.CodeGen.IR.Values.Instructions;
 
 namespace Ara.CodeGen.IR;
 
@@ -22,10 +21,12 @@ public class Block
     {
         this.parent = parent;
         Function = function;
-        scope = parent.scope;
-        Label = new Label(this, name);
+        scope = new NameScope(parent.scope);
+        Label = new Label(this, parent.scope.Register(name));
         AddInstruction(Label);
     }
+
+    public NameScope NameScope => scope;
     
     public Function Function { get; }
 
@@ -62,8 +63,7 @@ public class Block
 
     public Block AddChild(string? name = null)
     {
-        var n = scope.Register(name);
-        return Function.AddBlock(this, n);
+        return Function.AddBlock(this, name);
     }
     
     public IrBuilder IrBuilder()

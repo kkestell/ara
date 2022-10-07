@@ -2,6 +2,7 @@ using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Expressions;
 using Ara.Ast.Nodes.Expressions.Abstract;
 using Ara.Ast.Nodes.Statements;
+using Ara.Ast.Nodes.Statements.Abstract;
 using Ara.CodeGen.Errors;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
@@ -52,50 +53,55 @@ public class CodeGenerator
     {
         foreach (var statement in block.Statements.Nodes)
         {
-            switch (statement)
+            EmitStatement(builder, statement);
+        }
+    }
+
+    void EmitStatement(IrBuilder builder, Statement s)
+    {
+        switch (s)
+        {
+            case Assignment a:
             {
-                case Assignment a:
-                {
-                    EmitAssignment(builder, a);
-                    break;
-                }
-                case ArrayAssignment a:
-                {
-                    EmitArrayAssignment(builder, a);
-                    break;
-                }
-                case Block b:
-                {
-                    var newBlock = builder.Block.AddChild();
-                    builder.Br(newBlock.Label);
-                    builder.GotoBlock(newBlock, blockBuilder => EmitBlock(blockBuilder, b));
-                    break;
-                }
-                case For f:
-                {
-                    EmitFor(builder, f);
-                    break;
-                }
-                case If i:
-                {
-                    EmitIf(builder, i);
-                    break;
-                }
-                case IfElse i:
-                {
-                    EmitIfElse(builder, i);
-                    break;
-                }
-                case Return r:
-                {
-                    EmitReturn(builder, r);
-                    break;
-                }
-                case VariableDeclaration v:
-                {
-                    EmitVariableDeclaration(builder, v);
-                    break;
-                }
+                EmitAssignment(builder, a);
+                break;
+            }
+            case ArrayAssignment a:
+            {
+                EmitArrayAssignment(builder, a);
+                break;
+            }
+            case Block b:
+            {
+                var newBlock = builder.Block.AddChild();
+                builder.Br(newBlock.Label);
+                builder.GotoBlock(newBlock, blockBuilder => EmitBlock(blockBuilder, b));
+                break;
+            }
+            case For f:
+            {
+                EmitFor(builder, f);
+                break;
+            }
+            case If i:
+            {
+                EmitIf(builder, i);
+                break;
+            }
+            case IfElse i:
+            {
+                EmitIfElse(builder, i);
+                break;
+            }
+            case Return r:
+            {
+                EmitReturn(builder, r);
+                break;
+            }
+            case VariableDeclaration v:
+            {
+                EmitVariableDeclaration(builder, v);
+                break;
             }
         }
     }
@@ -104,7 +110,7 @@ public class CodeGenerator
     {
         var val = EmitExpression(builder, a.Expression);
         var ptr = builder.Block.FindNamedValue<Alloca>(a.Name);
-        builder.Store(val, ptr, a.Name);
+        builder.Store(val, ptr);
     }
     
     void EmitArrayAssignment(IrBuilder builder, ArrayAssignment a)
@@ -126,14 +132,14 @@ public class CodeGenerator
     void EmitIf(IrBuilder builder, If i)
     {
         var predicate = EmitExpression(builder, i.Predicate);
-        builder.IfThen(predicate, then => EmitBlock(then, i.Then));
+        builder.IfThen(predicate, then => EmitStatement(then, i.Then));
     }
     
     void EmitIfElse(IrBuilder builder, IfElse i)
     {
         var predicate = EmitExpression(builder, i.Predicate);
         var val = builder.ResolveValue(predicate);
-        builder.IfElse(val, thenBuilder => EmitBlock(thenBuilder, i.Then), elseBuilder => EmitBlock(elseBuilder, i.Else));
+        builder.IfElse(val, thenBuilder => EmitStatement(thenBuilder, i.Then), elseBuilder => EmitStatement(elseBuilder, i.Else));
     }
     
     void EmitReturn(IrBuilder builder, Return r)

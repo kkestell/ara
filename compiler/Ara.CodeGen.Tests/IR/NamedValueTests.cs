@@ -26,7 +26,8 @@ public class NamedValueTests : TestBase
             builder.Add(new IntegerValue(1), new IntegerValue(1), "foo");
         }
 
-        AssertIr(module.Emit(), @"
+        var ir = module.Emit();
+        AssertIr(ir, @"
             define void @test () {
             entry:
               %""foo"" = add i32 1, 1
@@ -52,14 +53,14 @@ public class NamedValueTests : TestBase
             define void @test () {
             entry:
               %""foo"" = alloca i32, i32 1, align 4
-            bar.0:
-              %""bar.1"" = alloca i32, i32 1, align 4
+            bar:
+              %""bar.0"" = alloca i32, i32 1, align 4
               %""foo.0"" = alloca i32, i32 1, align 4
-            bar.2.0:
-              %""bar.3"" = alloca i32, i32 1, align 4
+            bar.1:
+              %""bar.2"" = alloca i32, i32 1, align 4
               %""foo.1"" = alloca i32, i32 1, align 4
-            bar.4.0:
-              %""bar.5"" = alloca i32, i32 1, align 4
+            bar.3:
+              %""bar.4"" = alloca i32, i32 1, align 4
             }
         ");
     }
