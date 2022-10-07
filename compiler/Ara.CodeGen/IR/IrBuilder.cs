@@ -118,12 +118,12 @@ public class IrBuilder
 
     public void Br(Label label)
     {
-        Block.AddInstruction(new UBr(Block, label));
+        Block.AddInstruction(new UBr(label));
     }
 
-    public Br Br(Value predicate, Label l1, Label l2)
+    public void Br(Value predicate, Label l1, Label l2)
     {
-        return Block.AddInstruction(new Br(Block, predicate, l1, l2));
+        Block.AddInstruction(new Br(predicate, l1, l2));
     }
     
     public void Return(Value? value = null)
@@ -191,9 +191,9 @@ public class IrBuilder
         return Block.AddInstruction(new Alloca(Block, type, size, name));
     }
 
-    public void Store(Value value, Value pointer, string? name = null)
+    public void Store(Value value, Value pointer)
     {
-        Block.AddInstruction(new Store(Block, value, pointer, name));
+        Block.AddInstruction(new Store(value, pointer));
     }
     
     public Load Load(Value pointer, string? name = null)

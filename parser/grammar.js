@@ -7,6 +7,8 @@ module.exports = grammar({
 
   word: $ => $.identifier,
 
+  conflicts: $ => [[$.if_statement, $.if_else_statement]],
+
   rules: {
     source_file: $ => $.function_definition_list,
 
@@ -87,15 +89,15 @@ module.exports = grammar({
     if_statement: $ => seq(
       'if',
       $._expression,
-      $.block
+      $._statement
     ),
 
     if_else_statement: $ => seq(
       'if',
       $._expression,
-      $.block,
+      $._statement,
       'else',
-      $.block
+      $._statement
     ),
 
     assignment_statement: $ => seq(

@@ -6,7 +6,7 @@ public abstract class NamedValue : Value
     {
         Name = block.RegisterName(name);
     }
-
+    
     public string Name { get; }
 
     public override string Resolve()

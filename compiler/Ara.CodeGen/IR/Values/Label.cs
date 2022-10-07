@@ -18,6 +18,6 @@ public class Label: NamedValue
 
     public override void Emit(StringBuilder sb)
     {
-        sb.AppendLine($"{Name}:");
+        sb.AppendLine($"\"{Name}\":");
     }
 }
