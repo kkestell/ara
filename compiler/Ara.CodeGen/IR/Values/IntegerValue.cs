@@ -1,22 +1,26 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values;
 
 public class IntegerValue : ConstantValue
 {
-    readonly int value;
+    private readonly int _value;
     
     public override IrType Type => IrType.Integer;
 
     public IntegerValue(int value)
     {
-        this.value = value;
+        _value = value;
     }
 
     public override string Resolve()
     {
-        return value.ToString();
+        return _value.ToString();
     }
 
     public override void Emit(StringBuilder sb)
@@ -25,6 +29,6 @@ public class IntegerValue : ConstantValue
 
     public override string ToIr()
     {
-        return value.ToString();
+        return _value.ToString();
     }
 }

@@ -1,6 +1,10 @@
+#region
+
 using Ara.Ast.Nodes.Expressions;
 using Ara.Ast.Nodes.Expressions.Values;
 using Ara.Ast.Types;
+
+#endregion
 
 namespace Ara.Ast.Errors;
 
@@ -10,7 +14,7 @@ public class ArrayIndexOutOfBoundsException : SemanticException
     {
     }
 
-    static string BuildMessage(ArrayIndex node)
+    private static string BuildMessage(ArrayIndex node)
     {
         var sz = ((ArrayType)node.VariableReference.Type).Size - 1;
         var idx = ((IntegerValue)node.Index).Value;

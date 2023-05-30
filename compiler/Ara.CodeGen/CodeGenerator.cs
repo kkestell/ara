@@ -1,3 +1,5 @@
+#region
+
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Expressions;
 using Ara.Ast.Nodes.Expressions.Abstract;
@@ -10,46 +12,78 @@ using Ara.CodeGen.IR.Values;
 using Ara.CodeGen.IR.Values.Instructions;
 using Argument = Ara.CodeGen.IR.Argument;
 using ArrayType = Ara.Ast.Types.ArrayType;
-using Block = Ara.Ast.Nodes.Statements.Block;
 using BooleanValue = Ara.Ast.Nodes.Expressions.Values.BooleanValue;
 using Call = Ara.Ast.Nodes.Expressions.Call;
+using ExternalFunctionDeclaration = Ara.Ast.Nodes.ExternalFunctionDeclaration;
 using FloatValue = Ara.Ast.Nodes.Expressions.Values.FloatValue;
 using IntegerValue = Ara.Ast.Nodes.Expressions.Values.IntegerValue;
+using VoidType = Ara.Ast.Types.VoidType;
+
+#endregion
 
 namespace Ara.CodeGen;
 
 public class CodeGenerator
 {
-    readonly Dictionary<string, FunctionType> functionTypes = new ();
+    private readonly Dictionary<string, FunctionType> _functionTypes = new ();
 
     public string Generate(SourceFile root)
     {
         var module = new Module();
 
+        if (root.ExternalFunctionDeclarations is not null)
+        {
+            foreach (var f in root.ExternalFunctionDeclarations.Nodes)
+            {
+                _functionTypes.Add(f.Name, FunctionType.FromExternalDeclaration(f));
+            }
+        }
+        
         foreach (var f in root.FunctionDefinitions.Nodes)
         {
-            functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
+            _functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
         }
 
+        if (root.ExternalFunctionDeclarations is not null)
+        {
+            foreach (var f in root.ExternalFunctionDeclarations.Nodes)
+            {
+                EmitExternalFunctionDeclaration(module, f);
+            }
+        }
+        
         foreach (var f in root.FunctionDefinitions.Nodes)
         {
             EmitFunction(module, f);
         }
-
+        
         return module.Emit();
     }
-    
-    void EmitFunction(Module module, FunctionDefinition functionDefinition)
-    {
-        var type = functionTypes[functionDefinition.Name];
-        var function = module.AddFunction(functionDefinition.Name, type);
-        var block = function.AddBlock();
-        var builder = block.IrBuilder();
 
-        EmitBlock(builder, functionDefinition.Block);
+    private void EmitExternalFunctionDeclaration(Module module, ExternalFunctionDeclaration externalFunctionDeclaration)
+    {
+        module.DeclareExternalFunction(
+            new IR.ExternalFunctionDeclaration(
+                externalFunctionDeclaration.Name,
+                IrType.FromType(externalFunctionDeclaration.Type),
+                externalFunctionDeclaration.Parameters.Nodes.Select(x => IrType.FromType(x.Type)).ToList()));
     }
-    
-    void EmitBlock(IrBuilder builder, Block block)
+
+    private void EmitFunction(Module module, FunctionDefinition functionDefinition)
+    {
+        var type = _functionTypes[functionDefinition.Name];
+        var function = module.AddFunction(functionDefinition.Name, type);
+        var builder = function.IrBuilder();
+        
+        EmitBlock(builder, functionDefinition.Block);
+
+        if (functionDefinition.Type is VoidType)
+        {
+            builder.Return();
+        }
+    }
+
+    private void EmitBlock(IrBuilder builder, Block block)
     {
         foreach (var statement in block.Statements.Nodes)
         {
@@ -57,99 +91,89 @@ public class CodeGenerator
         }
     }
 
-    void EmitStatement(IrBuilder builder, Statement s)
+    private void EmitStatement(IrBuilder builder, Statement s)
     {
         switch (s)
         {
             case Assignment a:
-            {
                 EmitAssignment(builder, a);
                 break;
-            }
             case ArrayAssignment a:
-            {
                 EmitArrayAssignment(builder, a);
                 break;
-            }
-            case Block b:
-            {
-                var newBlock = builder.Block.AddChild();
-                builder.Br(newBlock.Label);
-                builder.GotoBlock(newBlock, blockBuilder => EmitBlock(blockBuilder, b));
+            case Call c:
+                EmitCall(builder, c);
                 break;
-            }
+            case Block b:
+                EmitBlock(builder, b);
+                break;
             case For f:
-            {
                 EmitFor(builder, f);
                 break;
-            }
             case If i:
-            {
                 EmitIf(builder, i);
                 break;
-            }
             case IfElse i:
-            {
                 EmitIfElse(builder, i);
                 break;
-            }
             case Return r:
-            {
                 EmitReturn(builder, r);
                 break;
-            }
             case VariableDeclaration v:
-            {
                 EmitVariableDeclaration(builder, v);
                 break;
-            }
         }
     }
 
-    void EmitAssignment(IrBuilder builder, Assignment a)
+    private void EmitAssignment(IrBuilder builder, Assignment a)
     {
         var val = EmitExpression(builder, a.Expression);
-        var ptr = builder.Block.FindNamedValue<Alloca>(a.Name);
+        var ptr = builder.Function.FindNamedValue<Alloca>(a.Name);
         builder.Store(val, ptr);
     }
-    
-    void EmitArrayAssignment(IrBuilder builder, ArrayAssignment a)
+
+    private void EmitArrayAssignment(IrBuilder builder, ArrayAssignment a)
     {
         var val = EmitExpression(builder, a.Expression);
         var idx = EmitExpression(builder, a.Index);
-        var ptr = builder.Block.FindNamedValue(a.Name);
+        var ptr = builder.Function.FindNamedValue(a.Name);
         var elp = builder.GetElementPtr(ptr, idx);
         builder.Store(val, elp);
     }
-    
-    void EmitFor(IrBuilder builder, For f)
+
+    private void EmitFor(IrBuilder builder, For f)
     {
         var s = EmitExpression(builder, f.Start);
         var e = EmitExpression(builder, f.End);
         builder.For(f.Counter, s, e, (loop, _) => EmitBlock(loop, f.Block));
     }
-    
-    void EmitIf(IrBuilder builder, If i)
+
+    private void EmitIf(IrBuilder builder, If i)
     {
         var predicate = EmitExpression(builder, i.Predicate);
-        builder.IfThen(predicate, then => EmitStatement(then, i.Then));
+        builder.IfThen(
+            predicate,
+            thenBuilder => EmitStatement(thenBuilder, i.Then));
     }
-    
-    void EmitIfElse(IrBuilder builder, IfElse i)
+
+    private void EmitIfElse(IrBuilder builder, IfElse i)
     {
         var predicate = EmitExpression(builder, i.Predicate);
         var val = builder.ResolveValue(predicate);
-        builder.IfElse(val, thenBuilder => EmitStatement(thenBuilder, i.Then), elseBuilder => EmitStatement(elseBuilder, i.Else));
+        builder.IfElse(
+            val,
+            thenBuilder => EmitStatement(thenBuilder, i.Then),
+            elseBuilder => EmitStatement(elseBuilder, i.Else));
     }
-    
-    void EmitReturn(IrBuilder builder, Return r)
+
+    private void EmitReturn(IrBuilder builder, Return r)
     {
         var expr = EmitExpression(builder, r.Expression);
         var val = builder.ResolveValue(expr);
         builder.Return(val);
     }
 
-    void EmitVariableDeclaration(IrBuilder builder, VariableDeclaration v)
+    private void EmitVariableDeclaration(IrBuilder builder, VariableDeclaration v)
     {
         Value ptr = v.Type switch
         {
@@ -163,8 +187,8 @@ public class CodeGenerator
         var val = EmitExpression(builder, v.Expression);
         builder.Store(val, ptr);
     }
-    
-    Value EmitExpression(IrBuilder builder, Expression expression)
+
+    private Value EmitExpression(IrBuilder builder, Expression expression)
     {
         return expression switch
         {
@@ -180,14 +204,14 @@ public class CodeGenerator
         };
     }
 
-    Value EmitArrayIndex(IrBuilder builder, ArrayIndex expression)
+    private Value EmitArrayIndex(IrBuilder builder, ArrayIndex expression)
     {
         var ptr = EmitVariableReference(builder, expression.VariableReference);
         var idx = EmitExpression(builder, expression.Index);
         return builder.GetElementPtr(ptr, idx);
     }
 
-    Value EmitBinaryExpression(IrBuilder builder, BinaryExpression expression)
+    private Value EmitBinaryExpression(IrBuilder builder, BinaryExpression expression)
     {
         var left  = builder.ResolveValue(EmitExpression(builder, expression.Left));
         var right = builder.ResolveValue(EmitExpression(builder, expression.Right));
@@ -232,14 +256,14 @@ public class CodeGenerator
         throw new CodeGenException($"Unsupported binary operand type {left.Type.ToIr()}");
     }
 
-    Value EmitCall(IrBuilder builder, Call call)
+    private Value EmitCall(IrBuilder builder, Call call)
     {
         var name = call.Name;
 
-        if (!functionTypes.ContainsKey(name))
+        if (!_functionTypes.ContainsKey(name))
             throw new Exception($"No such function `{name}`");
         
-        var functionType = functionTypes[call.Name];
+        var functionType = _functionTypes[call.Name];
 
         var args = new List<Argument>();
         foreach (var arg in call.Arguments.Nodes)
@@ -251,6 +275,11 @@ public class CodeGenerator
 
             var val = EmitExpression(builder, arg.Expression);
 
+            if (val is Alloca alloca)
+            {
+                val = builder.Load(alloca);
+            }
+            
             if (!val.Type.Equals(param.Type))
                 throw new CodeGenException($"Invalid argument type {val.Type.ToIr()} where {param.Type.ToIr()} was expected.");
             
@@ -260,14 +289,14 @@ public class CodeGenerator
         return builder.Call(call.Name, functionType.ReturnType, args);
     }
 
-    static Value MakeInteger(IntegerValue constant) => new IR.Values.IntegerValue(constant.Value);
-    
-    static Value MakeFloat(FloatValue constant) => new IR.Values.FloatValue(constant.Value);
-    
-    static Value MakeBoolean(BooleanValue constant) => new IR.Values.BooleanValue(constant.Value);
-    
-    static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
+    private static Value MakeInteger(IntegerValue constant) => new IR.Values.IntegerValue(constant.Value);
+
+    private static Value MakeFloat(FloatValue constant) => new IR.Values.FloatValue(constant.Value);
+
+    private static Value MakeBoolean(BooleanValue constant) => new IR.Values.BooleanValue(constant.Value);
+
+    private static Value EmitVariableReference(IrBuilder builder, VariableReference reference)
     {
-        return builder.Block.FindNamedValue(reference.Name);
+        return builder.Function.FindNamedValue(reference.Name);
     }
 }

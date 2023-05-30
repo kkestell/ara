@@ -1,19 +1,23 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
 public class Store : Value
 {
-    readonly Value value;
-    readonly Value pointer;
+    private readonly Value _value;
+    private readonly Value _pointer;
 
     public override IrType Type => IrType.Void;
 
     public Store(Value value, Value pointer)
     {
-        this.value = value;
-        this.pointer = pointer;
+        _value = value;
+        _pointer = pointer;
     }
 
     public override string Resolve()
@@ -23,6 +27,6 @@ public class Store : Value
 
     public override void Emit(StringBuilder sb)
     {
-        sb.Append($"store {value.Type.ToIr()} {value.Resolve()}, ptr {pointer.Resolve()}\n");
+        sb.Append($"store {_value.Type.ToIr()} {_value.Resolve()}, ptr {_pointer.Resolve()}\n");
     }
 }

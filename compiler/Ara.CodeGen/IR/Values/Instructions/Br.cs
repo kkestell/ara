@@ -1,19 +1,23 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
 public class Br : Value
 {
-    readonly Value predicate;
-    readonly Label ifLabel;
-    readonly Label endIfLabel;
+    private readonly Value _predicate;
+    private readonly Label _ifLabel;
+    private readonly Label _endIfLabel;
     
     public Br(Value predicate, Label ifLabel, Label endIfLabel)
     {
-        this.predicate = predicate;
-        this.ifLabel = ifLabel;
-        this.endIfLabel = endIfLabel;
+        _predicate = predicate;
+        _ifLabel = ifLabel;
+        _endIfLabel = endIfLabel;
     }
 
     public override IrType Type => IrType.Void;
@@ -25,6 +29,6 @@ public class Br : Value
 
     public override void Emit(StringBuilder sb)
     {
-        sb.AppendLine($"br {predicate.Type.ToIr()} {predicate.Resolve()}, label {ifLabel.Resolve()}, label {endIfLabel.Resolve()}");
+        sb.AppendLine($"br {_predicate.Type.ToIr()} {_predicate.Resolve()}, label {_ifLabel.Resolve()}, label {_endIfLabel.Resolve()}");
     }
 }

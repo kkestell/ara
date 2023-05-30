@@ -1,4 +1,8 @@
+#region
+
 using Ara.Parsing.Abstract;
+
+#endregion
 
 namespace Ara.Ast.Nodes.Abstract;
 

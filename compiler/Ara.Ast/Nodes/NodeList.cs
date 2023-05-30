@@ -1,6 +1,10 @@
+#region
+
 using System.Collections;
 using Ara.Ast.Nodes.Abstract;
 using Ara.Parsing.Abstract;
+
+#endregion
 
 namespace Ara.Ast.Nodes;
 

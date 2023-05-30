@@ -1,6 +1,10 @@
+#region
+
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Statements;
+
+#endregion
 
 namespace Ara.Ast.Semantics;
 
@@ -25,13 +29,13 @@ public class ScopeBuilder : Visitor
                 break;
         }
     }
-    
-    static void For(For f)
+
+    private static void For(For f)
     {
         f.Block.Scope.Add(f.Counter, f);
     }
-    
-    static void FunctionDefinition(FunctionDefinition f)
+
+    private static void FunctionDefinition(FunctionDefinition f)
     {
         foreach (var p in f.Parameters.Nodes)
         {
@@ -39,7 +43,7 @@ public class ScopeBuilder : Visitor
         }
     }
 
-    static void VariableDeclaration(VariableDeclaration d)
+    private static void VariableDeclaration(VariableDeclaration d)
     {
         var blk = d.NearestAncestor<Block>();
         blk.Scope.Add(d.Name, d);

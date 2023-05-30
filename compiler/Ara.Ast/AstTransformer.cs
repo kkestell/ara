@@ -1,3 +1,5 @@
+#region
+
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Abstract;
@@ -8,6 +10,8 @@ using Ara.Ast.Nodes.Statements;
 using Ara.Ast.Nodes.Statements.Abstract;
 using Ara.Parsing;
 
+#endregion
+
 namespace Ara.Ast;
 
 public static class AstTransformer
@@ -17,39 +21,41 @@ public static class AstTransformer
         return (SourceFile)Visit(parseTree.Root);
     }
 
-    static AstNode Visit(ParseNode parseNode)
+    private static AstNode Visit(ParseNode parseNode)
     {
         var children = parseNode.NamedChildren.Select(Visit).ToList();
 
         AstNode astNode = parseNode.Type switch
         {
-            "argument"                       => Argument(parseNode, children),
-            "argument_list"                  => ArgumentList(parseNode, children),
-            "assignment_statement"           => Assignment(parseNode, children),
-            "array_assignment_statement"     => ArrayAssignment(parseNode, children),
-            "array_index"                    => ArrayIndex(parseNode, children),
-            "binary_expression"              => BinaryExpression(parseNode, children),
-            "block"                          => Block(parseNode, children),
-            "bool"                           => Bool(parseNode),
-            "function_definition_list"       => FunctionDefinitionList(parseNode, children),
-            "for_statement"                  => For(parseNode, children),
-            "float"                          => Float(parseNode),
-            "function_call_expression"       => Call(parseNode, children),
-            "function_definition"            => FunctionDefinition(parseNode, children),
-            "identifier"                     => Identifier(parseNode),
-            "if_statement"                   => If(parseNode, children),
-            "if_else_statement"              => IfElse(parseNode, children),
-            "integer"                        => Integer(parseNode),
-            "parameter"                      => Parameter(parseNode, children),
-            "parameter_list"                 => ParameterList(parseNode, children),
-            "return_statement"               => Return(parseNode, children),
-            "source_file"                    => SourceFile(parseNode, children),
-            "statement_list"                 => StatementList(parseNode, children),
-            "single_value_type"              => SingleValueType(parseNode, children),
-            "array_type"                     => ArrayType(parseNode, children),
-            "unary_expression"               => UnaryExpression(parseNode, children),
-            "variable_declaration_statement" => VariableDeclaration(parseNode, children),
-            "variable_reference"             => VariableReference(parseNode, children),
+            "array_type"                         => ArrayType(parseNode, children),
+            "argument"                           => Argument(parseNode, children),
+            "argument_list"                      => ArgumentList(parseNode, children),
+            "assignment_statement"               => Assignment(parseNode, children),
+            "array_assignment_statement"         => ArrayAssignment(parseNode, children),
+            "array_index"                        => ArrayIndex(parseNode, children),
+            "binary_expression"                  => BinaryExpression(parseNode, children),
+            "block"                              => Block(parseNode, children),
+            "bool"                               => Bool(parseNode),
+            "function_call"                      => Call(parseNode, children),
+            "external_function_declaration_list" => ExternalFunctionDeclarationList(parseNode, children),
+            "external_function_declaration"      => ExternalFunctionDeclaration(parseNode, children),
+            "for_statement"                      => For(parseNode, children),
+            "float"                              => Float(parseNode),
+            "function_definition_list"           => FunctionDefinitionList(parseNode, children),
+            "function_definition"                => FunctionDefinition(parseNode, children),
+            "identifier"                         => Identifier(parseNode),
+            "if_statement"                       => If(parseNode, children),
+            "if_else_statement"                  => IfElse(parseNode, children),
+            "integer"                            => Integer(parseNode),
+            "parameter"                          => Parameter(parseNode, children),
+            "parameter_list"                     => ParameterList(parseNode, children),
+            "return_statement"                   => Return(parseNode, children),
+            "source_file"                        => SourceFile(parseNode, children),
+            "statement_list"                     => StatementList(parseNode, children),
+            "single_value_type"                  => SingleValueType(parseNode, children),
+            "unary_expression"                   => UnaryExpression(parseNode, children),
+            "variable_declaration_statement"     => VariableDeclaration(parseNode, children),
+            "variable_reference"                 => VariableReference(parseNode, children),
             
             _ => throw new SyntaxException(parseNode)
         };
@@ -62,22 +68,22 @@ public static class AstTransformer
         return astNode;
     }
 
-    static Argument Argument(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static Argument Argument(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (Expression)c[1]);
 
-    static NodeList<Argument> ArgumentList(ParseNode n, IEnumerable<AstNode> c) =>
+    private static NodeList<Argument> ArgumentList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (Argument)x).ToList());
 
-    static Assignment Assignment(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static Assignment Assignment(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (Expression)c[1]);
 
-    static ArrayAssignment ArrayAssignment(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static ArrayAssignment ArrayAssignment(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2]);
-    
-    static ArrayIndex ArrayIndex(ParseNode n, IReadOnlyList<AstNode> c) =>
+
+    private static ArrayIndex ArrayIndex(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, (VariableReference)c[0], (Expression)c[1]);
 
-    static BinaryExpression BinaryExpression(ParseNode n, IReadOnlyList<AstNode> c)
+    private static BinaryExpression BinaryExpression(ParseNode n, IReadOnlyList<AstNode> c)
     {
         var op = n.ChildByFieldName("op")!.Span.ToString() switch
         {
@@ -94,65 +100,82 @@ public static class AstTransformer
         return new BinaryExpression(n, (Expression)c[0], (Expression)c[1], op);
     }
 
-    static Block Block(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static Block Block(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, (NodeList<Statement>)c[0]);
-    
-    static NodeList<FunctionDefinition> FunctionDefinitionList(ParseNode n, IEnumerable<AstNode> c) =>
+
+    private static NodeList<ExternalFunctionDeclaration> ExternalFunctionDeclarationList(ParseNode n, IEnumerable<AstNode> c) =>
+        new(n, c.Select(x => (ExternalFunctionDeclaration)x).ToList());
+
+    private static ExternalFunctionDeclaration ExternalFunctionDeclaration(ParseNode n, IReadOnlyList<AstNode> c)
+    {
+        return new ExternalFunctionDeclaration(n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], (TypeRef)c[2]);
+    }
+
+    private static NodeList<FunctionDefinition> FunctionDefinitionList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (FunctionDefinition)x).ToList());
 
-    static For For(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static For For(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2], (Block)c[3]);
-    
-    static Call Call(ParseNode n, IReadOnlyList<AstNode> c) =>
+
+    private static Call Call(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (NodeList<Argument>)c[1]);
 
-    static FunctionDefinition FunctionDefinition(ParseNode n, IReadOnlyList<AstNode> c)
+    private static FunctionDefinition FunctionDefinition(ParseNode n, IReadOnlyList<AstNode> c)
     {
         return c[2] is TypeRef 
             ? new FunctionDefinition(n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], (TypeRef)c[2], (Block)c[3]) 
             : new FunctionDefinition(n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], null, (Block)c[2]);
     }
-    
-    static Identifier Identifier(ParseNode n) =>
+
+    private static Identifier Identifier(ParseNode n) =>
         new(n, n.Span.ToString());
 
-    static If If(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static If If(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, (Expression)c[0], (Statement)c[1]);
-    
-    static IfElse IfElse(ParseNode n, IReadOnlyList<AstNode> c) =>
+
+    private static IfElse IfElse(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, (Expression)c[0], (Statement)c[1], (Statement)c[2]);
 
-    static BooleanValue Bool(ParseNode n) => 
+    private static BooleanValue Bool(ParseNode n) => 
         new(n, bool.Parse(n.Span.ToString()));
 
-    static IntegerValue Integer(ParseNode n) => 
+    private static IntegerValue Integer(ParseNode n) => 
         new(n, int.Parse(n.Span.ToString()));
 
-    static FloatValue Float(ParseNode n) => 
+    private static FloatValue Float(ParseNode n) => 
         new(n, float.Parse(n.Span.ToString()));
 
-    static Parameter Parameter(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static Parameter Parameter(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (TypeRef)c[1]);
 
-    static NodeList<Parameter> ParameterList(ParseNode n, IEnumerable<AstNode> c) =>
+    private static NodeList<Parameter> ParameterList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (Parameter)x).ToList());
 
-    static Return Return(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static Return Return(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, (Expression)c[0]);
 
-    static SourceFile SourceFile(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, (NodeList<FunctionDefinition>)c[0]);
+    private static SourceFile SourceFile(ParseNode n, IReadOnlyList<AstNode> c)
+    {
+        if (c.Count == 2)
+        {
+            return new(n, (NodeList<FunctionDefinition>)c[1], (NodeList<ExternalFunctionDeclaration>)c[0]);
+        }
+        else
+        {
+            return new(n, (NodeList<FunctionDefinition>)c[0]);
+        }
+    }
 
-    static NodeList<Statement> StatementList(ParseNode n, IEnumerable<AstNode> c) =>
+    private static NodeList<Statement> StatementList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (Statement)x).ToList());
 
-    static SingleValueTypeRef SingleValueType(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static SingleValueTypeRef SingleValueType(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value);
-    
-    static ArrayTypeRef ArrayType(ParseNode n, IReadOnlyList<AstNode> c) =>
+
+    private static ArrayTypeRef ArrayType(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, (TypeRef)c[0], (IntegerValue)c[1]);
 
-    static UnaryExpression UnaryExpression(ParseNode n, IReadOnlyList<AstNode> c)
+    private static UnaryExpression UnaryExpression(ParseNode n, IReadOnlyList<AstNode> c)
     {
         var op = n.ChildByFieldName("op")!.Span.ToString() switch
         {
@@ -165,7 +188,7 @@ public static class AstTransformer
         return new UnaryExpression(n, (Expression)c[0], op);
     }
 
-    static VariableDeclaration VariableDeclaration(ParseNode n, IReadOnlyList<AstNode> c)
+    private static VariableDeclaration VariableDeclaration(ParseNode n, IReadOnlyList<AstNode> c)
     {
         var name = ((Identifier)c[0]).Value;
         
@@ -187,6 +210,6 @@ public static class AstTransformer
         }
     }
 
-    static VariableReference VariableReference(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static VariableReference VariableReference(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value);
 }

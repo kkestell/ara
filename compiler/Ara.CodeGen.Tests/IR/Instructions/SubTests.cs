@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -8,12 +12,12 @@ public class SubTests : TestBase
     [Test]
     public void SubtractTwoIntegers()
     {
-        builder.Sub(new IntegerValue(1), new IntegerValue(1));
+        Builder.Sub(new IntegerValue(1), new IntegerValue(1));
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-                %""0"" = sub i32 1, 1
+                %0 = sub i32 1, 1
             }
         ");
     }
@@ -23,7 +27,7 @@ public class SubTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Sub(new IntegerValue(1), new FloatValue(3.14f));
+            Builder.Sub(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +36,7 @@ public class SubTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Sub(new FloatValue(1), new FloatValue(3.14f));
+            Builder.Sub(new FloatValue(1), new FloatValue(3.14f));
         });
     }
 }

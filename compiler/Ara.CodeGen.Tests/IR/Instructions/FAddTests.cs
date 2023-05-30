@@ -1,5 +1,9 @@
+#region
+
 using System;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -8,12 +12,12 @@ public class FAddTests : TestBase
     [Test]
     public void AddTwoFloats()
     {
-        builder.FAdd(new FloatValue(3.14f), new FloatValue(2.71f));
+        Builder.FAdd(new FloatValue(3.14f), new FloatValue(2.71f));
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-              %""0"" = fadd float 0x40091EB860000000, 0x4005AE1480000000
+              %0 = fadd float 0x40091EB860000000, 0x4005AE1480000000
             }
         ");
     }
@@ -23,7 +27,7 @@ public class FAddTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FAdd(new IntegerValue(1), new FloatValue(3.14f));
+            Builder.FAdd(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +36,7 @@ public class FAddTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FAdd(new IntegerValue(1), new IntegerValue(1));
+            Builder.FAdd(new IntegerValue(1), new IntegerValue(1));
         });
     }
 }

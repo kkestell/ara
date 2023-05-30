@@ -1,6 +1,10 @@
+#region
+
 using System.Text;
 using Ara.Parsing;
 using Ara.Parsing.Abstract;
+
+#endregion
 
 namespace Ara.Ast.Errors.Abstract;
 
@@ -11,9 +15,9 @@ public abstract class CompilerException : Exception
         ParseNode = parseNode;
     }
 
-    IParseNode ParseNode { get; }
+    private IParseNode ParseNode { get; }
 
-    Location Location => ParseNode.Location;
+    private Location Location => ParseNode.Location;
 
     public override string ToString()
     {
@@ -28,13 +32,13 @@ public abstract class CompilerException : Exception
         
         return sb.ToString();
     }
-    
-    string Indented(string str)
+
+    private string Indented(string str)
     {
         return Indent(Location.Column, str);
     }
-    
-    static string Indent(int col, string str)
+
+    private static string Indent(int col, string str)
     {
         return $"{new string(' ', col)}{str}";
     }

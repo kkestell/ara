@@ -1,5 +1,9 @@
+#region
+
 using Ara.Ast.Errors.Abstract;
 using Ara.Ast.Nodes.Abstract;
+
+#endregion
 
 namespace Ara.Ast.Errors;
 

@@ -6,13 +6,13 @@ ifeq ($(OS),Windows_NT)
 	CFLAGS += -Wl,"/DEF:exports.def"
 else
 	CFLAGS += -fPIC
-    UNAME_S := $(shell uname -s)
-    ifeq ($(UNAME_S),Linux)
-        shared_library = bin/Ara.Parsing.Linux-x86_64.so
-    endif
-    ifeq ($(UNAME_S),Darwin)
-        shared_library = bin/Ara.Parsing.OSX-x86_64.dylib
-    endif
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		shared_library = bin/Ara.Parsing.Linux-x86_64.so
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		shared_library = bin/Ara.Parsing.OSX-x86_64.dylib
+	endif
 endif
 
 all: $(shared_library)

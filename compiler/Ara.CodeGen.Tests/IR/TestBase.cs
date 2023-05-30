@@ -1,21 +1,24 @@
+#region
+
 using System.Linq;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR;
 
 public abstract class TestBase
 {
-    protected Module module = null!;
-    protected IrBuilder builder = null!;
+    protected Module Module = null!;
+    protected IrBuilder Builder = null!;
 
     [SetUp]
     public void Setup()
     {
-        module = new Module();
-        var func = module.AddFunction("test", new FunctionType());
-        var block = func.AddBlock();
-        builder = block.IrBuilder();
+        Module = new Module();
+        var func = Module.AddFunction("test", new FunctionType());
+        Builder = func.IrBuilder();
     }
 
     protected static void AssertIr(string actual, string expected)
@@ -25,7 +28,7 @@ public abstract class TestBase
         Assert.That(a, Is.EqualTo(e));
     }
 
-    static string Trim(string str)
+    private static string Trim(string str)
     {
         return string.Join('\n', str.Split('\n').Select(line => line.TrimStart())).Trim();
     }

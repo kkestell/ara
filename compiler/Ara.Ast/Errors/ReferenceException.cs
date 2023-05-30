@@ -1,5 +1,9 @@
+#region
+
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions;
+
+#endregion
 
 namespace Ara.Ast.Errors;
 
@@ -9,7 +13,7 @@ public class ReferenceException : SemanticException
     {
     }
 
-    static string BuildMessage(AstNode node)
+    private static string BuildMessage(AstNode node)
     {
         var name = node switch
         {

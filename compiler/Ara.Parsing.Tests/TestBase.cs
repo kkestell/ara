@@ -1,4 +1,8 @@
+#region
+
 using System.Text.RegularExpressions;
+
+#endregion
 
 namespace Ara.Parsing.Tests;
 
@@ -25,7 +29,7 @@ public abstract class TestBase
         Assert.That(a, Is.EqualTo(e));
     }
 
-    static string Trim(string str)
+    private static string Trim(string str)
     {
         return Regex.Replace(str, "[ \r\n]*", "");
     }

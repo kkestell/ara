@@ -1,23 +1,27 @@
+#region
+
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Abstract;
+
+#endregion
 
 namespace Ara.Ast.Semantics;
 
 public abstract class Visitor
 {
-    readonly SourceFile sourceFile;
+    private readonly SourceFile _sourceFile;
     
     protected Visitor(SourceFile sourceFile)
     {
-        this.sourceFile = sourceFile;
+        _sourceFile = sourceFile;
     }
 
     public void Visit()
     {
-        Visit(sourceFile);
+        Visit(_sourceFile);
     }
 
-    void Visit(AstNode node)
+    private void Visit(AstNode node)
     {
         foreach (var child in node.Children)
         {

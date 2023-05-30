@@ -1,5 +1,9 @@
-﻿using Ara.CodeGen.IR.Types;
+﻿#region
+
+using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -8,14 +12,14 @@ public class StoreTests : TestBase
     [Test]
     public void StoreAnInteger()
     {
-        var ptr = builder.Alloca(IrType.Integer);
-        builder.Store(new IntegerValue(1), ptr);
+        var ptr = Builder.Alloca(IrType.Integer);
+        Builder.Store(new IntegerValue(1), ptr);
         
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-                %""0"" = alloca i32, i32 1, align 4
-                store i32 1, ptr %""0""
+                %0 = alloca i32, i32 1, align 4
+                store i32 1, ptr %0
             }
         ");
     }

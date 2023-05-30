@@ -1,4 +1,8 @@
+#region
+
 using System.Runtime.InteropServices;
+
+#endregion
 
 namespace Ara.Parsing;
 
@@ -6,8 +10,8 @@ namespace Ara.Parsing;
 public readonly struct TsNode
 {
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-    readonly uint[] Context;
+    private readonly uint[] Context;
 
-    readonly IntPtr Id;
-    readonly IntPtr Tree;
+    private readonly IntPtr Id;
+    private readonly IntPtr Tree;
 }

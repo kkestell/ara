@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -8,12 +12,12 @@ public class AddTests : TestBase
     [Test]
     public void AddTwoIntegers()
     {
-        builder.Add(new IntegerValue(1), new IntegerValue(1));
+        Builder.Add(new IntegerValue(1), new IntegerValue(1));
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-              %""0"" = add i32 1, 1
+              %0 = add i32 1, 1
             }
         ");
     }
@@ -23,7 +27,7 @@ public class AddTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Add(new IntegerValue(1), new FloatValue(3.14f));
+            Builder.Add(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +36,7 @@ public class AddTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Add(new FloatValue(1), new FloatValue(3.14f));
+            Builder.Add(new FloatValue(1), new FloatValue(3.14f));
         });
     }
 }

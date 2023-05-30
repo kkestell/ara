@@ -1,46 +1,40 @@
-namespace Ara.CodeGen.IR;
-
-public class NameScope
+namespace Ara.CodeGen.IR
 {
-    readonly HashSet<string> names = new();
-    int counter;
-
-    public NameScope()
+    public class NameScope
     {
-    }
+        private readonly Dictionary<string, int> _nameCount = new();
+        private readonly HashSet<string> _names = new();
+        private uint _counter;
 
-    public NameScope(NameScope parent)
-    {
-        names = new HashSet<string>(parent.names.ToList());
-        counter = parent.counter;
-    }
-    
-    public IEnumerable<string> Names => names;
+        public IEnumerable<string> Names => _names;
 
-    public string Register(string? name = null)
-    {
-        var uniqueName = Dedupe(name);
-        names.Add(uniqueName);
-        return uniqueName;
-    }
-    
-    string NextTemporaryName() => $"{counter++}";
-    
-    string Dedupe(string? name = null)
-    {
-        if (string.IsNullOrEmpty(name))
-            return NextTemporaryName();
-        
-        if (!names.Contains(name))
-            return name;
-
-        var i = 0;
-        while (true)
+        public string Register(string? name)
         {
-            var newName = $"{name}.{i}";
-            if (!names.Contains(newName))
-                return newName;
-            i++;
+            if (name is null)
+                return _counter++.ToString();
+            
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("Name cannot be empty", name);
+            
+            lock (_names)
+            {
+                var uniqueName = Dedupe(name);
+                _names.Add(uniqueName);
+                return uniqueName;
+            }
+        }
+
+        private string Dedupe(string name)
+        {
+            if (!_names.Contains(name))
+            {
+                _nameCount[name] = 1;
+                return name;
+            }
+
+            var newName = $"{name}.{_nameCount[name]}";
+            _nameCount[name]++;
+            return newName;
         }
     }
 }

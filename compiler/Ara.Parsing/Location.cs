@@ -38,8 +38,8 @@ public readonly struct Location
     {
         return $"{Filename ?? "<source>"}:{Line}:{Column}";
     }
-    
-    static int StartOfLine(ReadOnlySpan<char> span, int offset)
+
+    private static int StartOfLine(ReadOnlySpan<char> span, int offset)
     {
         var start = 0;
         var lines = 0;
@@ -59,7 +59,7 @@ public readonly struct Location
         return start;
     }
 
-    static int EndOfLine(ReadOnlySpan<char> span, int offset)
+    private static int EndOfLine(ReadOnlySpan<char> span, int offset)
     {
         var end = 0;
         

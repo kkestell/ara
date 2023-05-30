@@ -2,15 +2,21 @@ namespace Ara.CodeGen.IR.Values;
 
 public abstract class NamedValue : Value
 {
-    protected NamedValue(Block block, string? name = null)
+    protected NamedValue(Function function, string? name)
     {
-        Name = block.RegisterName(name);
+        Function = function;
+        
+        if (name is not null)
+            Name = function.RegisterName(name);
     }
     
-    public string Name { get; }
+    public Function Function { get; }
+
+    public string? Name { get; private set; }
 
     public override string Resolve()
     {
-        return $"%\"{Name}\"";
+        Name ??= Function.NextName();
+        return $"%{Name}";
     }
 }

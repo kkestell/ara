@@ -1,11 +1,15 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values;
 
 public class ArgumentValue : NamedValue
 {
-    public ArgumentValue(Block block, IrType type, string? name) : base(block, name)
+    public ArgumentValue(Function function, IrType type, string? name) : base(function, name)
     {
         Type = type;
     }

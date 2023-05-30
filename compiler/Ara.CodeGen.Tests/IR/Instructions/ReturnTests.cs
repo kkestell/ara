@@ -1,4 +1,8 @@
+#region
+
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -7,9 +11,9 @@ public class ReturnTests : TestBase
     [Test]
     public void ReturnVoid()
     {
-        builder.Return();
+        Builder.Return();
         
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
               ret void
@@ -20,9 +24,9 @@ public class ReturnTests : TestBase
     [Test]
     public void ReturnAnInteger()
     {
-        builder.Return(new IntegerValue(1));
+        Builder.Return(new IntegerValue(1));
         
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
               ret i32 1

@@ -1,41 +1,45 @@
+#region
+
 using System.Runtime.InteropServices;
+
+#endregion
 
 namespace Ara.Parsing;
 
 public sealed class Tree : IDisposable
 {
-    readonly Handle<Tree> handle;
-    readonly string source;
+    private readonly Handle<Tree> _handle;
+    private readonly string _source;
 
     public Tree(Handle<Tree> handle, string source, string? filename = null)
     {
-        this.handle = handle;
-        this.source = source;
+        _handle = handle;
+        _source = source;
         Filename = filename;
     }
 
     public string? Filename { get; }
 
-    public ParseNode Root => new(TsTreeRootNode(handle), this);
+    public ParseNode Root => new(TsTreeRootNode(_handle), this);
 
     public void Dispose()
     {
-        DeleteTree(handle);
+        DeleteTree(_handle);
     }
 
     public ReadOnlySpan<char> AsSpan(int startByte, int endByte)
     {
-        return source.AsSpan().Slice(startByte, endByte - startByte);
+        return _source.AsSpan().Slice(startByte, endByte - startByte);
     }
 
     public ReadOnlySpan<char> AsSpan()
     {
-        return source.AsSpan();
+        return _source.AsSpan();
     }
 
     [DllImport(Platform.SharedLibrary, EntryPoint = "ts_tree_root_node")]
-    static extern TsNode TsTreeRootNode(Handle<Tree> handle);
+    private static extern TsNode TsTreeRootNode(Handle<Tree> handle);
 
     [DllImport(Platform.SharedLibrary, EntryPoint = "delete_tree")]
-    static extern void DeleteTree(Handle<Tree> handle);
+    private static extern void DeleteTree(Handle<Tree> handle);
 }

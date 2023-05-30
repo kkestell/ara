@@ -1,24 +1,28 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
 public class ReturnInstruction : Instruction
 {
-    readonly Value? value;
+    private readonly Value? _value;
 
-    public override IrType Type => value?.Type ?? IrType.Void;
+    public override IrType Type => _value?.Type ?? IrType.Void;
 
-    public ReturnInstruction(Value? value, Block block) : base(block)
+    public ReturnInstruction(Value? value, Function function) : base(function)
     {
-        this.value = value;
+        _value = value;
     }
     
     public override void Emit(StringBuilder sb)
     {
-        if (value is null)
+        if (_value is null)
             sb.AppendLine("ret void");
         else
-            sb.AppendLine($"ret {value.Type.ToIr()} {value.Resolve()}");
+            sb.AppendLine($"ret {_value.Type.ToIr()} {_value.Resolve()}");
     }
 }

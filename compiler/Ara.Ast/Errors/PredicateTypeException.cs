@@ -1,4 +1,8 @@
+#region
+
 using Ara.Ast.Nodes.Expressions.Abstract;
+
+#endregion
 
 namespace Ara.Ast.Errors;
 
@@ -8,7 +12,7 @@ public class PredicateTypeException : SemanticException
     {
     }
 
-    static string BuildMessage(Expression node)
+    private static string BuildMessage(Expression node)
     {
         return $"Invalid predicate type {node.Type} where bool was expected.";
     }

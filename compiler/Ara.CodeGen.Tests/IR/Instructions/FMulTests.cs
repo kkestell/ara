@@ -1,5 +1,9 @@
+#region
+
 using System;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -8,12 +12,12 @@ public class FMulTests : TestBase
     [Test]
     public void SubtractTwoFloats()
     {
-        builder.FMul(new FloatValue(3.14f), new FloatValue(2.71f));
+        Builder.FMul(new FloatValue(3.14f), new FloatValue(2.71f));
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-                %""0"" = fmul float 0x40091EB860000000, 0x4005AE1480000000
+                %0 = fmul float 0x40091EB860000000, 0x4005AE1480000000
             }
         ");
     }
@@ -23,7 +27,7 @@ public class FMulTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FMul(new IntegerValue(1), new FloatValue(3.14f));
+            Builder.FMul(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +36,7 @@ public class FMulTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.FMul(new IntegerValue(1), new IntegerValue(1));
+            Builder.FMul(new IntegerValue(1), new IntegerValue(1));
         });
     }
 }

@@ -1,9 +1,13 @@
+#region
+
 using System.Diagnostics;
 using Ara.Ast;
 using Ara.Ast.Errors;
 using Ara.Ast.Semantics;
 using Ara.CodeGen;
 using Ara.Parsing;
+
+#endregion
 
 namespace Ara;
 
@@ -48,6 +52,10 @@ public static class Cli
 
         var ir = Time("CodeGen", () => new CodeGenerator().Generate(ast));
 
+        Debug.WriteLine("");
+        Debug.WriteLine("");
+        Debug.WriteLine(ir);
+
         #region Output
 
         var dir = GetTemporaryDirectory();
@@ -62,13 +70,15 @@ public static class Cli
 
         var llcPath = Environment.GetEnvironmentVariable("LLC") ?? "llc";
         var clangPath = Environment.GetEnvironmentVariable("CLANG") ?? "clang";
-
+        
         try
         {
+            var exePath = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName ?? throw new InvalidOperationException());
+
             Time("LLVM", () =>
             {
                 Run(llcPath, $"-filetype=obj -opaque-pointers -O0 {name}.ll -o {name}.o", dir);
-                Run(clangPath, $"{name}.o -o {name}", dir);
+                Run(clangPath, $"{name}.o -lc -L{exePath} -lara -o {name}", dir);
             });
 
             Copy(dir, name);
@@ -90,14 +100,14 @@ public static class Cli
         return 0;
     }
 
-    static void Copy(string root, string name, string ext = "")
+    private static void Copy(string root, string name, string ext = "")
     {
         var path = Path.Combine(Directory.GetCurrentDirectory(), $"{name}{ext}");
         if (File.Exists(path)) File.Delete(path);
         File.Copy(Path.Combine(root, $"{name}{ext}"), path);
     }
 
-    static void Run(string filename, string arguments, string working)
+    private static void Run(string filename, string arguments, string working)
     {
         Process.Start(new ProcessStartInfo
         {
@@ -107,14 +117,14 @@ public static class Cli
         })!.WaitForExit();
     }
 
-    static string GetTemporaryDirectory()
+    private static string GetTemporaryDirectory()
     {
         var t = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(t);
         return t;
     }
 
-    static T Time<T>(string label, Func<T> func)
+    private static T Time<T>(string label, Func<T> func)
     {
         var sw = new Stopwatch();
         sw.Start();
@@ -124,7 +134,7 @@ public static class Cli
         return result;
     }
 
-    static void Time(string label, Action action)
+    private static void Time(string label, Action action)
     {
         var sw = new Stopwatch();
         sw.Start();
@@ -133,7 +143,7 @@ public static class Cli
         Elapsed(label, sw);
     }
 
-    static void Elapsed(string label, Stopwatch sw)
+    private static void Elapsed(string label, Stopwatch sw)
     {
         var e = $"{sw.Elapsed.TotalMilliseconds:0.00}";
         Console.WriteLine($"{label,9}{e,10} ms");
