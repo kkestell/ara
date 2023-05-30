@@ -1,6 +1,10 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -11,14 +15,14 @@ public class PhiTests : TestBase
     {
         var values = new Dictionary<Label, Value>
         {
-            { new Label(builder.Block, "test1"), new IntegerValue(1) }
+            { new Label(Builder.Function, "test1"), new IntegerValue(1) }
         };
-        builder.Phi(values);
+        Builder.Phi(values);
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-              %""0"" = phi i32 [1, %""test1""]
+              %0 = phi i32 [1, %test1]
             }
         ");
     }
@@ -28,15 +32,15 @@ public class PhiTests : TestBase
     {
         var values = new Dictionary<Label, Value>
         {
-            { new Label(builder.Block, "test1"), new IntegerValue(1) },
-            { new Label(builder.Block, "test2"), new IntegerValue(2) }
+            { new Label(Builder.Function, "test1"), new IntegerValue(1) },
+            { new Label(Builder.Function, "test2"), new IntegerValue(2) }
         };
-        builder.Phi(values);
+        Builder.Phi(values);
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-              %""0"" = phi i32 [1, %""test1""], [2, %""test2""]
+              %0 = phi i32 [1, %test1], [2, %test2]
             }
         ");
     }
@@ -46,7 +50,7 @@ public class PhiTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Phi(new Dictionary<Label, Value>());
+            Builder.Phi(new Dictionary<Label, Value>());
         });
     }
 }

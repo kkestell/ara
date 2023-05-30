@@ -1,24 +1,33 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
 public class Call : Instruction
 {
-    readonly string functionName;
-    readonly IEnumerable<Argument> args;
+    private readonly string _functionName;
+    private readonly IEnumerable<Argument> _args;
 
     public override IrType Type { get; }
 
-    public Call(Block block, string functionName, IrType returnType, IEnumerable<Argument> args, string? name = null) : base(block, name)
+    public Call(Function function, string functionName, IrType returnType, IEnumerable<Argument> args, string? name = null) : base(function, name)
     {
-        this.functionName = functionName;
+        _functionName = functionName;
         Type = returnType;
-        this.args = args;
+        _args = args;
     }
     
     public override void Emit(StringBuilder sb)
     {
-        sb.Append($"{Resolve()} = call {Type.ToIr()} @{functionName}({string.Join(", ", args.Select(a => a.ToIr()))})\n");
+        var call = $"call {Type.ToIr()} @{_functionName}({string.Join(", ", _args.Select(a => a.ToIr()))})\n";
+        
+        if (Type is VoidType)
+            sb.Append(call);
+        else
+            sb.Append($"{Resolve()} = {call}");
     }
 }

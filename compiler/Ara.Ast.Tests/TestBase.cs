@@ -1,37 +1,44 @@
+#region
+
 using Ara.Parsing;
+
+#endregion
 
 namespace Ara.Ast.Tests;
 
 public abstract class TestBase
 {
-    Parser parser;
+    private Parser? _parser;
     
     [SetUp]
     public void Setup()
     {
-        parser = new Parser();
+        _parser = new Parser();
     }
 
     [TearDown]
     public void TearDown()
     {
-        parser.Dispose();
+        _parser?.Dispose();
     }
 
     protected Tree Parse(string src)
     {
-        return parser.Parse(src);
+        if (_parser is null)
+            throw new InvalidOperationException("Parser is null");
+        
+        return _parser.Parse(src);
     }
     
-    protected static void AssertIr(string actual, string expected)
-    {
-        var a = Trim(actual);
-        var e = Trim(expected);
-        Assert.That(a, Is.EqualTo(e));
-    }
+    // protected static void AssertIr(string actual, string expected)
+    // {
+    //     var a = Trim(actual);
+    //     var e = Trim(expected);
+    //     Assert.That(a, Is.EqualTo(e));
+    // }
 
-    static string Trim(string str)
-    {
-        return string.Join('\n', str.Split('\n').Select(line => line.TrimStart())).Trim();
-    }
+    // private static string Trim(string str)
+    // {
+    //     return string.Join('\n', str.Split('\n').Select(line => line.TrimStart())).Trim();
+    // }
 }

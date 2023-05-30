@@ -1,3 +1,5 @@
+#region
+
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Abstract;
@@ -5,17 +7,28 @@ using Ara.Ast.Nodes.Expressions;
 using Ara.Ast.Nodes.Statements;
 using Ara.Ast.Types;
 
+#endregion
+
 namespace Ara.Ast.Semantics;
 
 public class TypeChecker : Visitor
 {
-    readonly Dictionary<string, FunctionDefinition> functionCache = new ();
+    private readonly Dictionary<string, ExternalFunctionDeclaration> _externalFunctionDeclarations = new ();
+    private readonly Dictionary<string, FunctionDefinition> _functionDefinitions = new ();
     
     public TypeChecker(SourceFile sourceFile) : base(sourceFile)
     {
+        if (sourceFile.ExternalFunctionDeclarations is not null)
+        {
+            foreach (var f in sourceFile.ExternalFunctionDeclarations.Nodes)
+            {
+                _externalFunctionDeclarations.Add(f.Name, f);
+            }
+        }
+
         foreach (var f in sourceFile.FunctionDefinitions.Nodes)
         {
-            functionCache.Add(f.Name, f);
+            _functionDefinitions.Add(f.Name, f);
         }
     }
     
@@ -41,29 +54,29 @@ public class TypeChecker : Visitor
         }
     }
 
-    void Call(Call c)
+    private void Call(Call c)
     {
-        if (!functionCache.ContainsKey(c.Name))
+        if (!_functionDefinitions.ContainsKey(c.Name) && !_externalFunctionDeclarations.ContainsKey(c.Name))
             throw new SemanticException(c, "No such function.");
 
-        var func = functionCache[c.Name];
-        
-        if (c.Arguments.Nodes.Count != func.Parameters.Nodes.Count)
+        var parameters = _functionDefinitions.TryGetValue(c.Name, out var definition) ? definition.Parameters : _externalFunctionDeclarations[c.Name].Parameters;
+
+        if (c.Arguments.Nodes.Count != parameters.Nodes.Count)
             throw new SemanticException(c, "Wrong number of arguments.");
 
         foreach (var arg in c.Arguments.Nodes)
         {
-            var p = func.Parameters.Nodes.SingleOrDefault(x => x.Name == arg.Name);
+            var p = parameters.Nodes.SingleOrDefault(x => x.Name == arg.Name);
             
             if (p is null)
-                throw new SemanticException(arg, $"Function {func.Name} has no such argument {arg.Name}");
+                throw new SemanticException(arg, $"Function {c.Name} has no such argument {arg.Name}");
             
             if (!p.Type.Equals(arg.Expression.Type))
                 throw new SemanticException(arg, $"Argument type {arg.Expression.Type} doesn't match parameter type {p.Type}");
         }
     }
 
-    static void Return(Return r)
+    private static void Return(Return r)
     {
         var func = r.NearestAncestor<FunctionDefinition>();
 
@@ -71,13 +84,13 @@ public class TypeChecker : Visitor
             throw new ReturnTypeException(r);
     }
 
-    static void If(If i)
+    private static void If(If i)
     {
         if (!i.Predicate.Type.Equals(new BooleanType()))
             throw new PredicateTypeException(i.Predicate);
     }
-    
-    static void IfElse(IfElse i)
+
+    private static void IfElse(IfElse i)
     {
         if (!i.Predicate.Type.Equals(new BooleanType()))
             throw new PredicateTypeException(i.Predicate);

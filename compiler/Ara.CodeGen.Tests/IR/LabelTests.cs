@@ -5,9 +5,9 @@ public class LabelTests : TestBase
     [Test]
     public void Label()
     {
-        builder.Block.AddInstruction(builder.Label("foo"));
+        Builder.Function.AddInstruction(Builder.Label("foo"));
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
             foo:

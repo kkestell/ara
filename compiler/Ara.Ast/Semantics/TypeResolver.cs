@@ -1,9 +1,13 @@
+#region
+
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Statements;
 using Ara.Ast.Types;
 using Type = Ara.Ast.Types.Abstract.Type;
+
+#endregion
 
 namespace Ara.Ast.Semantics;
 
@@ -26,12 +30,12 @@ public class TypeResolver : Visitor
         }
     }
 
-    static void ResolveReturn(Return r)
+    private static void ResolveReturn(Return r)
     {
         r.NearestAncestor<FunctionDefinition>().Returns.Add(r);
     }
 
-    static void ResolveFunctionDefinition(FunctionDefinition f)
+    private static void ResolveFunctionDefinition(FunctionDefinition f)
     {
         if (f.ReturnTypeRef is not null)
         {

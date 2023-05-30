@@ -1,4 +1,8 @@
+#region
+
 using Type = Ara.Ast.Types.Abstract.Type;
+
+#endregion
 
 namespace Ara.Ast.Types;
 

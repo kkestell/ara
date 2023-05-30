@@ -1,4 +1,8 @@
+#region
+
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR;
 

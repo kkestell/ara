@@ -1,25 +1,29 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
 public class Load : Instruction
 {
-    readonly Value pointer;
+    private readonly Value _pointer;
 
-    public Load(Block block, Value pointer, string? name = null) : base(block, name)
+    public Load(Function function, Value pointer, string? name = null) : base(function, name)
     {
         if (pointer.Type.GetType() != typeof(PointerType))
             throw new ArgumentException("Argument is not a pointer");
         
-        this.pointer = pointer;
+        _pointer = pointer;
     }
     
     public override IrType Type
     {
         get
         {
-            if (pointer.Type is not PointerType ptrType) 
+            if (_pointer.Type is not PointerType ptrType) 
                 throw new NotSupportedException("Not a pointer!");
             
             if (ptrType.Type is ArrayType arrayType)
@@ -32,9 +36,9 @@ public class Load : Instruction
     
     public override void Emit(StringBuilder sb)
     {
-        if (pointer.Type is PointerType ptrType)
+        if (_pointer.Type is PointerType ptrType)
         {
-            sb.Append($"{Resolve()} = load {ptrType.Type.ToIr()}, ptr {pointer.Resolve()}\n");
+            sb.Append($"{Resolve()} = load {ptrType.Type.ToIr()}, ptr {_pointer.Resolve()}\n");
         }
         else
         {

@@ -1,3 +1,5 @@
+extern fn print_float(f: float) -> void
+
 fn pi(n: int) {
   pi := 4.0
   flag := false
@@ -15,4 +17,8 @@ fn pi(n: int) {
   }
 
   return pi
+}
+
+fn main() {
+  print_float(f: pi(n: 10000))
 }

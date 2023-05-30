@@ -10,7 +10,21 @@ module.exports = grammar({
   conflicts: $ => [[$.if_statement, $.if_else_statement]],
 
   rules: {
-    source_file: $ => $.function_definition_list,
+    source_file: $ => seq(
+      optional($.external_function_declaration_list),
+      $.function_definition_list
+    ),
+
+    external_function_declaration_list: $ => repeat1($.external_function_declaration),
+
+    external_function_declaration: $ => seq(
+      'extern',
+      'fn',
+      $.identifier, // name
+      $.parameter_list,
+      '->',
+      $._type
+    ),
 
     function_definition_list: $ => repeat1($.function_definition),
 
@@ -50,7 +64,8 @@ module.exports = grammar({
       $.if_else_statement,
       $.assignment_statement,
       $.array_assignment_statement,
-      $.for_statement
+      $.for_statement,
+      $.function_call
     ),
 
     for_statement: $ => seq(
@@ -119,11 +134,11 @@ module.exports = grammar({
       $._atom,
       $.unary_expression,
       $.binary_expression,
-      $.function_call_expression,
+      $.function_call,
       seq('(', $._expression, ')')
     ),
 
-    function_call_expression: $ => seq(
+    function_call: $ => seq(
       $.identifier,
       $.argument_list,
     ),

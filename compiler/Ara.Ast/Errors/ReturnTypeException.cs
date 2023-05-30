@@ -1,5 +1,9 @@
+#region
+
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Statements;
+
+#endregion
 
 namespace Ara.Ast.Errors;
 
@@ -9,7 +13,7 @@ public class ReturnTypeException : SemanticException
     {
     }
 
-    static string BuildMessage(Return node)
+    private static string BuildMessage(Return node)
     {
         var func = node.NearestAncestor<FunctionDefinition>();
         return $"Invalid return type {node.Expression.Type} where {func.Type} was expected.";

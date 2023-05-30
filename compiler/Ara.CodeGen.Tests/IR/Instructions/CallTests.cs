@@ -1,7 +1,11 @@
+#region
+
 using System.Collections.Generic;
 using Ara.CodeGen.IR;
 using Ara.CodeGen.IR.Types;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -10,12 +14,13 @@ public class CallTests : TestBase
     [Test]
     public void Call()
     {
-        builder.Call("test", new VoidType(), new List<Argument> { new (IrType.Integer, new IntegerValue(1))});
+        Builder.Call("test", new VoidType(), new List<Argument> { new (IrType.Integer, new IntegerValue(1))});
 
-        AssertIr(module.Emit(), @"
+        var ir = Module.Emit();
+        AssertIr(ir, @"
             define void @test () {
             entry:
-              %""0"" = call void @test(i32 1)
+              call void @test(i32 1)
             }
         ");
     }

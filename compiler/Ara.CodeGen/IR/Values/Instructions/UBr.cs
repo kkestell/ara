@@ -1,15 +1,19 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
 public class UBr : Value
 {
-    readonly Label label;
+    private readonly Label _label;
     
     public UBr(Label label)
     {
-        this.label = label;
+        _label = label;
     }
 
     public override IrType Type => IrType.Void;
@@ -21,6 +25,6 @@ public class UBr : Value
 
     public override void Emit(StringBuilder sb)
     {
-        sb.AppendLine($"br label {label.Resolve()}");
+        sb.AppendLine($"br label {_label.Resolve()}");
     }
 }

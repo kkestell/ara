@@ -1,9 +1,13 @@
+#region
+
 using Ara.Ast.Errors;
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Expressions;
 using Ara.Ast.Nodes.Expressions.Values;
 using Ara.Ast.Types;
+
+#endregion
 
 namespace Ara.Ast.Semantics;
 
@@ -23,7 +27,7 @@ public class ArrayBoundsChecker : Visitor
         }
     }
 
-    static void CheckBounds(ArrayIndex arrayIndex)
+    private static void CheckBounds(ArrayIndex arrayIndex)
     {
         if (arrayIndex.VariableReference.Type is not ArrayType t)
             throw new SemanticException(arrayIndex, "Attempting to index something that isn't an array!");

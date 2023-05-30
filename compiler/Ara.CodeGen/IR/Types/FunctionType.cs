@@ -1,4 +1,8 @@
+#region
+
 using Ara.Ast.Nodes;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Types;
 
@@ -19,6 +23,14 @@ public class FunctionType
         return new FunctionType(
             IrType.FromType(functionDefinition.Type),
             functionDefinition.Parameters.Nodes.Select(x =>
+                new Parameter(x.Name, IrType.FromType(x.Type))).ToList());
+    }
+    
+    public static FunctionType FromExternalDeclaration(Ast.Nodes.ExternalFunctionDeclaration externalFunctionDeclaration)
+    {
+        return new FunctionType(
+            IrType.FromType(externalFunctionDeclaration.Type),
+            externalFunctionDeclaration.Parameters.Nodes.Select(x =>
                 new Parameter(x.Name, IrType.FromType(x.Type))).ToList());
     }
 }

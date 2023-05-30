@@ -1,5 +1,9 @@
+#region
+
 using Ara.Ast.Errors;
 using Ara.Ast.Semantics;
+
+#endregion
 
 namespace Ara.Ast.Tests.Semantics;
 

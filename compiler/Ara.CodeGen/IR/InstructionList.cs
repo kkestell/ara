@@ -1,32 +1,36 @@
+#region
+
 using System.Collections;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.IR;
 
 public class InstructionList : IEnumerable<Value>
 {
-    readonly List<Value> values = new();
+    private readonly List<Value> _values = new();
     
     public void Insert(Value instruction)
     {
-        values.Insert(Index, instruction);
+        _values.Insert(Index, instruction);
         Index++;
     }
 
-    public IEnumerable<Value> Values => values.AsEnumerable();
+    public IEnumerable<Value> Values => _values.AsEnumerable();
 
     public int Index { get; private set; }
 
-    public int Count => values.Count;
+    public int Count => _values.Count;
 
     public void PositionBefore(Value instruction)
     {
-        Index = values.IndexOf(instruction);
+        Index = _values.IndexOf(instruction);
     }
 
     public void PositionAfter(Value instruction)
     {
-        Index = values.IndexOf(instruction) + 1;
+        Index = _values.IndexOf(instruction) + 1;
     }
 
     public void PositionAtStart()
@@ -36,16 +40,16 @@ public class InstructionList : IEnumerable<Value>
 
     public void PositionAtEnd()
     {
-        Index = values.Count;
+        Index = _values.Count;
     }
 
     public IEnumerator<Value> GetEnumerator()
     {
-        return values.GetEnumerator();
+        return _values.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)values).GetEnumerator();
+        return ((IEnumerable)_values).GetEnumerator();
     }
 }

@@ -1,11 +1,15 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values;
 
 public class Label: NamedValue
 {
-    public Label(Block block, string value) : base(block, value)
+    public Label(Function function, string value) : base(function, value)
     {
     }
     
@@ -13,11 +17,11 @@ public class Label: NamedValue
     
     public override string Resolve()
     {
-        return $"%\"{Name}\"";
+        return $"%{Name}";
     }
 
     public override void Emit(StringBuilder sb)
     {
-        sb.AppendLine($"\"{Name}\":");
+        sb.AppendLine($"{Name}:");
     }
 }

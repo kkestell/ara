@@ -1,27 +1,31 @@
+#region
+
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Statements;
 using Ara.Parsing.Abstract;
 using Type = Ara.Ast.Types.Abstract.Type;
 
+#endregion
+
 namespace Ara.Ast.Nodes;
 
 public record FunctionDefinition(IParseNode Node, string Name, NodeList<Parameter> Parameters, TypeRef? ReturnTypeRef, Block Block) : AstNode(Node)
 {
-    List<AstNode>? children;
+    private List<AstNode>? _children;
 
     public override IEnumerable<AstNode> Children
     {
         get
         {
-            if (children is not null)
-                return children;
+            if (_children is not null)
+                return _children;
 
-            children = new List<AstNode> { Parameters, Block };
+            _children = new List<AstNode> { Parameters, Block };
 
             if (ReturnTypeRef is not null)
-                children.Add(ReturnTypeRef);
+                _children.Add(ReturnTypeRef);
 
-            return children;
+            return _children;
         }
     }
 

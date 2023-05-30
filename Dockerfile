@@ -9,18 +9,20 @@ RUN apt-get update \
 
 RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
-WORKDIR /ara/parser
-COPY parser/ ./
-WORKDIR /ara/parser/tree-sitter
-RUN make clean
-RUN make
-WORKDIR /ara/parser
-RUN npm install
-RUN make
+# WORKDIR /ara/parser
+# COPY parser/ ./
+# WORKDIR /ara/parser/tree-sitter
+# RUN make clean
+# RUN make
+# WORKDIR /ara/parser
+# RUN npm install
+# RUN make
+# WORKDIR /ara/libara
+# RUN make
 
-WORKDIR /ara/compiler
-COPY compiler/ ./
-RUN dotnet publish Ara -c release -r linux-x64 -o /ara/bin
+# WORKDIR /ara/compiler
+# COPY compiler/ ./
+# RUN dotnet publish Ara -c release -r linux-x64 -o /ara/bin
 
 RUN echo 'export PATH=$PATH:/ara/bin/' >> /root/.bashrc
 

@@ -1,5 +1,9 @@
+#region
+
 using System;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -8,12 +12,12 @@ public class UDivTests : TestBase
     [Test]
     public void UnsignedDivideTwoIntegers()
     {
-        builder.UDiv(new IntegerValue(1), new IntegerValue(1));
+        Builder.UDiv(new IntegerValue(1), new IntegerValue(1));
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-                %""0"" = udiv i32 1, 1
+                %0 = udiv i32 1, 1
             }
         ");
     }
@@ -23,7 +27,7 @@ public class UDivTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.UDiv(new IntegerValue(1), new FloatValue(3.14f));
+            Builder.UDiv(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +36,7 @@ public class UDivTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.UDiv(new FloatValue(1), new FloatValue(3.14f));
+            Builder.UDiv(new FloatValue(1), new FloatValue(3.14f));
         });
     }
 }

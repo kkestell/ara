@@ -1,22 +1,26 @@
+#region
+
 using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values;
 
 public class BooleanValue : ConstantValue
 {
-    readonly int value;
+    private readonly int _value;
     
     public override IrType Type => IrType.Bool;
 
     public BooleanValue(bool value)
     {
-        this.value = value ? 1 : 0;
+        _value = value ? 1 : 0;
     }
 
     public override string Resolve()
     {
-        return value.ToString();
+        return _value.ToString();
     }
 
     public override void Emit(StringBuilder sb)
@@ -25,6 +29,6 @@ public class BooleanValue : ConstantValue
 
     public override string ToIr()
     {
-        return value.ToString();
+        return _value.ToString();
     }
 }

@@ -1,4 +1,8 @@
+#region
+
 using Ara.Ast.Nodes;
+
+#endregion
 
 namespace Ara.Ast.Tests;
 
@@ -37,7 +41,7 @@ public class AstTransformerTests : TestBase
         {
             Assert.That(func.Name, Is.EqualTo("main"));
 
-            Assert.That(func.Parameters.Nodes.Count, Is.EqualTo(3));
+            Assert.That(func.Parameters.Nodes, Has.Count.EqualTo(3));
             var p = func.Parameters.Nodes.ToList();
 
             Assert.That(((SingleValueTypeRef)p[0].TypeRef).Name, Is.EqualTo("int"));

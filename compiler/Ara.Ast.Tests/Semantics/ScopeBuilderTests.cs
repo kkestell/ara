@@ -1,5 +1,9 @@
+#region
+
 using Ara.Ast.Nodes.Statements;
 using Ara.Ast.Semantics;
+
+#endregion
 
 namespace Ara.Ast.Tests.Semantics;
 
@@ -18,11 +22,14 @@ public class ScopeBuilderTests : TestBase
         new ScopeBuilder(ast).Visit();
 
         var block = ast.FunctionDefinitions.Nodes.First().Block;
-
-        Assert.That(block.Scope.ContainsKey("a"), Is.True);
-        Assert.That(block.Scope.ContainsKey("b"), Is.True);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(block.Scope.ContainsKey("a"), Is.True);
+            Assert.That(block.Scope.ContainsKey("b"), Is.True);
+        });
     }
-    
+
     [Test]
     public void BuildsScopeForLoopCounters()
     {

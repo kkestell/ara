@@ -1,5 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -8,12 +12,12 @@ public class MulTests : TestBase
     [Test]
     public void MultiplyTwoIntegers()
     {
-        builder.Mul(new IntegerValue(1), new IntegerValue(1));
+        Builder.Mul(new IntegerValue(1), new IntegerValue(1));
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-                %""0"" = mul i32 1, 1
+                %0 = mul i32 1, 1
             }
         ");
     }
@@ -23,7 +27,7 @@ public class MulTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Mul(new IntegerValue(1), new FloatValue(3.14f));
+            Builder.Mul(new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +36,7 @@ public class MulTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Mul(new FloatValue(1), new FloatValue(3.14f));
+            Builder.Mul(new FloatValue(1), new FloatValue(3.14f));
         });
     }
 }

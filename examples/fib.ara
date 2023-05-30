@@ -1,3 +1,5 @@
+extern fn print_int(i: int) -> void
+
 fn fib(n: int) {
   if n == 0
     return 0
@@ -7,5 +9,6 @@ fn fib(n: int) {
 }
 
 fn main() {
-  return fib(n: 10)
+  print_int(i: fib(n: 10))
+  return 0
 }

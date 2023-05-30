@@ -1,15 +1,19 @@
-﻿using System.Text;
+﻿#region
+
+using System.Text;
 using Ara.CodeGen.IR.Types;
+
+#endregion
 
 namespace Ara.CodeGen.IR.Values.Instructions;
 
 public class Icmp : Instruction
 {
-    readonly IcmpCondition condition;
-    readonly Value left;
-    readonly Value right;
+    private readonly IcmpCondition _condition;
+    private readonly Value _left;
+    private readonly Value _right;
 
-    public Icmp(Block block, IcmpCondition condition, Value left, Value right, string? name = null) : base(block, name)
+    public Icmp(Function function, IcmpCondition condition, Value left, Value right, string? name = null) : base(function, name)
     {
         if (!left.Type.Equals(right.Type))
             throw new ArgumentException();
@@ -17,16 +21,16 @@ public class Icmp : Instruction
         if (left.Type is not IntegerType and not BooleanType and not PointerType)
             throw new ArgumentException();
 
-        this.condition = condition;
-        this.left = left;
-        this.right = right;
+        _condition = condition;
+        _left = left;
+        _right = right;
     }
 
     public override IrType Type => IrType.Bool;
 
     public override void Emit(StringBuilder sb)
     {
-        var cond = condition switch
+        var cond = _condition switch
         {
             IcmpCondition.Equal                  => "eq",
             IcmpCondition.NotEqual               => "ne",
@@ -41,6 +45,6 @@ public class Icmp : Instruction
             _ => throw new NotImplementedException()
         };
 
-        sb.Append($"{Resolve()} = icmp {cond} {left.Type.ToIr()} {left.Resolve()}, {right.Resolve()}\n");
+        sb.Append($"{Resolve()} = icmp {cond} {_left.Type.ToIr()} {_left.Resolve()}, {_right.Resolve()}\n");
     }
 }

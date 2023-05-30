@@ -1,5 +1,9 @@
+#region
+
 using System;
 using Ara.CodeGen.IR.Values;
+
+#endregion
 
 namespace Ara.CodeGen.Tests.IR.Instructions;
 
@@ -8,12 +12,12 @@ public class SelectTests : TestBase
     [Test]
     public void SelectAValue()
     {
-        builder.Select(new BooleanValue(true), new IntegerValue(1), new IntegerValue(2));
+        Builder.Select(new BooleanValue(true), new IntegerValue(1), new IntegerValue(2));
 
-        AssertIr(module.Emit(), @"
+        AssertIr(Module.Emit(), @"
             define void @test () {
             entry:
-              %""0"" = select i1 1, i32 1, i32 2
+              %0 = select i1 1, i32 1, i32 2
             }
         ");
     }
@@ -23,7 +27,7 @@ public class SelectTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Select(new BooleanValue(true), new IntegerValue(1), new FloatValue(3.14f));
+            Builder.Select(new BooleanValue(true), new IntegerValue(1), new FloatValue(3.14f));
         });
     }
 
@@ -32,7 +36,7 @@ public class SelectTests : TestBase
     {
         Assert.Throws<ArgumentException>(delegate
         {
-            builder.Select(new IntegerValue(1), new IntegerValue(2), new IntegerValue(3));
+            Builder.Select(new IntegerValue(1), new IntegerValue(2), new IntegerValue(3));
         });
     }
 }
