@@ -9,7 +9,7 @@ using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes;
 
-public record FunctionDefinition(IParseNode Node, string Name, NodeList<Parameter> Parameters, TypeRef? ReturnTypeRef, Block Block) : Definition(Node, Name)
+public record StructDefinition(IParseNode Node, string Name) : Definition(Node, Name)
 {
     private List<AstNode>? _children;
 
@@ -20,16 +20,9 @@ public record FunctionDefinition(IParseNode Node, string Name, NodeList<Paramete
             if (_children is not null)
                 return _children;
 
-            _children = new List<AstNode> { Parameters, Block };
-
-            if (ReturnTypeRef is not null)
-                _children.Add(ReturnTypeRef);
+            _children = new List<AstNode>();
 
             return _children;
         }
     }
-
-    public Type Type { get; set; } = Type.Unknown;
-
-    public List<Return> Returns { get; } = new();
 }

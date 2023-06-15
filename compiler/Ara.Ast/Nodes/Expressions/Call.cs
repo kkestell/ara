@@ -18,7 +18,7 @@ public record Call(IParseNode Node, string Name, NodeList<Argument> Arguments) :
     {
         get
         {
-            var func = NearestAncestor<SourceFile>().FunctionDefinitions.Nodes.SingleOrDefault(x => x.Name == Name);
+            var func = (FunctionDefinition?)NearestAncestor<SourceFile>().Definitions.Nodes.SingleOrDefault(x => x is FunctionDefinition f && f.Name == Name);
 
             if (func is null)
                 throw new ReferenceException(this);

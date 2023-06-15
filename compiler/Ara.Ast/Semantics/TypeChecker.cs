@@ -26,9 +26,17 @@ public class TypeChecker : Visitor
             }
         }
 
-        foreach (var f in sourceFile.FunctionDefinitions.Nodes)
+        foreach (var d in sourceFile.Definitions.Nodes)
         {
-            _functionDefinitions.Add(f.Name, f);
+            switch (d)
+            {
+                case FunctionDefinition f:
+                    _functionDefinitions.Add(f.Name, f);
+                    break;
+                case StructDefinition s:
+                    // TODO
+                    break;
+            }
         }
     }
     
@@ -64,15 +72,13 @@ public class TypeChecker : Visitor
         if (c.Arguments.Nodes.Count != parameters.Nodes.Count)
             throw new SemanticException(c, "Wrong number of arguments.");
 
-        foreach (var arg in c.Arguments.Nodes)
+        for (var i = 0; i < c.Arguments.Nodes.Count; i++)
         {
-            var p = parameters.Nodes.SingleOrDefault(x => x.Name == arg.Name);
+            var a = c.Arguments.Nodes[i];
+            var p = parameters.Nodes[i];
             
-            if (p is null)
-                throw new SemanticException(arg, $"Function {c.Name} has no such argument {arg.Name}");
-            
-            if (!p.Type.Equals(arg.Expression.Type))
-                throw new SemanticException(arg, $"Argument type {arg.Expression.Type} doesn't match parameter type {p.Type}");
+            if (!p.Type.Equals(a.Expression.Type))
+                throw new SemanticException(a, $"Argument type {a.Expression.Type} doesn't match parameter type {p.Type}");
         }
     }
 

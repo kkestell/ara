@@ -21,7 +21,7 @@ public class ScopeBuilderTests : TestBase
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
 
-        var block = ast.FunctionDefinitions.Nodes.First().Block;
+        var block = ast.FunctionDefinitions.First().Block;
         
         Assert.Multiple(() =>
         {
@@ -45,7 +45,7 @@ public class ScopeBuilderTests : TestBase
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
 
-        var block = ((For)ast.FunctionDefinitions.Nodes.First().Block.Statements.Nodes[1]).Block;
+        var block = ((For)ast.FunctionDefinitions.First().Block.Statements.Nodes[1]).Block;
         Assert.That(block.Scope.ContainsKey("i"), Is.True);
     }
     
@@ -62,7 +62,7 @@ public class ScopeBuilderTests : TestBase
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
 
-        var block = ast.FunctionDefinitions.Nodes.First().Block;
+        var block = ast.FunctionDefinitions.First().Block;
         Assert.That(block.Scope.ContainsKey("a"), Is.True);
     }
 }

@@ -7,7 +7,11 @@ using Ara.Parsing.Abstract;
 
 namespace Ara.Ast.Nodes;
 
-public record SourceFile(IParseNode Node, NodeList<FunctionDefinition> FunctionDefinitions, NodeList<ExternalFunctionDeclaration>? ExternalFunctionDeclarations = null) : AstNode(Node)
+public record SourceFile(IParseNode Node, NodeList<AstNode> Definitions, NodeList<ExternalFunctionDeclaration>? ExternalFunctionDeclarations = null) : AstNode(Node)
 {
-    public override IEnumerable<AstNode> Children => ExternalFunctionDeclarations is not null ? new List<AstNode> { ExternalFunctionDeclarations , FunctionDefinitions } : new List<AstNode> { FunctionDefinitions };
+    public override IEnumerable<AstNode> Children => ExternalFunctionDeclarations is not null ? new List<AstNode> { ExternalFunctionDeclarations , Definitions } : new List<AstNode> { Definitions };
+    
+    public IEnumerable<FunctionDefinition> FunctionDefinitions => Definitions.Nodes.OfType<FunctionDefinition>();
+    
+    public IEnumerable<StructDefinition> StructDefinitions => Definitions.Nodes.OfType<StructDefinition>();
 }

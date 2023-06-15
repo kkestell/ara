@@ -1,0 +1,31 @@
+=================================================
+Variable Declaration
+=================================================
+
+fn main() {
+  x: int = 1
+  y: int
+  z := 10 
+}
+
+-------------------------------------------------
+
+(source_file
+  (function_definition_list
+    (function_definition
+      (identifier)
+      (parameter_list)
+      (block
+        (statement_list
+          (variable_declaration_statement
+            (identifier)
+            (single_value_type
+              (identifier))
+            (integer))
+          (variable_declaration_statement
+            (identifier)
+            (single_value_type
+              (identifier)))
+          (variable_declaration_statement
+            (identifier)
+            (integer)))))))

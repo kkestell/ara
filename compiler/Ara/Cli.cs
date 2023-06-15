@@ -5,7 +5,6 @@ using Ara.Ast;
 using Ara.Ast.Errors;
 using Ara.Ast.Semantics;
 using Ara.CodeGen.Ir;
-using Ara.CodeGen.Python;
 using Ara.Parsing;
 
 #endregion
@@ -51,7 +50,7 @@ public static class Cli
 
         // Generate IR
 
-        var ir = Time("CodeGen", () => new PythonCodeGenerator().Generate(ast));
+        var ir = Time("CodeGen", () => new IrCodeGenerator().Generate(ast));
 
         Debug.WriteLine("");
         Debug.WriteLine("");

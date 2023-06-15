@@ -1,0 +1,6 @@
+{
+	"name": "Arch Linux",
+	"build": {
+		"dockerfile": "Dockerfile"
+	}
+}
