@@ -41,7 +41,7 @@ public static class AstTransformer
             "external_function_declaration"      => ExternalFunctionDeclaration(parseNode, children),
             "for_statement"                      => For(parseNode, children),
             "float"                              => Float(parseNode),
-            "function_definition_list"           => FunctionDefinitionList(parseNode, children),
+            "definition_list"                    => DefinitionList(parseNode, children),
             "function_definition"                => FunctionDefinition(parseNode, children),
             "identifier"                         => Identifier(parseNode),
             "if_statement"                       => If(parseNode, children),
@@ -52,6 +52,7 @@ public static class AstTransformer
             "return_statement"                   => Return(parseNode, children),
             "source_file"                        => SourceFile(parseNode, children),
             "statement_list"                     => StatementList(parseNode, children),
+            "struct_definition"                  => StructDefinition(parseNode, children),
             "single_value_type"                  => SingleValueType(parseNode, children),
             "unary_expression"                   => UnaryExpression(parseNode, children),
             "variable_declaration_statement"     => VariableDeclaration(parseNode, children),
@@ -69,7 +70,7 @@ public static class AstTransformer
     }
 
     private static Argument Argument(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, ((Identifier)c[0]).Value, (Expression)c[1]);
+        new(n, (Expression)c[0]);
 
     private static NodeList<Argument> ArgumentList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (Argument)x).ToList());
@@ -111,8 +112,8 @@ public static class AstTransformer
         return new ExternalFunctionDeclaration(n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], (TypeRef)c[2]);
     }
 
-    private static NodeList<FunctionDefinition> FunctionDefinitionList(ParseNode n, IEnumerable<AstNode> c) =>
-        new(n, c.Select(x => (FunctionDefinition)x).ToList());
+    private static NodeList<AstNode> DefinitionList(ParseNode n, IEnumerable<AstNode> c) =>
+        new(n, c.ToList());
 
     private static For For(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2], (Block)c[3]);
@@ -158,16 +159,19 @@ public static class AstTransformer
     {
         if (c.Count == 2)
         {
-            return new(n, (NodeList<FunctionDefinition>)c[1], (NodeList<ExternalFunctionDeclaration>)c[0]);
+            return new(n, (NodeList<AstNode>)c[1], (NodeList<ExternalFunctionDeclaration>)c[0]);
         }
         else
         {
-            return new(n, (NodeList<FunctionDefinition>)c[0]);
+            return new(n, (NodeList<AstNode>)c[0]);
         }
     }
 
     private static NodeList<Statement> StatementList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (Statement)x).ToList());
+    
+    private static StructDefinition StructDefinition(ParseNode n, IReadOnlyList<AstNode> c) =>
+        new(n, ((Identifier)c[0]).Value);
 
     private static SingleValueTypeRef SingleValueType(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value);

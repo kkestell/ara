@@ -1,5 +1,7 @@
 extern fn print_float(f: float) -> void
 
+struct foo
+
 fn pi(n: int) {
   pi := 4.0
   flag := false
@@ -20,5 +22,5 @@ fn pi(n: int) {
 }
 
 fn main() {
-  print_float(f: pi(n: 10000))
+  print_float(pi(10000))
 }

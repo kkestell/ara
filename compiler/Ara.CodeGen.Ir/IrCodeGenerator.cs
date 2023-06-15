@@ -39,9 +39,16 @@ public class IrCodeGenerator : ICodeGenerator
             }
         }
         
-        foreach (var f in root.FunctionDefinitions.Nodes)
+        foreach (var d in root.Definitions.Nodes)
         {
-            _functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
+            switch (d)
+            {
+                case FunctionDefinition f:
+                    _functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
+                    break;
+                case StructDefinition s:
+                    break;
+            }
         }
 
         if (root.ExternalFunctionDeclarations is not null)
@@ -52,9 +59,16 @@ public class IrCodeGenerator : ICodeGenerator
             }
         }
         
-        foreach (var f in root.FunctionDefinitions.Nodes)
+        foreach (var d in root.Definitions.Nodes)
         {
-            EmitFunction(module, f);
+            switch (d)
+            {
+                case FunctionDefinition f:
+                    EmitFunction(module, f);
+                    break;
+                case StructDefinition s:
+                    break;
+            }
         }
         
         return module.Emit();
@@ -266,13 +280,12 @@ public class IrCodeGenerator : ICodeGenerator
         var functionType = _functionTypes[call.Name];
 
         var args = new List<IR.Argument>();
-        foreach (var arg in call.Arguments.Nodes)
+        
+        for (var i = 0; i < call.Arguments.Nodes.Count; i++)
         {
-            var param = functionType.Parameters.SingleOrDefault(x => x.Name == arg.Name);
+            var arg = call.Arguments.Nodes[i];
+            var param = functionType.Parameters[i];
             
-            if (param is null)
-                throw new CodeGenException($"Function {name} has no parameter {arg.Name}");
-
             var val = EmitExpression(builder, arg.Expression);
 
             if (val is Alloca alloca)

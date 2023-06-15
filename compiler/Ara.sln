@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.Ast.Tests", "Ara.Ast.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.CodeGen", "Ara.CodeGen\Ara.CodeGen.csproj", "{80B7F694-C336-4E67-A12E-ADF371CC5345}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.CodeGen.Python", "Ara.CodeGen.Python\Ara.CodeGen.Python.csproj", "{A22E5620-DB6F-4A84-901B-665ED2E7E2F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ara.CodeGen.C", "Ara.CodeGen.C\Ara.CodeGen.C.csproj", "{A22E5620-DB6F-4A84-901B-665ED2E7E2F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

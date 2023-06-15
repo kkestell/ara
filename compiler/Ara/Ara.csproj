@@ -46,7 +46,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Ara.Ast\Ara.Ast.csproj" />
         <ProjectReference Include="..\Ara.CodeGen.Ir\Ara.CodeGen.Ir.csproj" />
-        <ProjectReference Include="..\Ara.CodeGen.Python\Ara.CodeGen.Python.csproj" />
+        <ProjectReference Include="..\Ara.CodeGen.C\Ara.CodeGen.C.csproj" />
         <ProjectReference Include="..\Ara.Parsing\Ara.Parsing.csproj" />
     </ItemGroup>
 </Project>

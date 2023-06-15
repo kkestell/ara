@@ -1,6 +1,6 @@
-# Ix
+# Ara
 
-Ix is an imperative, statically typed programming language. Ix uses Tree Sitter for parsing. The compiler is written in C# and emits LLVM IR.
+Ara is an imperative, statically typed programming language. Ara uses Tree Sitter for parsing. The compiler is written in C# and emits LLVM IR.
 
 ```
 fn fib(n: int) -> int {
@@ -40,7 +40,7 @@ Identifiers begin with a letter and may contain letters, numbers, and underscore
 
 ### Blocks
 
-Ix uses curly braces to define blocks. You can use a block anywhere a statement is allowed, like in control flow statements. Function bodies are also blocks.
+Ara uses curly braces to define blocks. You can use a block anywhere a statement is allowed, like in control flow statements. Function bodies are also blocks.
 
 ## Values
 
