@@ -14,7 +14,7 @@ public class Phi : Instruction
     public Phi(Function function, Dictionary<Label, Value> values, string? name = null) : base(function, name)
     {
         if (values.Count == 0)
-            throw new ArgumentException();
+            throw new ArgumentException("Cannot create phi node with no values", nameof(values));
         
         _values = values;
     }

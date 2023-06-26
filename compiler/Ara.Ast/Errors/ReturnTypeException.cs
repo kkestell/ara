@@ -1,9 +1,5 @@
-#region
-
 using Ara.Ast.Nodes;
 using Ara.Ast.Nodes.Statements;
-
-#endregion
 
 namespace Ara.Ast.Errors;
 

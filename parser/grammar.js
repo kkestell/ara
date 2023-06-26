@@ -7,7 +7,10 @@ module.exports = grammar({
 
   word: $ => $.identifier,
 
-  conflicts: $ => [[$.if_statement, $.if_else_statement]],
+  conflicts: $ => [
+    [$.if_statement, $.if_else_statement],
+    [$.array_assignment_statement, $.single_value_type]
+  ],
 
   rules: {
     source_file: $ => seq(
@@ -19,11 +22,10 @@ module.exports = grammar({
 
     external_function_declaration: $ => seq(
       'extern',
-      'fn',
-      $.identifier, // name
+      $._type,
+      $.identifier,
       $.parameter_list,
-      '->',
-      $._type
+      ';'
     ),
 
     definition_list: $ => repeat1($._definition),
@@ -34,10 +36,9 @@ module.exports = grammar({
     ),
 
     function_definition: $ => seq(
-      'fn',
-      $.identifier, // name
+      $._type,
+      $.identifier,
       $.parameter_list,
-      optional(seq('->', $._type)),
       $.block
     ),
 
@@ -48,15 +49,26 @@ module.exports = grammar({
     ),
 
     parameter: $ => seq(
-      $.identifier,
-      ':',
-      $._type
+      $._type,
+      $.identifier
     ),
 
     block: $ => $.statement_list,
 
     struct_definition: $ => seq(
       'struct',
+      $.identifier,
+      $.struct_field_list
+    ),
+
+    struct_field_list: $ => seq(
+      '{',
+      repeat1($.struct_field),
+      '}'
+    ),
+
+    struct_field: $ => seq(
+      $._type,
       $.identifier
     ),
 
@@ -66,89 +78,11 @@ module.exports = grammar({
       '}'
     ),
 
-    _statement: $ => choice(
-      $.block,
-      $.return_statement,
-      $.variable_declaration_statement,
-      $.if_statement,
-      $.if_else_statement,
-      $.assignment_statement,
-      $.array_assignment_statement,
-      $.for_statement,
-      $.function_call
-    ),
+    // =========================================================================
+    // Function Calls
+    // =========================================================================
 
-    for_statement: $ => seq(
-      'for',
-      $.identifier,
-      'in',
-      $._expression,
-      '..',
-      $._expression,
-      $.block
-    ),
-
-    return_statement: $ => seq(
-      'return',
-      $._expression,
-    ),
-
-    variable_declaration_statement: $ => seq(
-      $.identifier,
-      ':',
-      choice(
-        $._type,
-        $._variable_declaration_value,
-        seq(
-          $._type,
-          $._variable_declaration_value
-        )
-      )
-    ),
-
-    _variable_declaration_value: $ => seq(
-      '=',
-      $._expression
-    ),
-
-    if_statement: $ => seq(
-      'if',
-      $._expression,
-      $._statement
-    ),
-
-    if_else_statement: $ => seq(
-      'if',
-      $._expression,
-      $._statement,
-      'else',
-      $._statement
-    ),
-
-    assignment_statement: $ => seq(
-      $.identifier,
-      '=',
-      $._expression
-    ),
-
-    array_assignment_statement: $ => seq(
-      $.identifier,
-      '[',
-      $._expression,
-      ']',
-      '=',
-      $._expression
-    ),
-
-    _expression: $ => choice(
-      $._atom,
-      $.unary_expression,
-      $.binary_expression,
-      $.function_call,
-      seq('(', $._expression, ')')
-    ),
-
-    function_call: $ => seq(
+    _function_call: $ => seq(
       $.identifier,
       $.argument_list,
     ),
@@ -163,6 +97,106 @@ module.exports = grammar({
       $._expression
     ),
 
+    // =========================================================================
+    // Statements
+    // =========================================================================
+
+    _statement: $ => choice(     
+      $.block,
+      $.return_statement,
+      $.variable_declaration_statement,
+      $.if_statement,
+      $.if_else_statement,
+      $.assignment_statement,
+      $.array_assignment_statement,
+      $.for_statement,
+      $.function_call_statement
+    ),
+
+    return_statement: $ => seq(
+      'return',
+      $._expression,
+      ';'
+    ),
+
+    variable_declaration_statement: $ => seq(
+      $._type,
+      $.identifier,
+      optional(
+        seq(
+          '=',
+          $._expression
+        )
+      ),
+      ';'
+    ),
+  
+    if_statement: $ => seq(
+      'if',
+      '(',
+      $._expression,
+      ')',
+      $.block
+    ),
+
+    if_else_statement: $ => seq(
+      'if',
+      '(',
+      $._expression,
+      ')',
+      $.block,
+      'else',
+      $.block
+    ),
+
+    assignment_statement: $ => seq(
+      $.identifier,
+      '=',
+      $._expression,
+      ';'
+    ),
+
+    array_assignment_statement: $ => seq(
+      $.identifier,
+      '[',
+      $._expression,
+      ']',
+      '=',
+      $._expression,
+      ';'
+    ),
+
+    for_statement: $ => seq(
+      'for',
+      '(',
+      $.identifier,
+      'in',
+      $._expression,
+      '..',
+      $._expression,
+      ')',
+      $.block
+    ),
+
+    function_call_statement: $ => seq(
+      $._function_call,
+      ';'
+    ),
+
+    // =========================================================================
+    // Expressions
+    // =========================================================================
+
+    _expression: $ => choice(
+      $._atom,
+      $.unary_expression,
+      $.binary_expression,
+      $.function_call_expression,
+      seq('(', $._expression, ')')
+    ),
+
+    function_call_expression: $ => $._function_call,
+    
     _atom: $ => choice(
       $.array_index,
       $.variable_reference,

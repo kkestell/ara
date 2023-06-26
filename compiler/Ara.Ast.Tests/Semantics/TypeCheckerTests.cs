@@ -20,7 +20,6 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
 
         Assert.Throws<ReturnTypeException>(delegate
         {
@@ -37,13 +36,12 @@ public class TypeCheckerTests : TestBase
             }
 
             fn main() -> int {
-              return test(a: 1, b: 2)
+              return test(1, 2)
             }
         ");
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
 
         Assert.Throws<SemanticException>(delegate
         {
@@ -66,31 +64,7 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
 
-        Assert.Throws<SemanticException>(delegate
-        {
-            new TypeChecker(ast).Visit();
-        });
-    }
-    
-    [Test]
-    public void ThrowWhenArgumentNameInvalid()
-    {
-        using var tree = Parse(@"
-            fn test(a: int) -> int {
-              return 0
-            }
-
-            fn main() -> int {
-              return test(b: 1)
-            }
-        ");
-        
-        var ast = AstTransformer.Transform(tree);
-        new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
-        
         Assert.Throws<SemanticException>(delegate
         {
             new TypeChecker(ast).Visit();
@@ -106,13 +80,12 @@ public class TypeCheckerTests : TestBase
             }
 
             fn main() -> int {
-              return test(a: 1.5)
+              return test(1.5)
             }
         ");
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
 
         Assert.Throws<SemanticException>(delegate
         {
@@ -134,7 +107,6 @@ public class TypeCheckerTests : TestBase
         
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
 
         Assert.Throws<PredicateTypeException>(delegate
         {

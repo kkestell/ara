@@ -1,14 +1,21 @@
-extern fn print_int(i: int) -> void
+extern void print_int(int i);
 
-fn fib(n: int) {
-  if n == 0
-    return 0
-  if n == 1
-    return 1
-  return fib(n: n-2) + fib(n: n-1)
+int fib(int n)
+{
+	if (n == 0)
+	{
+    	return 0;
+  	}
+  	if (n == 1)
+	{
+    	return 1;
+ 	}
+  
+  	return fib(n-2) + fib(n-1);
 }
 
-fn main() {
-  print_int(i: fib(n: 10))
-  return 0
+int main()
+{
+	print_int(fib(10));
+  	return 0;
 }

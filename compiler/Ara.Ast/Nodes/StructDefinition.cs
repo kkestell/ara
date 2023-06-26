@@ -3,13 +3,12 @@
 using Ara.Ast.Nodes.Abstract;
 using Ara.Ast.Nodes.Statements;
 using Ara.Parsing.Abstract;
-using Type = Ara.Ast.Types.Abstract.Type;
 
 #endregion
 
 namespace Ara.Ast.Nodes;
 
-public record StructDefinition(IParseNode Node, string Name) : Definition(Node, Name)
+public record StructDefinition(IParseNode Node, string Name, NodeList<StructField> Fields) : Definition(Node, Name)
 {
     private List<AstNode>? _children;
 
@@ -20,7 +19,7 @@ public record StructDefinition(IParseNode Node, string Name) : Definition(Node, 
             if (_children is not null)
                 return _children;
 
-            _children = new List<AstNode>();
+            _children = new List<AstNode> { Fields };
 
             return _children;
         }

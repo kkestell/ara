@@ -1,13 +1,13 @@
-﻿using Ara.Ast.Nodes;
-using Ara.Ast.Nodes.Expressions;
-using Ara.Ast.Nodes.Statements;
-using System.Text;
-using Ara.Ast.Nodes.Expressions.Abstract;
-using Ara.Ast.Nodes.Expressions.Values;
-using Ara.Ast.Nodes.Statements.Abstract;
-
-namespace Ara.CodeGen.Python;
-
+﻿// using Ara.Ast.Nodes;
+// using Ara.Ast.Nodes.Expressions;
+// using Ara.Ast.Nodes.Statements;
+// using System.Text;
+// using Ara.Ast.Nodes.Expressions.Abstract;
+// using Ara.Ast.Nodes.Expressions.Values;
+// using Ara.Ast.Nodes.Statements.Abstract;
+//
+// namespace Ara.CodeGen.C;
+//
 // public class CCodeGenerator : ICodeGenerator
 // {
 //     private readonly Dictionary<string, FunctionType> _functionTypes = new();

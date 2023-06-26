@@ -10,7 +10,7 @@ using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes.Expressions;
 
-public record Call(IParseNode Node, string Name, NodeList<Argument> Arguments) : Expression(Node)
+public record CallExpression(IParseNode Node, string Name, NodeList<Argument> Arguments) : Expression(Node)
 {
     public override IEnumerable<AstNode> Children { get; } = new List<AstNode> { Arguments };
 

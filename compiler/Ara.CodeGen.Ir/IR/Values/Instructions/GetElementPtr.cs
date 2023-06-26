@@ -27,9 +27,7 @@ public class GetElementPtr : Instruction
     {
         if (_array.Type is not PointerType pointerType)
             throw new CodeGenException("Not a pointer!");
-    //     if (_array.Type is not ArrayType a)
-    //         throw new CodeGenException("Pointee is not an array");
-
+    
         if (pointerType.Type is not ArrayType a)
             throw new CodeGenException("Pointee is not an array");
     

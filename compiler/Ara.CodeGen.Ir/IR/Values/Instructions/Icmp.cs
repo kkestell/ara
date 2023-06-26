@@ -16,10 +16,10 @@ public class Icmp : Instruction
     public Icmp(Function function, IcmpCondition condition, Value left, Value right, string? name = null) : base(function, name)
     {
         if (!left.Type.Equals(right.Type))
-            throw new ArgumentException();
+            throw new ArgumentException($"Cannot add values of different types: {left.Type} and {right.Type}", nameof(right));
 
         if (left.Type is not IntegerType and not BooleanType and not PointerType)
-            throw new ArgumentException();
+            throw new ArgumentException($"Cannot add values of type {left.Type}", nameof(left));
 
         _condition = condition;
         _left = left;

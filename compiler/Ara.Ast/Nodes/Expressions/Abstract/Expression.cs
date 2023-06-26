@@ -9,7 +9,7 @@ using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes.Expressions.Abstract;
 
-public abstract record Expression(IParseNode Node) : Statement(Node), ITyped
+public abstract record Expression(IParseNode Node) : AstNode(Node), ITyped
 {
     public abstract Type Type { get; }
 }

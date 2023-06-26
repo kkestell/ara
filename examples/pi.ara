@@ -1,26 +1,32 @@
-extern fn print_float(f: float) -> void
+extern void print_float(float f);
 
-struct foo
+float pi(int n)
+{
+    float pi = 4.0;
+    bool flag = false;
+    float i = 3.0;
 
-fn pi(n: int) {
-  pi := 4.0
-  flag := false
-  i := 3.0
+    for (c in 3..n)
+    {
+        if (flag)
+        {
+            pi = pi + 4.0 / i;
+            flag = false;
+        }
+        else
+        {
+            pi = pi - 4.0 / i;
+            flag = true;
+        }
 
-  for c in 3..n {
-    if flag {
-      pi = pi + 4.0 / i
-      flag = false
-    } else {
-      pi = pi - 4.0 / i
-      flag = true
+        i = i + 2.0;
     }
-    i = i + 2.0
-  }
 
-  return pi
+    return pi;
 }
 
-fn main() {
-  print_float(pi(10000))
+int main()
+{
+    print_float(pi(10000));
+    return 0;
 }
