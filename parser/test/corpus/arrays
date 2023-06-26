@@ -3,14 +3,14 @@ Arrays
 =================================================
 
 fn main() {
-    bad: int[3]
-    bad[5] = 10
+    bad: int[3];
+    bad[5] = 10;
   }
 
 -------------------------------------------------
 
 (source_file
-  (function_definition_list
+  (definition_list
     (function_definition
       (identifier)
       (parameter_list)

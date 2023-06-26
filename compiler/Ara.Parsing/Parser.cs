@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Ara.Parsing;
 
-public sealed class Parser : IDisposable
+public partial class Parser : IDisposable
 {
     private readonly Handle<Parser> _handle;
 
@@ -26,12 +26,12 @@ public sealed class Parser : IDisposable
         return new Tree(tree, source, filename);
     }
 
-    [DllImport(Platform.SharedLibrary, EntryPoint = "create_parser")]
-    private static extern Handle<Parser> CreateParser();
+    [LibraryImport(Platform.SharedLibrary, EntryPoint = "create_parser")]
+    private static partial Handle<Parser> CreateParser();
 
-    [DllImport(Platform.SharedLibrary, EntryPoint = "delete_parser")]
-    private static extern void DeleteParser(Handle<Parser> parser);
+    [LibraryImport(Platform.SharedLibrary, EntryPoint = "delete_parser")]
+    private static partial void DeleteParser(Handle<Parser> parser);
 
-    [DllImport(Platform.SharedLibrary, EntryPoint = "parse", CharSet = CharSet.Ansi)]
-    private static extern Handle<Tree> Parse(Handle<Parser> parser, string source);
+    [LibraryImport(Platform.SharedLibrary, EntryPoint = "parse", StringMarshalling = StringMarshalling.Utf8)]
+    private static partial Handle<Tree> Parse(Handle<Parser> parser, string source);
 }

@@ -13,10 +13,10 @@ using Ara.CodeGen.Ir.IR.Values.Instructions;
 using Argument = Ara.CodeGen.Ir.IR.Argument;
 using ArrayType = Ara.Ast.Types.ArrayType;
 using BooleanValue = Ara.Ast.Nodes.Expressions.Values.BooleanValue;
-using Call = Ara.Ast.Nodes.Expressions.Call;
 using ExternalFunctionDeclaration = Ara.Ast.Nodes.ExternalFunctionDeclaration;
 using FloatValue = Ara.Ast.Nodes.Expressions.Values.FloatValue;
 using IntegerValue = Ara.Ast.Nodes.Expressions.Values.IntegerValue;
+using StructField = Ara.CodeGen.Ir.IR.StructField;
 using VoidType = Ara.Ast.Types.VoidType;
 
 #endregion
@@ -26,6 +26,7 @@ namespace Ara.CodeGen.Ir;
 public class IrCodeGenerator : ICodeGenerator
 {
     private readonly Dictionary<string, FunctionType> _functionTypes = new ();
+    private readonly HashSet<string> _structTypes = new ();
 
     public string Generate(SourceFile root)
     {
@@ -47,6 +48,7 @@ public class IrCodeGenerator : ICodeGenerator
                     _functionTypes.Add(f.Name, FunctionType.FromDefinition(f));
                     break;
                 case StructDefinition s:
+                    _structTypes.Add(s.Name);
                     break;
             }
         }
@@ -67,6 +69,7 @@ public class IrCodeGenerator : ICodeGenerator
                     EmitFunction(module, f);
                     break;
                 case StructDefinition s:
+                    EmitStruct(module, s);
                     break;
             }
         }
@@ -74,7 +77,7 @@ public class IrCodeGenerator : ICodeGenerator
         return module.Emit();
     }
 
-    private void EmitExternalFunctionDeclaration(Module module, ExternalFunctionDeclaration externalFunctionDeclaration)
+    private static void EmitExternalFunctionDeclaration(Module module, ExternalFunctionDeclaration externalFunctionDeclaration)
     {
         module.DeclareExternalFunction(
             new IR.ExternalFunctionDeclaration(
@@ -97,6 +100,11 @@ public class IrCodeGenerator : ICodeGenerator
         }
     }
 
+    private static void EmitStruct(Module module, StructDefinition structDefinition)
+    {
+        module.AddStruct(structDefinition.Name, structDefinition.Fields.Nodes.Select(x => new StructField(x.Name, IrType.FromType(x.Type))));
+    }
+
     private void EmitBlock(IrBuilder builder, Block block)
     {
         foreach (var statement in block.Statements.Nodes)
@@ -115,8 +123,8 @@ public class IrCodeGenerator : ICodeGenerator
             case ArrayAssignment a:
                 EmitArrayAssignment(builder, a);
                 break;
-            case Call c:
-                EmitCall(builder, c);
+            case CallStatement c:
+                EmitCallStatement(builder, c);
                 break;
             case Block b:
                 EmitBlock(builder, b);
@@ -208,7 +216,7 @@ public class IrCodeGenerator : ICodeGenerator
         {
             ArrayIndex        e => EmitArrayIndex(builder, e),
             BinaryExpression  e => EmitBinaryExpression(builder, e),
-            Call              e => EmitCall(builder, e),
+            CallExpression    e => EmitCallExpression(builder, e),
             IntegerValue      e => MakeInteger(e),
             FloatValue        e => MakeFloat(e),
             BooleanValue      e => MakeBoolean(e),
@@ -241,8 +249,7 @@ public class IrCodeGenerator : ICodeGenerator
                 BinaryOperator.Subtract   => builder.Sub(left, right),
                 BinaryOperator.Multiply   => builder.Mul(left, right),
                 BinaryOperator.Divide     => builder.SDiv(left, right),
-                // FIXME: Modulo
-                
+                BinaryOperator.Modulo     => throw new NotImplementedException(),
                 BinaryOperator.Equality   => builder.Icmp(IcmpCondition.Equal, left, right),
                 BinaryOperator.Inequality => builder.Icmp(IcmpCondition.NotEqual, left, right),
 
@@ -269,39 +276,53 @@ public class IrCodeGenerator : ICodeGenerator
 
         throw new CodeGenException($"Unsupported binary operand type {left.Type.ToIr()}");
     }
-
-    private Value EmitCall(IrBuilder builder, Call call)
+    
+    private Value EmitCallExpression(IrBuilder builder, CallExpression callExpression)
     {
-        var name = call.Name;
+        var name = callExpression.Name;
+        var args = BuildCallArguments(builder, name, callExpression.Arguments);
 
+        return builder.Call(name, _functionTypes[name].ReturnType, args);
+    }
+
+    private void EmitCallStatement(IrBuilder builder, CallStatement callStatement)
+    {
+        var name = callStatement.Name;
+        var args = BuildCallArguments(builder, name, callStatement.Arguments);
+
+        builder.Call(name, _functionTypes[name].ReturnType, args);
+    }
+    
+    private IEnumerable<Argument> BuildCallArguments(IrBuilder builder, string name, NodeList<Ast.Nodes.Argument> callArguments)
+    {
         if (!_functionTypes.ContainsKey(name))
             throw new Exception($"No such function `{name}`");
-        
-        var functionType = _functionTypes[call.Name];
 
-        var args = new List<IR.Argument>();
-        
-        for (var i = 0; i < call.Arguments.Nodes.Count; i++)
+        var functionType = _functionTypes[name];
+
+        var args = new List<Argument>();
+
+        for (var i = 0; i < callArguments.Nodes.Count; i++)
         {
-            var arg = call.Arguments.Nodes[i];
+            var arg = callArguments.Nodes[i];
             var param = functionType.Parameters[i];
-            
+
             var val = EmitExpression(builder, arg.Expression);
 
             if (val is Alloca alloca)
             {
                 val = builder.Load(alloca);
             }
-            
+
             if (!val.Type.Equals(param.Type))
                 throw new CodeGenException($"Invalid argument type {val.Type.ToIr()} where {param.Type.ToIr()} was expected.");
-            
-            args.Add(new IR.Argument(param.Type, val));
-        }
-        
-        return builder.Call(call.Name, functionType.ReturnType, args);
-    }
 
+            args.Add(new Argument(param.Type, val));
+        }
+
+        return args;
+    }
+    
     private static Value MakeInteger(IntegerValue constant) => new IR.Values.IntegerValue(constant.Value);
 
     private static Value MakeFloat(FloatValue constant) => new IR.Values.FloatValue(constant.Value);

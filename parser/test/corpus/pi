@@ -1,0 +1,143 @@
+=================================================
+Pi
+=================================================
+
+extern fn print_float(f: float) -> void
+
+struct foo {
+  a: int
+  b: float
+  c: bool
+}
+
+fn pi(n: int) {
+  pi := 4.0;
+  flag := false;
+  i := 3.0;
+
+  for c in 3..n {
+    if flag {
+      pi = pi + 4.0 / i;
+      flag = false;
+    } else {
+      pi = pi - 4.0 / i;
+      flag = true;
+    }
+    i = i + 2.0;
+  }
+
+  return pi;
+}
+
+fn main() {
+  print_float(pi(10000));
+}
+
+-------------------------------------------------
+
+(source_file
+  (external_function_declaration_list
+    (external_function_declaration
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (single_value_type
+            (identifier))))
+      (single_value_type
+        (identifier))))
+  (definition_list
+    (struct_definition
+      (identifier)
+      (struct_field_list
+        (struct_field
+          (identifier)
+          (single_value_type
+            (identifier)))
+        (struct_field
+          (identifier)
+          (single_value_type
+            (identifier)))
+        (struct_field
+          (identifier)
+          (single_value_type
+            (identifier)))))
+    (function_definition
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (single_value_type
+            (identifier))))
+      (block
+        (statement_list
+          (variable_declaration_statement
+            (identifier)
+            (float))
+          (variable_declaration_statement
+            (identifier)
+            (bool))
+          (variable_declaration_statement
+            (identifier)
+            (float))
+          (for_statement
+            (identifier)
+            (integer)
+            (variable_reference
+              (identifier))
+            (block
+              (statement_list
+                (if_else_statement
+                  (variable_reference
+                    (identifier))
+                  (block
+                    (statement_list
+                      (assignment_statement
+                        (identifier)
+                        (binary_expression
+                          (variable_reference
+                            (identifier))
+                          (binary_expression
+                            (float)
+                            (variable_reference
+                              (identifier)))))
+                      (assignment_statement
+                        (identifier)
+                        (bool))))
+                  (block
+                    (statement_list
+                      (assignment_statement
+                        (identifier)
+                        (binary_expression
+                          (variable_reference
+                            (identifier))
+                          (binary_expression
+                            (float)
+                            (variable_reference
+                              (identifier)))))
+                      (assignment_statement
+                        (identifier)
+                        (bool)))))
+                (assignment_statement
+                  (identifier)
+                  (binary_expression
+                    (variable_reference
+                      (identifier))
+                    (float))))))
+          (return_statement
+            (variable_reference
+              (identifier))))))
+    (function_definition
+      (identifier)
+      (parameter_list)
+      (block
+        (statement_list
+          (function_call_statement
+            (identifier)
+            (argument_list
+              (argument
+                (function_call_expression
+                  (identifier)
+                  (argument_list
+                    (argument
+                      (integer))))))))))))

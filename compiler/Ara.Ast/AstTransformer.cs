@@ -15,10 +15,23 @@ using Ara.Parsing;
 namespace Ara.Ast;
 
 public static class AstTransformer
-{    
+{
     public static SourceFile Transform(Tree parseTree)
     {
-        return (SourceFile)Visit(parseTree.Root);
+        PrintParseTree(parseTree.Root);
+        
+        var rootNode = Visit(parseTree.Root);
+
+        return (SourceFile)rootNode;
+    }
+    
+    private static void PrintParseTree(ParseNode parseNode, int indent = 0)
+    {
+        Console.WriteLine($"{new string(' ', indent)}{parseNode.Type} ({parseNode.Location})");
+        foreach (var child in parseNode.NamedChildren)
+        {
+            PrintParseTree(child, indent + 2);
+        }
     }
 
     private static AstNode Visit(ParseNode parseNode)
@@ -36,7 +49,8 @@ public static class AstTransformer
             "binary_expression"                  => BinaryExpression(parseNode, children),
             "block"                              => Block(parseNode, children),
             "bool"                               => Bool(parseNode),
-            "function_call"                      => Call(parseNode, children),
+            "function_call_expression"           => CallExpression(parseNode, children),
+            "function_call_statement"            => CallStatement(parseNode, children),
             "external_function_declaration_list" => ExternalFunctionDeclarationList(parseNode, children),
             "external_function_declaration"      => ExternalFunctionDeclaration(parseNode, children),
             "for_statement"                      => For(parseNode, children),
@@ -53,6 +67,8 @@ public static class AstTransformer
             "source_file"                        => SourceFile(parseNode, children),
             "statement_list"                     => StatementList(parseNode, children),
             "struct_definition"                  => StructDefinition(parseNode, children),
+            "struct_field_list"                  => StructFieldList(parseNode, children),
+            "struct_field"                       => StructField(parseNode, children),
             "single_value_type"                  => SingleValueType(parseNode, children),
             "unary_expression"                   => UnaryExpression(parseNode, children),
             "variable_declaration_statement"     => VariableDeclaration(parseNode, children),
@@ -107,10 +123,8 @@ public static class AstTransformer
     private static NodeList<ExternalFunctionDeclaration> ExternalFunctionDeclarationList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (ExternalFunctionDeclaration)x).ToList());
 
-    private static ExternalFunctionDeclaration ExternalFunctionDeclaration(ParseNode n, IReadOnlyList<AstNode> c)
-    {
-        return new ExternalFunctionDeclaration(n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], (TypeRef)c[2]);
-    }
+    private static ExternalFunctionDeclaration ExternalFunctionDeclaration(ParseNode n, IReadOnlyList<AstNode> c) =>
+        new(n, ((Identifier)c[1]).Value, (NodeList<Parameter>)c[2], (TypeRef)c[0]);
 
     private static NodeList<AstNode> DefinitionList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.ToList());
@@ -118,24 +132,23 @@ public static class AstTransformer
     private static For For(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (Expression)c[1], (Expression)c[2], (Block)c[3]);
 
-    private static Call Call(ParseNode n, IReadOnlyList<AstNode> c) =>
+    private static CallExpression CallExpression(ParseNode n, IReadOnlyList<AstNode> c) =>
+        new(n, ((Identifier)c[0]).Value, (NodeList<Argument>)c[1]);
+    
+    private static CallStatement CallStatement(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value, (NodeList<Argument>)c[1]);
 
-    private static FunctionDefinition FunctionDefinition(ParseNode n, IReadOnlyList<AstNode> c)
-    {
-        return c[2] is TypeRef 
-            ? new FunctionDefinition(n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], (TypeRef)c[2], (Block)c[3]) 
-            : new FunctionDefinition(n, ((Identifier)c[0]).Value, (NodeList<Parameter>)c[1], null, (Block)c[2]);
-    }
+    private static FunctionDefinition FunctionDefinition(ParseNode n, IReadOnlyList<AstNode> c) =>
+        new(n, ((Identifier)c[1]).Value, (NodeList<Parameter>)c[2], (TypeRef)c[0], (Block)c[3]);
 
     private static Identifier Identifier(ParseNode n) =>
         new(n, n.Span.ToString());
 
     private static If If(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, (Expression)c[0], (Statement)c[1]);
+        new(n, (Expression)c[0], (Block)c[1]);
 
     private static IfElse IfElse(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, (Expression)c[0], (Statement)c[1], (Statement)c[2]);
+        new(n, (Expression)c[0], (Block)c[1], (Block)c[2]);
 
     private static BooleanValue Bool(ParseNode n) => 
         new(n, bool.Parse(n.Span.ToString()));
@@ -147,7 +160,7 @@ public static class AstTransformer
         new(n, float.Parse(n.Span.ToString()));
 
     private static Parameter Parameter(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, ((Identifier)c[0]).Value, (TypeRef)c[1]);
+        new(n, ((Identifier)c[1]).Value, (TypeRef)c[0]);
 
     private static NodeList<Parameter> ParameterList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (Parameter)x).ToList());
@@ -155,23 +168,22 @@ public static class AstTransformer
     private static Return Return(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, (Expression)c[0]);
 
-    private static SourceFile SourceFile(ParseNode n, IReadOnlyList<AstNode> c)
-    {
-        if (c.Count == 2)
-        {
-            return new(n, (NodeList<AstNode>)c[1], (NodeList<ExternalFunctionDeclaration>)c[0]);
-        }
-        else
-        {
-            return new(n, (NodeList<AstNode>)c[0]);
-        }
-    }
+    private static SourceFile SourceFile(ParseNode n, IReadOnlyList<AstNode> c) =>
+        c.Count == 2 
+            ? new SourceFile(n, (NodeList<AstNode>)c[1], (NodeList<ExternalFunctionDeclaration>)c[0]) 
+            : new SourceFile(n, (NodeList<AstNode>)c[0]);
 
     private static NodeList<Statement> StatementList(ParseNode n, IEnumerable<AstNode> c) =>
         new(n, c.Select(x => (Statement)x).ToList());
     
     private static StructDefinition StructDefinition(ParseNode n, IReadOnlyList<AstNode> c) =>
-        new(n, ((Identifier)c[0]).Value);
+        new(n, ((Identifier)c[0]).Value, (NodeList<StructField>)c[1]);
+    
+    private static NodeList<StructField> StructFieldList(ParseNode n, IEnumerable<AstNode> c) =>
+        new(n, c.Select(x => (StructField)x).ToList());
+    
+    private static StructField StructField(ParseNode n, IReadOnlyList<AstNode> c) =>
+        new(n, ((Identifier)c[1]).Value, (TypeRef)c[0]);
 
     private static SingleValueTypeRef SingleValueType(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value);
@@ -192,27 +204,8 @@ public static class AstTransformer
         return new UnaryExpression(n, (Expression)c[0], op);
     }
 
-    private static VariableDeclaration VariableDeclaration(ParseNode n, IReadOnlyList<AstNode> c)
-    {
-        var name = ((Identifier)c[0]).Value;
-        
-        switch (c.Count)
-        {
-            case 3:
-            {
-                var type = (TypeRef)c[1];
-                var value = (Expression?)c[2];
-            
-                return new VariableDeclaration(n, name, type, value);
-            }
-            case 2 when c[1] is TypeRef type:
-                return new VariableDeclaration(n, name, type, null);
-            case 2 when c[1] is Expression value:
-                return new VariableDeclaration(n, name, null, value);
-            default:
-                throw new NotSupportedException();
-        }
-    }
+    private static VariableDeclaration VariableDeclaration(ParseNode n, IReadOnlyList<AstNode> c) =>
+        new(n, ((Identifier)c[1]).Value, (TypeRef)c[0], (Expression)c[2]);
 
     private static VariableReference VariableReference(ParseNode n, IReadOnlyList<AstNode> c) =>
         new(n, ((Identifier)c[0]).Value);

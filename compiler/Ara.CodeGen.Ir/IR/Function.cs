@@ -75,7 +75,7 @@ public class Function
         _instructions.PositionAtEnd();
     }
     
-    public string? RegisterName(string name)
+    public string RegisterName(string name)
     {
         return _scope.Register(name);
     }

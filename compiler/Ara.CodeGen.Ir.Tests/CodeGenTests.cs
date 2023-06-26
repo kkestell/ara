@@ -1,6 +1,5 @@
 #region
 
-using System.Diagnostics;
 using System.Linq;
 using Ara.Ast;
 using Ara.Ast.Semantics;
@@ -37,11 +36,39 @@ public class CodeGeneratorTests
         ");
         var ast = AstTransformer.Transform(tree);
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
         new TypeChecker(ast).Visit();
         var ir = new IrCodeGenerator().Generate(ast);
 
         AssertIr(ir, @"
+            define i32 @main () {
+            entry:
+                ret i32 1
+            }
+        ");
+    }
+    
+    [Test]
+    public void EmitStruct()
+    {
+        using var tree = _parser.Parse(@"
+            struct foo {
+              a: int
+              b: int
+            }
+            fn main() -> int {
+              return 1
+            }
+        ");
+        
+        var ast = AstTransformer.Transform(tree);
+        
+        new ScopeBuilder(ast).Visit();
+        new TypeChecker(ast).Visit();
+        
+        var ir = new IrCodeGenerator().Generate(ast);
+
+        AssertIr(ir, @"
+            %foo = type { i32, i32 }
             define i32 @main () {
             entry:
                 ret i32 1
@@ -60,16 +87,17 @@ public class CodeGeneratorTests
               if n == 1 {
                 return 1
               }
-              return fib(n: n-2) + fib(n: n-1)
+              return fib(n-2) + fib(n-1)
             }
         ");
+        
         var ast = AstTransformer.Transform(tree);
+        
         new ScopeBuilder(ast).Visit();
-        new TypeResolver(ast).Visit();
         new TypeChecker(ast).Visit();
 
         var ir = new IrCodeGenerator().Generate(ast);
-        Debug.WriteLine(ir);
+        
         AssertIr(ir, @"
             define i32 @fib (i32 %n) {
             entry:

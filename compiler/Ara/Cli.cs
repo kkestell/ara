@@ -17,12 +17,16 @@ public static class Cli
     {
         // Parse
 
-        using var parser = new Parser();
-        using var tree = Time("Parsing", () => parser.Parse(File.ReadAllText(filename), filename));
+        var tree = Time("Parsing", () => new Parser().Parse(File.ReadAllText(filename), filename));
 
         // AST
 
-        var ast = Time("AST", () => AstTransformer.Transform(tree));
+        var ast = Time("AST", () =>
+        {
+            var ast = AstTransformer.Transform(tree);
+            tree.Dispose();
+            return ast;
+        });
 
         // Semantics
 
@@ -31,7 +35,6 @@ public static class Cli
             Time("Semantics", () =>
             {
                 new ScopeBuilder(ast).Visit();
-                new TypeResolver(ast).Visit();
                 new TypeChecker(ast).Visit();
                 new ArrayBoundsChecker(ast).Visit();
             });

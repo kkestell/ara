@@ -43,15 +43,15 @@ public readonly struct Location
     {
         var start = 0;
         var lines = 0;
-        
+    
         for (var i = offset; i >= 0; i--)
         {
             if (span[i] != '\n') continue;
-            
+        
             lines++;
-            
-            if (lines != 2) continue;
-            
+        
+            if (lines != 1) continue;
+        
             start = i + 1;
             break;
         }

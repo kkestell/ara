@@ -59,7 +59,7 @@ public class ModuleTests : TestBase
     {
         Module = new Module();
 
-        var funcDecl = new FunctionDeclaration("declaredFunc", IrType.Void, new List<IrType>() { IrType.Integer, IrType.Bool });
+        var funcDecl = new FunctionDeclaration("declaredFunc", IrType.Void, new List<IrType> { IrType.Integer, IrType.Bool });
         Module.DeclareFunction(funcDecl);
 
         var ir = Module.Emit();
@@ -91,7 +91,7 @@ public class ModuleTests : TestBase
     {
         Module = new Module();
 
-        var externalFuncDecl = new ExternalFunctionDeclaration("externalFunc", IrType.Void, new List<IrType>() { IrType.Float, IrType.Integer });
+        var externalFuncDecl = new ExternalFunctionDeclaration("externalFunc", IrType.Void, new List<IrType> { IrType.Float, IrType.Integer });
         Module.DeclareExternalFunction(externalFuncDecl);
 
         var ir = Module.Emit();
@@ -105,13 +105,13 @@ public class ModuleTests : TestBase
     {
         Module = new Module();
 
-        var type1 = new FunctionType(IrType.Integer);
-        var function1 = Module.AddFunction("test1", type1);
+        var funcType = new FunctionType(IrType.Integer);
+        Module.AddFunction("test1", funcType);
 
-        var funcDecl = new FunctionDeclaration("declaredFunc", IrType.Void, new List<IrType>() { IrType.Integer, IrType.Bool });
+        var funcDecl = new FunctionDeclaration("declaredFunc", IrType.Void, new List<IrType> { IrType.Integer, IrType.Bool });
         Module.DeclareFunction(funcDecl);
 
-        var externalFuncDecl = new ExternalFunctionDeclaration("externalFunc", IrType.Void, new List<IrType>() { IrType.Float, IrType.Integer });
+        var externalFuncDecl = new ExternalFunctionDeclaration("externalFunc", IrType.Void, new List<IrType> { IrType.Float, IrType.Integer });
         Module.DeclareExternalFunction(externalFuncDecl);
 
         var ir = Module.Emit();

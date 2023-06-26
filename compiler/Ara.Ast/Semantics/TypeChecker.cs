@@ -44,7 +44,11 @@ public class TypeChecker : Visitor
     {
         switch (node)
         {
-            case Call c:
+            case Assignment a:
+                Assignment(a);
+                break;
+            
+            case CallExpression c:
                 Call(c);
                 break;
 
@@ -59,10 +63,14 @@ public class TypeChecker : Visitor
             case Return r:
                 Return(r);
                 break;
+            
+            case VariableDeclaration v:
+                VariableDeclaration(v);
+                break;
         }
     }
 
-    private void Call(Call c)
+    private void Call(CallExpression c)
     {
         if (!_functionDefinitions.ContainsKey(c.Name) && !_externalFunctionDeclarations.ContainsKey(c.Name))
             throw new SemanticException(c, "No such function.");
@@ -80,6 +88,15 @@ public class TypeChecker : Visitor
             if (!p.Type.Equals(a.Expression.Type))
                 throw new SemanticException(a, $"Argument type {a.Expression.Type} doesn't match parameter type {p.Type}");
         }
+    }
+    
+    private static void Assignment(Assignment a)
+    {
+        var blk = a.NearestAncestor<Block>();
+        var v = blk.FindDeclaration(a.Name);
+ 
+        if (!v.Type.Equals(a.Expression.Type))
+            throw new SemanticException(a, $"Variable type {v.Type} doesn't match expression type {a.Expression.Type}");
     }
 
     private static void Return(Return r)
@@ -100,5 +117,14 @@ public class TypeChecker : Visitor
     {
         if (!i.Predicate.Type.Equals(new BooleanType()))
             throw new PredicateTypeException(i.Predicate);
+    }
+    
+    private static void VariableDeclaration(VariableDeclaration d)
+    {
+        if (d.Expression is null)
+            return;
+        
+        if (!d.Type.Equals(d.Expression.Type))
+            throw new VariableTypeException(d);
     }
 }

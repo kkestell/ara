@@ -3,13 +3,13 @@ Infered Type
 =================================================
 
 fn main() {
-  return 1
+  return 1;
 }
 
 -------------------------------------------------
 
 (source_file
-  (function_definition_list
+  (definition_list
     (function_definition
       (identifier)
       (parameter_list)
@@ -23,13 +23,13 @@ Explicit Type
 =================================================
 
 fn main() -> int {
-    return 1
+    return 1;
 }
 
 -------------------------------------------------
 
 (source_file
-    (function_definition_list
+    (definition_list
     (function_definition
         (identifier)
         (parameter_list)
@@ -45,13 +45,13 @@ Parameters
 =================================================
 
 fn main(a: int, b: float, c: bool) {
-  return 1
+  return 1;
 }
 
 -------------------------------------------------
 
 (source_file
-  (function_definition_list
+  (definition_list
     (function_definition
       (identifier)
       (parameter_list
@@ -77,13 +77,13 @@ Parameters w/ Explicit Type
 =================================================
 
 fn main(a: int, b: float, c: bool) -> int {
-  return 1
+  return 1;
 }
 
 -------------------------------------------------
 
 (source_file
-  (function_definition_list
+  (definition_list
     (function_definition
       (identifier)
       (parameter_list
@@ -111,17 +111,17 @@ Call
 =================================================
 
 fn foo(x: int) {
-  return x
+  return x;
 }
 
 fn main() {
-  return foo(1)
+  return foo(1);
 }
 
 -------------------------------------------------
 
 (source_file
-  (function_definition_list
+  (definition_list
     (function_definition
       (identifier)
       (parameter_list
@@ -140,7 +140,7 @@ fn main() {
       (block
         (statement_list
           (return_statement
-            (function_call
+            (function_call_expression
               (identifier)
               (argument_list
                 (argument

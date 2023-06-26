@@ -202,8 +202,6 @@ public class IrBuilderTests : TestBase
         }
     ");
     }
-
-    #endregion
     
     [Test]
     public void ThrowWhenPhiIsNotTheFirstInstruction()
@@ -228,6 +226,8 @@ public class IrBuilderTests : TestBase
         });
     }
     
+    #endregion
+
     [Test]
     public void ResolveValue_PointerTypeValue_LoadsValue()
     {
@@ -238,8 +238,8 @@ public class IrBuilderTests : TestBase
     
         Builder = func.IrBuilder();
 
-        Value ptr = Builder.Alloca(IrType.Integer);
-        Value loadedValue = Builder.ResolveValue(ptr);
+        var ptr = Builder.Alloca(IrType.Integer);
+        var loadedValue = Builder.ResolveValue(ptr);
 
         Assert.IsTrue(loadedValue is Load);
     }

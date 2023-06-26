@@ -14,7 +14,7 @@ public class ParserTests : TestBase
         var sexp = tree.Root.Sexp();
         AssertSexp(sexp, @"
             (source_file 
-              (function_definition_list 
+              (definition_list 
                 (function_definition 
                   (identifier) 
                   (parameter_list) 

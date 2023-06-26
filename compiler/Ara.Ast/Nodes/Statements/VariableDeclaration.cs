@@ -11,7 +11,7 @@ using Type = Ara.Ast.Types.Abstract.Type;
 
 namespace Ara.Ast.Nodes.Statements;
 
-public record VariableDeclaration(IParseNode Node, string Name, TypeRef? TypeRef, Expression? Expression) : Statement(Node), ITyped
+public record VariableDeclaration(IParseNode Node, string Name, TypeRef TypeRef, Expression? Expression) : Statement(Node), ITyped
 {
     private List<AstNode>? _children;
 
@@ -22,10 +22,7 @@ public record VariableDeclaration(IParseNode Node, string Name, TypeRef? TypeRef
             if (_children is not null)
                 return _children;
 
-            _children = new List<AstNode>();
-
-            if (TypeRef is not null)
-                _children.Add(TypeRef);
+            _children = new List<AstNode> { TypeRef };
 
             if (Expression is not null)
                 _children.Add(Expression);
@@ -34,17 +31,5 @@ public record VariableDeclaration(IParseNode Node, string Name, TypeRef? TypeRef
         }
     }
     
-    public Type Type
-    {
-        get
-        {
-            if (TypeRef is not null)
-                return TypeRef.ToType();
-
-            if (Expression is not ITyped i)
-                throw new SemanticException(this, "Cannot infer type of non-constant values");
-
-            return i.Type;
-        }
-    }
+    public Type Type => TypeRef.ToType();
 }

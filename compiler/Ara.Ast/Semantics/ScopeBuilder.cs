@@ -24,6 +24,9 @@ public class ScopeBuilder : Visitor
             case FunctionDefinition f:
                 FunctionDefinition(f);
                 break;
+            case If i:
+                If(i);
+                break;
             case VariableDeclaration v:
                 VariableDeclaration(v);
                 break;
@@ -41,6 +44,10 @@ public class ScopeBuilder : Visitor
         {
             f.Block.Scope.Add(p.Name, p);
         }
+    }
+
+    private static void If(If i)
+    {
     }
 
     private static void VariableDeclaration(VariableDeclaration d)
