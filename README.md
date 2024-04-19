@@ -1,136 +1,64 @@
 # Ara
 
-Ara is an imperative, statically typed programming language. Ara uses Tree Sitter for parsing. The compiler is written in C# and emits LLVM IR.
+# Syntax
+
+Ara's syntax is designed to be familiar to people coming from C-like languages while being a bit simpler and more streamlined.
+
+Scripts are stored in plain text files with a .ara file extension. Ara compiles programs ahead-of-time, first to LLVM IR, and then to a native binary.
+
+## Comments
+
+Line comments start with `//` and end at the end of the line:
 
 ```
-fn fib(n: int) -> int {
-  if n == 0 {
-    return 0
-  }
-  if n == 1 {
-    return 1
-  }
-  return fib(n: n-2) + fib(n: n-1)
+// This is a comment.
+```
+
+## Reserved words
+
+One way to get a quick feel for a language’s style is to see what words it reserves. Here’s what Ara has:
+
+```
+as break continue elif else extern fn for if null return struct var while
+```
+
+## Identifiers
+
+Naming rules are similar to other programming languages. Identifiers start with a letter or underscore and may contain letters, digits, and underscores. Case is sensitive.
+
+```
+hi
+camelCase
+PascalCase
+_under_score
+abc123
+ALL_CAPS
+```
+
+## Newlines
+
+Newlines (`\n`) are meaningful in Ara. They are used to separate statements:
+
+```
+// Two statements:
+var x: i32 // Newline.
+x = 0
+```
+
+### Semicolons
+
+TODO
+
+```
+fn foo(): i32
+{
+    return 10
 }
 
-fn main() -> int {
-  return fib(n: 10)
-}
-```
-
-## Syntax
-
-### Comments
-
-Line comments start with `#` and end at the end of the line:
-
-```
-# This is a comment.
-```
-
-### Reserved Words
-
-```
-false for fn if return true
-```
-
-### Identifiers
-
-Identifiers begin with a letter and may contain letters, numbers, and underscores.
-
-### Blocks
-
-Ara uses curly braces to define blocks. You can use a block anywhere a statement is allowed, like in control flow statements. Function bodies are also blocks.
-
-## Values
-
-### Booleans
-
-A boolean value represents truth or falsehood. There are two boolean literals, `true` and `false`.
-
-### Numbers
-
-Ara has an integer type, `int`, and a floating point type, `float`.
-
-## Variables
-
-Variables are declared by specifying their name, an optional type, and an optional initialization value.
-
-```
-foo : int = 1
-```
-
-This creates a new integer, `foo`, in the current scope, and initializes it to `1`.
-
-Type inference is also supported:
-
-```
-foo := 1
-```
-
-Or, to declare a variable with its default initialization value:
-
-```
-foo : int
-```
-
-## Arrays
-
-Stack allocated, static arrays can be declared by appending the array's size to a known type:
-
-```
-foos: int[10]
-```
-
-Static arrays are bounds checked at compile time.
-
-```
-a : int[2]
-b := a[10]
-```
-
-```
-Error in test.ara:2:7
-
-  a : int[2]
-  b := a[10]
-       ^~~~
-
-Array index 10 out of bounds (0..1).
-```
-
-## Functions
-
-Functions are declared using the `fn` keyword.
-
-```
-fn sum(a: int, b: int) -> int {
-  return a + b
+fn bar(): void
+{
+    return;
 }
 ```
 
-A function's return type can also be inferred.
 
-```
-fn product(a: int, b: int) {
-  return a + b
-}
-```
-
-### Calling Functions
-
-When calling a function, argument names must be provided.
-
-```
-p := product(a: 1, b: 2)
-```
-
-## Control Flow
-
-### If Statements
-
-```
-if x == 0 {
-  # ...
-}
-```

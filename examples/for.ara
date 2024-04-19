@@ -1,9 +1,0 @@
-extern fn print(i: int) -> void
-
-fn main() {
-  sum := 0
-  for i in 0..10 {
-    sum = sum + i
-  }
-  return sum
-}
