@@ -475,12 +475,12 @@ public class IntegrationTests : TestBase
             """
             fn greet(): i32
             {
-                return 100;
+                return 100
             }
 
             fn main(): i32
             {
-                return greet();
+                return greet()
             }
             """;
 
@@ -496,12 +496,12 @@ public class IntegrationTests : TestBase
             """
             fn add(x: i32, y: i32): i32
             {
-                return x + y;
+                return x + y
             }
 
             fn main(): i32
             {
-                return add(add(10, 20), add(30, 40));
+                return add(add(10, 20), add(30, 40))
             }
             """;
 
@@ -519,17 +519,17 @@ public class IntegrationTests : TestBase
             {
                 if (x > 50)
                 {
-                    return 100;
+                    return 100
                 }
                 else
                 {
-                    return 0;
+                    return 0
                 }
             }
 
             fn main(): i32
             {
-                return check(60);
+                return check(60)
             }
             """;
 
@@ -1098,11 +1098,11 @@ public class IntegrationTests : TestBase
                     }
                     else if (program[c] == 46) // '.'
                     {
-                        putchar(tape[ptr])
+                        // putchar(tape[ptr])
                     }
                     else if (program[c] == 44) // ','
                     {
-                        tape[ptr] = getchar()
+                        // tape[ptr] = getchar()
                     }
                     else if (program[c] == 91) // '['
                     {
@@ -1147,6 +1147,10 @@ public class IntegrationTests : TestBase
                 return 0
             }
             """;
+        
+        var result = CompileAndExecute(source);
+        
+        Assert.That(result.Output, Is.EqualTo("Hello, World!"));
     }
 
     [Test]

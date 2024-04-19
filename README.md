@@ -19,7 +19,7 @@ Line comments start with `//` and end at the end of the line:
 One way to get a quick feel for a language’s style is to see what words it reserves. Here’s what Ara has:
 
 ```
-as break continue elif else extern fn for if null return struct var while
+if elif else while break continue return var fn class for struct as extern null
 ```
 
 ## Identifiers
