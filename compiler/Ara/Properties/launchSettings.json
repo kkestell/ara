@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "Ara": {
-      "commandName": "Project",
-      "commandLineArgs": "fib.ara",
-      "workingDirectory": "C:\\Users\\Kyle\\src\\ara\\examples"
-    }
-  }
-}

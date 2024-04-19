@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Ara.IR\Ara.IR.csproj" />
+      <ProjectReference Include="..\Ara.Parsing.Utils\Ara.Parsing.Utils.csproj" />
+      <ProjectReference Include="..\Ara.Parsing\Ara.Parsing.csproj" />
+      <ProjectReference Include="..\Ara.Semantics\Ara.Semantics.csproj" />
+    </ItemGroup>
+    
+    <PropertyGroup>
+        <PublishAoT>True</PublishAoT>
+    </PropertyGroup>
+
+</Project>

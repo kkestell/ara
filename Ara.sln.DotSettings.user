@@ -1,0 +1,41 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/Highlighting/AnalysisEnabled/@EntryValue">VISIBLE_FILES</s:String>
+	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/ActualSeverity/@EntryValue">INFO</s:String>
+	<s:Boolean x:Key="/Default/Environment/InlayHints/GeneralInlayHintsOptions/EnableInlayHints/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ca5c599f_002D4f65_002D49cc_002D8c28_002D9ae9328dec12/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Ara.Parsing.Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Or&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;NUnit3x::957459A4-6203-4AC5-9E54-D114AA926AA5::net8.0::Parser.Tests.ParserTests&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::05B429B0-2A95-4798-8C35-92FB4E7DB923::net7.0::Ara.CodeGen.IR.Tests.IR.IrBuilderTests.GetElementPtr_CreatesCorrectInstruction&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.Test1&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.UsingParameter&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.UsingVariable&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.UsingVariableInForLoop&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.ThrowsExceptionWhenUsingForLoopVariableOutsideOfLoop&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.ShadowingVariableWithForLoopVariable&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.UsingVariableInParentScope&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.BinaryExpressions&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.ThrowsExceptionWhenBinaryExpressionTypesDontMatch&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.AssignToMember&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.ThrowsExceptionWhenAssigningTypesDontMatch&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::B7BA8F46-2123-47E8-9313-DB93B940127E::net7.0::Ara.Semantics.Tests.Tests.ThrowsWhenAccessingMemberThatDoesntExist&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::88EB3C7A-8EC4-4026-BA5A-055F0FFC7EAD::net8.0::Ara.Tests.TestBase.Test1&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::88EB3C7A-8EC4-4026-BA5A-055F0FFC7EAD::net8.0::Ara.Tests.TestBase&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::88EB3C7A-8EC4-4026-BA5A-055F0FFC7EAD::net8.0::Ara.Tests.Tests&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::88EB3C7A-8EC4-4026-BA5A-055F0FFC7EAD::net8.0::Ara.Tests.IntegrationTests.TestSimpleFunction&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::88EB3C7A-8EC4-4026-BA5A-055F0FFC7EAD::net8.0::Ara.Tests.IntegrationTests.PointerDereferencing&lt;/TestId&gt;
+      &lt;TestId&gt;NUnit3x::88EB3C7A-8EC4-4026-BA5A-055F0FFC7EAD::net8.0::Ara.Tests.IntegrationTests&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+    &lt;ProjectFile&gt;957459A4-6203-4AC5-9E54-D114AA926AA5/f:LexerTests.cs&lt;/ProjectFile&gt;
+    &lt;ProjectFile&gt;957459A4-6203-4AC5-9E54-D114AA926AA5/f:ParserTests.cs&lt;/ProjectFile&gt;
+  &lt;/Or&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e4a429c8_002D4f51_002D4999_002D8e7b_002Dbc555bd2c03f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ArrayArgument" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::88EB3C7A-8EC4-4026-BA5A-055F0FFC7EAD::net8.0::Ara.Tests.IntegrationTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=05b429b0_002D2a95_002D4798_002D8c35_002D92fb4e7db923_0023Ara_002ECodeGen_002ETests/@EntryIndexedValue">True</s:Boolean>
+	
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=9e6823e4_002D20af_002D487c_002D938e_002D21ec530f51fd_0023Ara_002ECodeGen/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=a77a77ee_002Df5f9_002D4892_002D9c7d_002D11c4379e3119_0023Ara_002ECodeGen_002EC/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
